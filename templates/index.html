@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EarthOne — ELX</title>
   <meta name="description" content="ELX — Earth Liquidity Index. Real-time global macro liquidity conditions."/>
+  <meta property="og:title" content="ELX — Earth Liquidity Index"/>
+  <meta property="og:description" content="Real-time global macro liquidity conditions. Powered by FRED + Stooq."/>
+  <meta property="og:image" content="/api/elx/share"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/styles.css"/>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◉</text></svg>"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x25C9;</text></svg>"/>
 </head>
 <body class="loading">
 
@@ -49,6 +53,17 @@
         <!-- Asset Bias Chips -->
         <div class="asset-bias-row" id="asset-bias-row"></div>
 
+        <!-- Chart controls: Range selector + Share button -->
+        <div class="chart-controls">
+          <div class="range-bar" id="range-bar">
+            <button class="range-btn active" data-range="1Y">1Y</button>
+            <button class="range-btn" data-range="5Y">5Y</button>
+            <button class="range-btn" data-range="10Y">10Y</button>
+            <button class="range-btn" data-range="MAX">MAX</button>
+          </div>
+          <button class="share-btn" id="share-btn"><span class="share-icon">&#x2197;</span> Share ELX</button>
+        </div>
+
         <!-- Chart -->
         <div class="chart-container" id="chart"></div>
 
@@ -79,7 +94,7 @@
     <!-- ─── Footer ─────────────────────────────────────── -->
     <footer class="footer">
       <span>EarthOne Research</span>
-      <span>Data is simulated · Not financial advice</span>
+      <span>Data: FRED + Stooq · Not financial advice</span>
     </footer>
 
   </div>

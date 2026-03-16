@@ -1,0 +1,18 @@
+MAX Chart (2006-2026) Review:
+- Chart shows full 20-year ELX history from Mar 2008 to Jan 2026
+- Clear macro cycles visible:
+  - 2008-2009: starts around -10, dips during GFC
+  - 2009-2011: recovery to ~+10
+  - 2012-2014: fluctuations around 0-10
+  - 2015-2019: gradual movement
+  - 2020: MASSIVE spike to ~+80 (COVID liquidity surge - Fed QE)
+  - 2021: peak around +60-70
+  - 2022: sharp decline (Fed tightening)
+  - 2023-2024: gradual recovery
+  - 2025-2026: back to ~-10 (current neutral/mild risk-off)
+- X-axis labels: Mar 08, Jan 09, Nov 11, Sep 14, Jul 17, May 20, Mar 23, Jan 26
+- Y-axis: -37 to +86
+- The 2020 liquidity surge is the dominant feature - exactly as expected
+- Chart looks professional and tells the macro story clearly
+- Range selector works: 1Y/5Y/10Y/MAX all functional
+- Share ELX button visible and styled

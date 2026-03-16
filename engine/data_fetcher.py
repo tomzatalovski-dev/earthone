@@ -42,7 +42,7 @@ FRED_SERIES = {
     "DTWEXBGS":     "Trade-Weighted Dollar",
 }
 
-def fetch_fred_series(series_id: str, years: int = 3) -> pd.DataFrame:
+def fetch_fred_series(series_id: str, years: int = 25) -> pd.DataFrame:
     """Fetch a single FRED series as a DataFrame with date index."""
     cached = _get_cached(f"fred_{series_id}", MACRO_TTL)
     if cached is not None:
@@ -54,7 +54,7 @@ def fetch_fred_series(series_id: str, years: int = 3) -> pd.DataFrame:
         f"?id={series_id}&cosd={start}"
     )
     try:
-        resp = requests.get(url, timeout=15)
+        resp = requests.get(url, timeout=30)
         resp.raise_for_status()
         df = pd.read_csv(io.StringIO(resp.text), parse_dates=["observation_date"])
         df = df.rename(columns={"observation_date": "date", series_id: "value"})
@@ -89,14 +89,14 @@ _STOOQ_HEADERS = {
 }
 
 
-def _fetch_stooq(ticker: str, years: int = 2) -> pd.DataFrame:
+def _fetch_stooq(ticker: str, years: int = 25) -> pd.DataFrame:
     """Fetch historical price data from Stooq CSV endpoint."""
     start = (datetime.now() - timedelta(days=years * 365)).strftime("%Y%m%d")
     end = datetime.now().strftime("%Y%m%d")
     url = f"https://stooq.com/q/d/l/?s={ticker}&d1={start}&d2={end}&i=d"
 
     try:
-        resp = requests.get(url, headers=_STOOQ_HEADERS, timeout=15)
+        resp = requests.get(url, headers=_STOOQ_HEADERS, timeout=30)
         resp.raise_for_status()
 
         text = resp.text.strip()
@@ -117,13 +117,13 @@ def _fetch_stooq(ticker: str, years: int = 2) -> pd.DataFrame:
         return pd.DataFrame(columns=["close"])
 
 
-def fetch_market_data(ticker: str, period: str = "2y") -> pd.DataFrame:
+def fetch_market_data(ticker: str, period: str = "25y") -> pd.DataFrame:
     """Fetch market price history from Stooq."""
     cached = _get_cached(f"stooq_{ticker}", MARKET_TTL)
     if cached is not None:
         return cached
 
-    years = {"1y": 1, "2y": 2, "5y": 5, "6mo": 1, "1mo": 1}.get(period, 2)
+    years = {"1y": 1, "2y": 2, "5y": 5, "10y": 10, "25y": 25, "6mo": 1, "1mo": 1}.get(period, 25)
     df = _fetch_stooq(ticker, years=years)
 
     if not df.empty:

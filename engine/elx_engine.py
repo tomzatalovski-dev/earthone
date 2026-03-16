@@ -8,13 +8,16 @@ Formula:
 
 Each component is a z-score, then the composite is scaled to [-100, +100].
 
-Data frequencies:
-  WALCL      — weekly  (~52/yr)
-  M2SL       — monthly (~12/yr)
-  BAMLH0A0HYM2 — daily (~252/yr)
-  DGS10, T10YIE — daily
-  DTWEXBGS   — weekly/business-daily (~252/yr)
-  SPY        — daily
+Data availability (from FRED / Stooq):
+  WALCL      — weekly  since 2002
+  M2SL       — monthly since 2000
+  BAMLH0A0HYM2 — daily since 2000
+  DGS10      — daily since 2000
+  T10YIE     — daily since 2003
+  DTWEXBGS   — daily since 2006
+  SPY        — daily since 2005
+
+ELX can be computed from ~2006 onward (when all series overlap).
 """
 
 import time
@@ -41,29 +44,27 @@ def _zscore_full(series: pd.Series) -> pd.Series:
 
 
 def _scale(z: float) -> int:
-    """Scale a z-score to [-100, +100], clamped at ±3."""
+    """Scale a z-score to [-100, +100], clamped at +/-3."""
     clamped = max(-3.0, min(3.0, z))
     return round(clamped / 3.0 * 100)
 
 
 # ---------------------------------------------------------------------------
-# Component calculators
+# Component calculators — all use full history (25 years)
 # ---------------------------------------------------------------------------
 
 def _compute_liquidity() -> tuple[pd.Series, float, str]:
     """Global Liquidity: YoY% of WALCL (weekly) and M2SL (monthly), z-scored."""
-    walcl = fetch_fred_series("WALCL", years=5)
-    m2 = fetch_fred_series("M2SL", years=5)
+    walcl = fetch_fred_series("WALCL", years=25)
+    m2 = fetch_fred_series("M2SL", years=25)
 
     z_series_list = []
 
-    # WALCL: weekly → YoY = 52-period pct_change
     if not walcl.empty and len(walcl) > 52:
         w_yoy = walcl["value"].pct_change(periods=52).dropna()
         z_w = _zscore_full(w_yoy)
         z_series_list.append(z_w)
 
-    # M2SL: monthly → YoY = 12-period pct_change
     if not m2.empty and len(m2) > 12:
         m_yoy = m2["value"].pct_change(periods=12).dropna()
         z_m = _zscore_full(m_yoy)
@@ -72,7 +73,6 @@ def _compute_liquidity() -> tuple[pd.Series, float, str]:
     if not z_series_list:
         return pd.Series(dtype=float), 0.0, "N/A"
 
-    # Average the available z-scores
     if len(z_series_list) == 2:
         combined = pd.DataFrame({"a": z_series_list[0], "b": z_series_list[1]})
         combined = combined.ffill().dropna()
@@ -87,12 +87,12 @@ def _compute_liquidity() -> tuple[pd.Series, float, str]:
 
 def _compute_credit() -> tuple[pd.Series, float, str]:
     """Credit Conditions: inverted z-score of HY spread (daily)."""
-    hy = fetch_fred_series("BAMLH0A0HYM2", years=5)
+    hy = fetch_fred_series("BAMLH0A0HYM2", years=25)
     if hy.empty or len(hy) < 30:
         return pd.Series(dtype=float), 0.0, "N/A"
 
     z = _zscore_full(hy["value"])
-    z_inv = -z  # wider spread = tighter = negative for liquidity
+    z_inv = -z
     z_inv = z_inv.dropna()
 
     latest = float(z_inv.iloc[-1]) if len(z_inv) > 0 else 0.0
@@ -102,8 +102,8 @@ def _compute_credit() -> tuple[pd.Series, float, str]:
 
 def _compute_real_yields() -> tuple[pd.Series, float, str]:
     """Real Yields: inverted z-score of (10Y yield - breakeven inflation)."""
-    dgs10 = fetch_fred_series("DGS10", years=5)
-    t10yie = fetch_fred_series("T10YIE", years=5)
+    dgs10 = fetch_fred_series("DGS10", years=25)
+    t10yie = fetch_fred_series("T10YIE", years=25)
 
     if dgs10.empty or t10yie.empty:
         return pd.Series(dtype=float), 0.0, "N/A"
@@ -114,7 +114,7 @@ def _compute_real_yields() -> tuple[pd.Series, float, str]:
 
     real_yield = combined["y"] - combined["i"]
     z = _zscore_full(real_yield)
-    z_inv = -z  # higher real yield = tighter = negative
+    z_inv = -z
     z_inv = z_inv.dropna()
 
     latest = float(z_inv.iloc[-1]) if len(z_inv) > 0 else 0.0
@@ -124,12 +124,12 @@ def _compute_real_yields() -> tuple[pd.Series, float, str]:
 
 def _compute_dollar() -> tuple[pd.Series, float, str]:
     """Dollar Strength: inverted z-score of trade-weighted dollar."""
-    dxy = fetch_fred_series("DTWEXBGS", years=5)
+    dxy = fetch_fred_series("DTWEXBGS", years=25)
     if dxy.empty or len(dxy) < 30:
         return pd.Series(dtype=float), 0.0, "N/A"
 
     z = _zscore_full(dxy["value"])
-    z_inv = -z  # stronger dollar = tighter
+    z_inv = -z
     z_inv = z_inv.dropna()
 
     latest = float(z_inv.iloc[-1]) if len(z_inv) > 0 else 0.0
@@ -139,7 +139,7 @@ def _compute_dollar() -> tuple[pd.Series, float, str]:
 
 def _compute_market_beta() -> tuple[pd.Series, float, str]:
     """Market Beta: z-score of SPY 6-month return (daily, 126 periods)."""
-    spy = fetch_market_data("spy.us", period="5y")
+    spy = fetch_market_data("spy.us", period="25y")
     if spy.empty or len(spy) < 130:
         return pd.Series(dtype=float), 0.0, "N/A"
 
@@ -193,7 +193,7 @@ def _get_asset_bias(value: int) -> list[dict]:
             {"asset": "Gold",     "direction": "down", "call": "Trim"},
             {"asset": "BTC",      "direction": "up",   "call": "Risk-On"},
             {"asset": "USD",      "direction": "down", "call": "Weak"},
-            {"asset": "Bonds",    "direction": "down", "call": "Duration −"},
+            {"asset": "Bonds",    "direction": "down", "call": "Duration -"},
         ]
     elif value >= 0:
         return [
@@ -209,7 +209,7 @@ def _get_asset_bias(value: int) -> list[dict]:
             {"asset": "Gold",     "direction": "up",   "call": "Hedge"},
             {"asset": "BTC",      "direction": "down", "call": "Risk-Off"},
             {"asset": "USD",      "direction": "up",   "call": "Strong"},
-            {"asset": "Bonds",    "direction": "down", "call": "Duration −"},
+            {"asset": "Bonds",    "direction": "down", "call": "Duration -"},
         ]
     else:
         return [
@@ -276,11 +276,14 @@ def compute_elx() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Historical ELX series
+# Historical ELX series — supports up to full history (~20 years)
 # ---------------------------------------------------------------------------
 
 def compute_elx_history(days: int = 365) -> dict:
-    """Compute historical ELX values aligned on common dates."""
+    """Compute historical ELX values aligned on common dates.
+    
+    Supports: days=365 (1Y), 1825 (5Y), 3650 (10Y), 7300 (MAX ~20Y)
+    """
     cached = _elx_cache.get(f"history_{days}")
     if cached:
         ts, data = cached
@@ -293,35 +296,37 @@ def compute_elx_history(days: int = 365) -> dict:
     dol_z, _, _ = _compute_dollar()
     bet_z, _, _ = _compute_market_beta()
 
-    # Build a daily date range and resample all series to it
     weights = {"liq": 0.40, "crd": 0.25, "ryl": 0.20, "dol": 0.10, "bet": 0.05}
     all_series = {"liq": liq_z, "crd": crd_z, "ryl": ryl_z, "dol": dol_z, "bet": bet_z}
 
-    # Only include non-empty series
     valid = {k: v for k, v in all_series.items() if len(v) > 0}
     if not valid:
         return {"dates": [], "values": []}
 
     combined = pd.DataFrame(valid)
 
-    # Ensure DatetimeIndex before resampling
     if not isinstance(combined.index, pd.DatetimeIndex):
         combined.index = pd.to_datetime(combined.index)
 
     combined = combined.resample("D").last().ffill().bfill()
-    # Fill any remaining NaN with 0 (missing components contribute 0)
     combined = combined.fillna(0)
 
     if combined.empty:
         return {"dates": [], "values": []}
 
-    # Trim to requested days
-    combined = combined.iloc[-days:]
+    # Trim to requested days (0 = all available)
+    if days > 0 and days < len(combined):
+        combined = combined.iloc[-days:]
 
-    # Compute weighted sum, using 0 for missing components
     elx_series = sum(weights.get(col, 0) * combined[col] for col in combined.columns)
-
     elx_scaled = elx_series.apply(lambda x: _scale(x))
+
+    # For long histories, downsample to keep response size reasonable
+    # >5 years: weekly, >10 years: bi-weekly
+    if len(elx_scaled) > 3650:
+        elx_scaled = elx_scaled.resample("2W").last().dropna()
+    elif len(elx_scaled) > 1825:
+        elx_scaled = elx_scaled.resample("W").last().dropna()
 
     result = {
         "dates": [d.strftime("%Y-%m-%d") for d in elx_scaled.index],
@@ -359,7 +364,7 @@ def compute_correlations(window: int = 90) -> list[dict]:
     results = []
 
     for ticker, name in tickers.items():
-        mkt = fetch_market_data(ticker, period="2y")
+        mkt = fetch_market_data(ticker, period="25y")
         if mkt.empty:
             results.append({"name": name, "ticker": ticker, "correlation": 0, "price": 0, "change_30d": 0, "series": []})
             continue

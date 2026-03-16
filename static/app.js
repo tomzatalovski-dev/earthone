@@ -1,5 +1,5 @@
 /* ============================================================
-   EarthOne V2 — Real Data
+   EarthOne V2.1 — Real Data + Long-term History + Share
    ============================================================ */
 
 (function () {
@@ -18,13 +18,19 @@
   const driversGrid  = $("#drivers-grid");
   const marketsGrid  = $("#markets-grid");
   const dateEl       = $("#date-now");
+  const rangeBar     = $("#range-bar");
+  const shareBtn     = $("#share-btn");
+
+  // Current range state
+  let currentRange = "1Y";
+  const RANGE_DAYS = { "1Y": 365, "5Y": 1825, "10Y": 3650, "MAX": 7300 };
 
   // ---- Date ---------------------------------------------------------------
   function setDate() {
     const d = new Date();
     dateEl.textContent = d.toLocaleDateString("en-US", {
       weekday: "short", year: "numeric", month: "short", day: "numeric",
-    }) + "  ·  " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    }) + "  \u00B7  " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   }
 
   // ---- Animated counter ---------------------------------------------------
@@ -37,7 +43,7 @@
       const t = Math.min((now - start) / dur, 1);
       const ease = 1 - Math.pow(1 - t, 4);
       const v = Math.round(abs * ease);
-      const sign = isNeg ? "−" : "+";
+      const sign = isNeg ? "\u2212" : "+";
       el.innerHTML = `<span class="elx-sign">${sign}</span>${v}`;
       if (t < 1) requestAnimationFrame(tick);
     }
@@ -52,7 +58,6 @@
 
       animateValue(elxValueEl, d.value);
 
-      // Delta — compute from history if not provided
       if (d.delta !== undefined) {
         const deltaSign = d.delta > 0 ? "+" : "";
         const deltaClass = d.delta > 0 ? "delta-up" : d.delta < 0 ? "delta-down" : "delta-flat";
@@ -102,7 +107,7 @@
       const isCon = dir === "Contractionary" || dir === "down";
       const ac = isExp ? "arrow-up" : isCon ? "arrow-down" : "arrow-flat";
       const ar = isExp ? "\u2191" : isCon ? "\u2193" : "\u2192";
-      const signal = dr.signal || dr.direction || "—";
+      const signal = dr.signal || dr.direction || "\u2014";
       const weight = typeof dr.weight === "string" ? parseInt(dr.weight) : dr.weight;
       const card = document.createElement("div");
       card.className = "driver-card";
@@ -117,19 +122,30 @@
     });
   }
 
-  // ---- Fetch history — V2 format: { dates: [...], values: [...] } ---------
-  async function fetchHistory() {
+  // ---- Range selector -----------------------------------------------------
+  function initRangeBar() {
+    if (!rangeBar) return;
+    const buttons = rangeBar.querySelectorAll(".range-btn");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        buttons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentRange = btn.dataset.range;
+        fetchHistory(RANGE_DAYS[currentRange]);
+      });
+    });
+  }
+
+  // ---- Fetch history ------------------------------------------------------
+  async function fetchHistory(days) {
+    days = days || RANGE_DAYS[currentRange] || 365;
     try {
-      const res = await fetch("/api/elx/history?days=365");
+      const res = await fetch(`/api/elx/history?days=${days}`);
       const data = await res.json();
 
-      // Convert V2 format to series array for chart
       if (data.dates && data.values) {
         const series = data.dates.map((d, i) => ({ date: d, value: data.values[i] }));
         drawChart(series);
-      } else if (data.series) {
-        // Fallback for V1 format
-        drawChart(data.series);
       }
     } catch (e) { console.error(e); }
   }
@@ -182,9 +198,10 @@
       return d;
     }
 
-    // Downsample: every 3rd point for smoothness
+    // Downsample for smoothness — adaptive based on data length
+    const step = series.length > 1000 ? 5 : series.length > 300 ? 3 : 2;
     const sampled = [];
-    for (let i = 0; i < pts.length; i += 3) sampled.push(pts[i]);
+    for (let i = 0; i < pts.length; i += step) sampled.push(pts[i]);
     if (sampled[sampled.length - 1] !== pts[pts.length - 1]) sampled.push(pts[pts.length - 1]);
 
     const linePath = catmullRom(sampled);
@@ -206,14 +223,29 @@
       yL += `<text x="${P.l - 10}" y="${(y + 3.5).toFixed(1)}" text-anchor="end" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${Math.round(v)}</text>`;
     }
 
-    // X labels
+    // X labels — adaptive date format
     let xL = "";
-    const lc = 7, st = Math.floor(series.length / lc);
-    for (let i = 0; i < series.length; i += st) {
+    const labelCount = 7;
+    const labelStep = Math.max(1, Math.floor(series.length / labelCount));
+    for (let i = 0; i < series.length; i += labelStep) {
       const p = pts[i];
       if (!p) continue;
-      const label = new Date(series[i].date + "T00:00:00").toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      const dt = new Date(series[i].date + "T00:00:00");
+      // For long ranges, show year only; for short, show month
+      let label;
+      if (series.length > 1000) {
+        label = dt.getFullYear().toString();
+      } else {
+        label = dt.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+      }
       xL += `<text x="${p.x.toFixed(1)}" y="${(H - 12).toFixed(1)}" text-anchor="middle" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${label}</text>`;
+    }
+
+    // Zero line if visible
+    let zeroLine = "";
+    if (minV < 0 && maxV > 0) {
+      const zeroY = P.t + pH - ((0 - minV) / rV) * pH;
+      zeroLine = `<line x1="${P.l}" y1="${zeroY.toFixed(1)}" x2="${W - P.r}" y2="${zeroY.toFixed(1)}" stroke="rgba(0,0,0,.08)" stroke-width="1" stroke-dasharray="4,4"/>`;
     }
 
     const svg = `
@@ -242,7 +274,7 @@
         <clipPath id="pClip"><rect x="${P.l}" y="${P.t}" width="${pW}" height="${pH}"/></clipPath>
       </defs>
 
-      ${grid}${yL}${xL}
+      ${grid}${yL}${xL}${zeroLine}
 
       <path class="chart-area" d="${areaPath}" fill="url(#aG)" clip-path="url(#pClip)"/>
 
@@ -276,24 +308,20 @@
     chartWrap.innerHTML = svg;
   }
 
-  // ---- Fetch Markets — V2 format: array of objects -----------------------
+  // ---- Fetch Markets -------------------------------------------------------
   async function fetchMarkets() {
     try {
       const res = await fetch("/api/elx/markets");
       const data = await res.json();
 
-      // V2 returns an array, V1 returned an object
       if (Array.isArray(data)) {
         renderCorrStripV2(data);
         renderMarketsV2(data);
-      } else {
-        renderCorrStrip(data);
-        renderMarkets(data);
       }
     } catch (e) { console.error(e); }
   }
 
-  // ---- Correlation strip (V2 — array format) ------------------------------
+  // ---- Correlation strip ---------------------------------------------------
   function renderCorrStripV2(markets) {
     if (!corrStrip) return;
     const labelMap = { "S&P 500": "SPX", "Gold": "Gold", "Bitcoin": "BTC", "US Dollar": "DXY" };
@@ -307,7 +335,7 @@
     corrStrip.innerHTML = `<span class="corr-title">ELX Correlation (90d)</span>` + html;
   }
 
-  // ---- Markets cards (V2 — array format) ----------------------------------
+  // ---- Markets cards -------------------------------------------------------
   function renderMarketsV2(markets) {
     marketsGrid.innerHTML = "";
     markets.forEach((m) => {
@@ -322,7 +350,7 @@
 
       const card = document.createElement("div");
       card.className = "market-card";
-      const sparkId = `spark-${m.ticker.replace(/[^a-zA-Z0-9]/g, "")}`;
+      const sparkId = `spark-${m.name.replace(/[^a-zA-Z0-9]/g, "")}`;
       card.innerHTML = `
         <div class="market-header">
           <span class="market-ticker">${m.name}</span>
@@ -334,47 +362,6 @@
       `;
       marketsGrid.appendChild(card);
       drawSparkline(sparkId, m.series, m.change_30d);
-    });
-  }
-
-  // ---- Legacy V1 renderers (fallback) ------------------------------------
-  function renderCorrStrip(data) {
-    if (!corrStrip) return;
-    const tickers = ["SPX", "GOLD", "BTC", "DXY"];
-    const labels  = { SPX: "SPX", GOLD: "Gold", BTC: "BTC", DXY: "DXY" };
-    let html = "";
-    tickers.forEach((t) => {
-      const m = data[t];
-      if (!m) return;
-      const sign = m.correlation > 0 ? "+" : "";
-      const cls = m.correlation > 0.15 ? "corr-pos" : m.correlation < -0.15 ? "corr-neg" : "corr-neu";
-      html += `<span class="corr-item ${cls}"><span class="corr-label">${labels[t]}</span><span class="corr-val">${sign}${m.correlation.toFixed(2)}</span></span>`;
-    });
-    corrStrip.innerHTML = `<span class="corr-title">ELX Correlation (90d)</span>` + html;
-  }
-
-  function renderMarkets(data) {
-    marketsGrid.innerHTML = "";
-    ["SPX", "GOLD", "BTC", "DXY"].forEach((ticker) => {
-      const m = data[ticker];
-      if (!m) return;
-      const cc = m.change_30d > 0.5 ? "change-up" : m.change_30d < -0.5 ? "change-down" : "change-flat";
-      const cs = m.change_30d > 0 ? "+" : "";
-      const corrS = m.correlation > 0 ? "+" : "";
-      let priceStr;
-      if (m.price >= 10000) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 0 });
-      else if (m.price >= 100) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 1 });
-      else priceStr = m.price.toFixed(2);
-      const card = document.createElement("div");
-      card.className = "market-card";
-      card.innerHTML = `
-        <div class="market-header"><span class="market-ticker">${m.label}</span><span class="market-corr">\u03C1 ${corrS}${m.correlation.toFixed(2)}</span></div>
-        <div class="market-price">${priceStr}</div>
-        <div class="market-change ${cc}">${cs}${m.change_30d}% \u00B7 30d</div>
-        <div class="market-spark" id="spark-${ticker}"></div>
-      `;
-      marketsGrid.appendChild(card);
-      drawSparkline(`spark-${ticker}`, m.sparkline, m.change_30d);
     });
   }
 
@@ -418,9 +405,52 @@
     </svg>`;
   }
 
+  // ---- Share button -------------------------------------------------------
+  function initShare() {
+    if (!shareBtn) return;
+    shareBtn.addEventListener("click", async () => {
+      shareBtn.classList.add("sharing");
+      shareBtn.textContent = "Generating...";
+      try {
+        const res = await fetch("/api/elx/share");
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        // Try native share if available
+        if (navigator.share && navigator.canShare) {
+          const file = new File([blob], "elx-share.png", { type: "image/png" });
+          try {
+            await navigator.share({ files: [file], title: "ELX — Earth Liquidity Index" });
+          } catch (shareErr) {
+            // Fallback: download
+            downloadBlob(url);
+          }
+        } else {
+          downloadBlob(url);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      shareBtn.classList.remove("sharing");
+      shareBtn.innerHTML = `<span class="share-icon">\u2197</span> Share ELX`;
+    });
+  }
+
+  function downloadBlob(url) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "elx-share.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   // ---- Init ---------------------------------------------------------------
   setDate();
   fetchELX();
   fetchHistory();
   fetchMarkets();
+  initRangeBar();
+  initShare();
 })();
