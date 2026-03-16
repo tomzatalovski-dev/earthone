@@ -1,0 +1,10 @@
+Live site observations:
+- ELX +10 Neutral MILD RISK-ON — loads correctly
+- Drivers section loads correctly (21.0, 20.0, -22.0, 6.0, 0.0)
+- Asset bias chips load correctly
+- LIVE badge with green dot works
+- Chart is MISSING — no SVG chart rendered
+- ELX Correlation (90d) section is empty
+- ELX vs Markets section is empty
+- Likely issue: JS fetch for /api/elx/history and /api/elx/markets may be timing out or returning empty on first load (cold cache)
+- Need to check if the API endpoints work on Railway

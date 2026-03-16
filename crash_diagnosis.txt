@@ -1,0 +1,3 @@
+Railway crash: ModuleNotFoundError: No module named 'numpy'
+The requirements.txt is missing numpy and pandas.
+Need to fix requirements.txt to include all dependencies.

@@ -89,4 +89,6 @@ def api_elx_markets():
         data = compute_correlations(90)
         return JSONResponse(content=data)
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return JSONResponse(content=[], status_code=200)

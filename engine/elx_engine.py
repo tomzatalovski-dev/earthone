@@ -294,14 +294,23 @@ def compute_elx_history(days: int = 365) -> dict:
     bet_z, _, _ = _compute_market_beta()
 
     # Build a daily date range and resample all series to it
+    weights = {"liq": 0.40, "crd": 0.25, "ryl": 0.20, "dol": 0.10, "bet": 0.05}
     all_series = {"liq": liq_z, "crd": crd_z, "ryl": ryl_z, "dol": dol_z, "bet": bet_z}
-    combined = pd.DataFrame(all_series)
+
+    # Only include non-empty series
+    valid = {k: v for k, v in all_series.items() if len(v) > 0}
+    if not valid:
+        return {"dates": [], "values": []}
+
+    combined = pd.DataFrame(valid)
 
     # Ensure DatetimeIndex before resampling
-    if not combined.empty:
-        if not isinstance(combined.index, pd.DatetimeIndex):
-            combined.index = pd.to_datetime(combined.index)
-        combined = combined.resample("D").last().ffill().dropna()
+    if not isinstance(combined.index, pd.DatetimeIndex):
+        combined.index = pd.to_datetime(combined.index)
+
+    combined = combined.resample("D").last().ffill().bfill()
+    # Fill any remaining NaN with 0 (missing components contribute 0)
+    combined = combined.fillna(0)
 
     if combined.empty:
         return {"dates": [], "values": []}
@@ -309,13 +318,8 @@ def compute_elx_history(days: int = 365) -> dict:
     # Trim to requested days
     combined = combined.iloc[-days:]
 
-    elx_series = (
-        0.40 * combined["liq"]
-        + 0.25 * combined["crd"]
-        + 0.20 * combined["ryl"]
-        + 0.10 * combined["dol"]
-        + 0.05 * combined["bet"]
-    )
+    # Compute weighted sum, using 0 for missing components
+    elx_series = sum(weights.get(col, 0) * combined[col] for col in combined.columns)
 
     elx_scaled = elx_series.apply(lambda x: _scale(x))
 

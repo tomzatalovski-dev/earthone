@@ -1,0 +1,7 @@
+Railway build error:
+- Python 3.13.12 is being used
+- pandas==2.2.2 fails to build on Python 3.13 (metadata-generation-failed)
+- Need to either pin a newer pandas version or set Python version to 3.11
+
+Solution: Add a runtime.txt or .python-version file to pin Python 3.11
+Or use pandas>=2.2.3 which supports Python 3.13
