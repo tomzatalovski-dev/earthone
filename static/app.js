@@ -1,5 +1,5 @@
 /* ============================================================
-   EarthOne v5 — Final 10/10
+   EarthOne V2 — Real Data
    ============================================================ */
 
 (function () {
@@ -24,18 +24,21 @@
     const d = new Date();
     dateEl.textContent = d.toLocaleDateString("en-US", {
       weekday: "short", year: "numeric", month: "short", day: "numeric",
-    }) + "  \u00B7  " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+    }) + "  ·  " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
   }
 
   // ---- Animated counter ---------------------------------------------------
   function animateValue(el, target) {
     const dur = 1800;
     const start = performance.now();
+    const isNeg = target < 0;
+    const abs = Math.abs(target);
     function tick(now) {
       const t = Math.min((now - start) / dur, 1);
       const ease = 1 - Math.pow(1 - t, 4);
-      const v = Math.round(target * ease);
-      el.innerHTML = `<span class="elx-sign">${target >= 0 ? "+" : ""}</span>${v}`;
+      const v = Math.round(abs * ease);
+      const sign = isNeg ? "−" : "+";
+      el.innerHTML = `<span class="elx-sign">${sign}</span>${v}`;
       if (t < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
@@ -49,23 +52,28 @@
 
       animateValue(elxValueEl, d.value);
 
-      const deltaSign = d.delta > 0 ? "+" : "";
-      const deltaClass = d.delta > 0 ? "delta-up" : d.delta < 0 ? "delta-down" : "delta-flat";
-      elxDeltaEl.textContent = `${deltaSign}${d.delta} today`;
-      elxDeltaEl.className = "elx-delta " + deltaClass;
+      // Delta — compute from history if not provided
+      if (d.delta !== undefined) {
+        const deltaSign = d.delta > 0 ? "+" : "";
+        const deltaClass = d.delta > 0 ? "delta-up" : d.delta < 0 ? "delta-down" : "delta-flat";
+        elxDeltaEl.textContent = `${deltaSign}${d.delta} today`;
+        elxDeltaEl.className = "elx-delta " + deltaClass;
+      } else {
+        elxDeltaEl.textContent = "";
+      }
 
       regimeLabel.textContent = d.regime;
 
       biasBadge.textContent = d.bias;
       biasBadge.className = "bias-badge";
-      if (d.bias === "Risk-On") biasBadge.classList.add("bias-green");
-      else if (d.bias === "Risk-Off") biasBadge.classList.add("bias-red");
+      if (d.bias.includes("Risk-On")) biasBadge.classList.add("bias-green");
+      else if (d.bias.includes("Risk-Off")) biasBadge.classList.add("bias-red");
       else biasBadge.classList.add("bias-orange");
 
       interpEl.textContent = d.interpretation;
 
-      renderAssetBias(d.asset_bias);
-      renderDrivers(d.drivers);
+      renderAssetBias(d.asset_bias || []);
+      renderDrivers(d.drivers || []);
 
       document.body.classList.remove("loading");
     } catch (e) { console.error(e); }
@@ -77,9 +85,10 @@
     biases.forEach((b) => {
       const arrow = b.direction === "up" ? "\u2191" : b.direction === "down" ? "\u2193" : "\u2192";
       const cls = b.direction === "up" ? "up" : b.direction === "down" ? "down" : "flat";
+      const label = b.call || b.label || "";
       const chip = document.createElement("span");
       chip.className = "ab-chip";
-      chip.innerHTML = `${b.asset} <span class="ab-arrow ${cls}">${arrow}</span> <span style="color:var(--text-3)">${b.label}</span>`;
+      chip.innerHTML = `${b.asset} <span class="ab-arrow ${cls}">${arrow}</span> <span style="color:var(--text-3)">${label}</span>`;
       assetBiasRow.appendChild(chip);
     });
   }
@@ -88,31 +97,44 @@
   function renderDrivers(drivers) {
     driversGrid.innerHTML = "";
     drivers.forEach((dr) => {
-      const ac = dr.direction === "up" ? "arrow-up" : dr.direction === "down" ? "arrow-down" : "arrow-flat";
-      const ar = dr.direction === "up" ? "\u2191" : dr.direction === "down" ? "\u2193" : "\u2192";
+      const dir = dr.direction || "N/A";
+      const isExp = dir === "Expansionary" || dir === "up";
+      const isCon = dir === "Contractionary" || dir === "down";
+      const ac = isExp ? "arrow-up" : isCon ? "arrow-down" : "arrow-flat";
+      const ar = isExp ? "\u2191" : isCon ? "\u2193" : "\u2192";
+      const signal = dr.signal || dr.direction || "—";
+      const weight = typeof dr.weight === "string" ? parseInt(dr.weight) : dr.weight;
       const card = document.createElement("div");
       card.className = "driver-card";
       card.innerHTML = `
         <div class="driver-name">${dr.name}</div>
-        <div class="driver-score">${dr.score.toFixed(1)}</div>
-        <div class="driver-signal"><span class="arrow ${ac}">${ar}</span> ${dr.signal}</div>
-        <div class="driver-weight">${dr.weight}% weight</div>
-        <div class="weight-track"><div class="weight-fill" style="width:${dr.weight * 2.5}%"></div></div>
+        <div class="driver-score">${Number(dr.score).toFixed(1)}</div>
+        <div class="driver-signal"><span class="arrow ${ac}">${ar}</span> ${signal}</div>
+        <div class="driver-weight">${weight}% weight</div>
+        <div class="weight-track"><div class="weight-fill" style="width:${weight * 2.5}%"></div></div>
       `;
       driversGrid.appendChild(card);
     });
   }
 
-  // ---- Fetch history ------------------------------------------------------
+  // ---- Fetch history — V2 format: { dates: [...], values: [...] } ---------
   async function fetchHistory() {
     try {
       const res = await fetch("/api/elx/history?days=365");
       const data = await res.json();
-      drawChart(data.series);
+
+      // Convert V2 format to series array for chart
+      if (data.dates && data.values) {
+        const series = data.dates.map((d, i) => ({ date: d, value: data.values[i] }));
+        drawChart(series);
+      } else if (data.series) {
+        // Fallback for V1 format
+        drawChart(data.series);
+      }
     } catch (e) { console.error(e); }
   }
 
-  // ---- 3-period moving average smoothing ----------------------------------
+  // ---- 5-period moving average smoothing ----------------------------------
   function smoothMA(values, window) {
     const half = Math.floor(window / 2);
     return values.map((_, i) => {
@@ -136,8 +158,8 @@
     const rawVals = series.map((p) => p.value);
     const smoothed = smoothMA(rawVals, 5);
 
-    const minV = Math.max(0, Math.min(...smoothed) - 6);
-    const maxV = Math.min(100, Math.max(...smoothed) + 6);
+    const minV = Math.min(...smoothed) - 6;
+    const maxV = Math.max(...smoothed) + 6;
     const rV = maxV - minV || 1;
 
     const pts = smoothed.map((v, i) => ({
@@ -146,6 +168,7 @@
       v: v,
     }));
 
+    // Catmull-Rom spline
     function catmullRom(points) {
       let d = `M${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`;
       for (let i = 0; i < points.length - 1; i++) {
@@ -159,6 +182,7 @@
       return d;
     }
 
+    // Downsample: every 3rd point for smoothness
     const sampled = [];
     for (let i = 0; i < pts.length; i += 3) sampled.push(pts[i]);
     if (sampled[sampled.length - 1] !== pts[pts.length - 1]) sampled.push(pts[pts.length - 1]);
@@ -169,8 +193,8 @@
       + ` L${sampled[0].x.toFixed(2)},${(P.t + pH).toFixed(2)} Z`;
 
     const last = pts[pts.length - 1];
-    const accent = last.v >= 55 ? "#30d158" : last.v >= 40 ? "#ff9f0a" : "#ff453a";
-    const rgb = last.v >= 55 ? "48,209,88" : last.v >= 40 ? "255,159,10" : "255,69,58";
+    const accent = last.v >= 20 ? "#30d158" : last.v >= -20 ? "#ff9f0a" : "#ff453a";
+    const rgb = last.v >= 20 ? "48,209,88" : last.v >= -20 ? "255,159,10" : "255,69,58";
 
     // Grid
     const steps = 5;
@@ -187,6 +211,7 @@
     const lc = 7, st = Math.floor(series.length / lc);
     for (let i = 0; i < series.length; i += st) {
       const p = pts[i];
+      if (!p) continue;
       const label = new Date(series[i].date + "T00:00:00").toLocaleDateString("en-US", { month: "short", year: "2-digit" });
       xL += `<text x="${p.x.toFixed(1)}" y="${(H - 12).toFixed(1)}" text-anchor="middle" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${label}</text>`;
     }
@@ -251,17 +276,68 @@
     chartWrap.innerHTML = svg;
   }
 
-  // ---- Fetch markets & render correlation strip ---------------------------
+  // ---- Fetch Markets — V2 format: array of objects -----------------------
   async function fetchMarkets() {
     try {
       const res = await fetch("/api/elx/markets");
       const data = await res.json();
-      renderCorrStrip(data);
-      renderMarkets(data);
+
+      // V2 returns an array, V1 returned an object
+      if (Array.isArray(data)) {
+        renderCorrStripV2(data);
+        renderMarketsV2(data);
+      } else {
+        renderCorrStrip(data);
+        renderMarkets(data);
+      }
     } catch (e) { console.error(e); }
   }
 
-  // ---- Correlation strip under chart --------------------------------------
+  // ---- Correlation strip (V2 — array format) ------------------------------
+  function renderCorrStripV2(markets) {
+    if (!corrStrip) return;
+    const labelMap = { "S&P 500": "SPX", "Gold": "Gold", "Bitcoin": "BTC", "US Dollar": "DXY" };
+    let html = "";
+    markets.forEach((m) => {
+      const label = labelMap[m.name] || m.ticker || m.name;
+      const sign = m.correlation > 0 ? "+" : "";
+      const cls = m.correlation > 0.15 ? "corr-pos" : m.correlation < -0.15 ? "corr-neg" : "corr-neu";
+      html += `<span class="corr-item ${cls}"><span class="corr-label">${label}</span><span class="corr-val">${sign}${m.correlation.toFixed(2)}</span></span>`;
+    });
+    corrStrip.innerHTML = `<span class="corr-title">ELX Correlation (90d)</span>` + html;
+  }
+
+  // ---- Markets cards (V2 — array format) ----------------------------------
+  function renderMarketsV2(markets) {
+    marketsGrid.innerHTML = "";
+    markets.forEach((m) => {
+      const cc = m.change_30d > 0.5 ? "change-up" : m.change_30d < -0.5 ? "change-down" : "change-flat";
+      const cs = m.change_30d > 0 ? "+" : "";
+      const corrS = m.correlation > 0 ? "+" : "";
+
+      let priceStr;
+      if (m.price >= 10000) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 0 });
+      else if (m.price >= 100) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 1 });
+      else priceStr = m.price.toFixed(2);
+
+      const card = document.createElement("div");
+      card.className = "market-card";
+      const sparkId = `spark-${m.ticker.replace(/[^a-zA-Z0-9]/g, "")}`;
+      card.innerHTML = `
+        <div class="market-header">
+          <span class="market-ticker">${m.name}</span>
+          <span class="market-corr">\u03C1 ${corrS}${m.correlation.toFixed(2)}</span>
+        </div>
+        <div class="market-price">${priceStr}</div>
+        <div class="market-change ${cc}">${cs}${m.change_30d}% \u00B7 30d</div>
+        <div class="market-spark" id="${sparkId}"></div>
+      `;
+      marketsGrid.appendChild(card);
+      drawSparkline(sparkId, m.series, m.change_30d);
+    });
+  }
+
+  // ---- Legacy V1 renderers (fallback) ------------------------------------
   function renderCorrStrip(data) {
     if (!corrStrip) return;
     const tickers = ["SPX", "GOLD", "BTC", "DXY"];
@@ -277,29 +353,22 @@
     corrStrip.innerHTML = `<span class="corr-title">ELX Correlation (90d)</span>` + html;
   }
 
-  // ---- Markets cards ------------------------------------------------------
   function renderMarkets(data) {
     marketsGrid.innerHTML = "";
     ["SPX", "GOLD", "BTC", "DXY"].forEach((ticker) => {
       const m = data[ticker];
       if (!m) return;
-
       const cc = m.change_30d > 0.5 ? "change-up" : m.change_30d < -0.5 ? "change-down" : "change-flat";
       const cs = m.change_30d > 0 ? "+" : "";
       const corrS = m.correlation > 0 ? "+" : "";
-
       let priceStr;
       if (m.price >= 10000) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 0 });
       else if (m.price >= 100) priceStr = m.price.toLocaleString("en-US", { maximumFractionDigits: 1 });
       else priceStr = m.price.toFixed(2);
-
       const card = document.createElement("div");
       card.className = "market-card";
       card.innerHTML = `
-        <div class="market-header">
-          <span class="market-ticker">${m.label}</span>
-          <span class="market-corr">\u03C1 ${corrS}${m.correlation.toFixed(2)}</span>
-        </div>
+        <div class="market-header"><span class="market-ticker">${m.label}</span><span class="market-corr">\u03C1 ${corrS}${m.correlation.toFixed(2)}</span></div>
         <div class="market-price">${priceStr}</div>
         <div class="market-change ${cc}">${cs}${m.change_30d}% \u00B7 30d</div>
         <div class="market-spark" id="spark-${ticker}"></div>
@@ -309,6 +378,7 @@
     });
   }
 
+  // ---- Sparkline ----------------------------------------------------------
   function drawSparkline(id, data, change) {
     const el = document.getElementById(id);
     if (!el || !data || data.length < 2) return;

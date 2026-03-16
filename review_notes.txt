@@ -1,0 +1,12 @@
+V2 Visual Review:
+- ELX +40 renders large, bold, clear hierarchy
+- "Liquidity Contraction" regime label + RISK-OFF badge (red) visible
+- Interpretation text below regime: "Early contraction — tightening conditions emerging, reduce beta exposure."
+- Chart: smooth orange line with gradient area fill, grid lines, axis labels visible
+- Chart has animated pulse on last point (visible glow)
+- Macro Drivers section: 5 cards in a row (Global Liquidity, Credit Conditions, Real Yields, Dollar Strength, Market Beta)
+- Each driver shows score, signal (arrow + text), weight percentage, weight bar
+- Footer: "EarthOne Research" + "Data is simulated · Not financial advice"
+- Navbar: "EarthOne" logo + "LIVE" badge + date/time
+- Overall: clean, institutional, strong hierarchy, good spacing
+- The chart line draw animation and area fade-in work correctly

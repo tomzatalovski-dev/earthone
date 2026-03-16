@@ -12,7 +12,10 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◉</text></svg>"/>
 </head>
 <body class="loading">
+
   <div class="container">
+
+    <!-- ─── Navbar ─────────────────────────────────────── -->
     <nav class="navbar">
       <div class="logo">Earth<span>One</span></div>
       <div class="nav-right">
@@ -20,38 +23,67 @@
         <span class="nav-date" id="date-now"></span>
       </div>
     </nav>
+
+    <!-- ─── Hero ───────────────────────────────────────── -->
     <section class="hero">
       <div class="card-primary">
+
+        <!-- Eyebrow -->
         <div class="elx-eyebrow">ELX — Earth Liquidity Index</div>
+
+        <!-- THE STAR: Value + Delta -->
         <div class="elx-hero-row">
           <div class="elx-value" id="elx-value">—</div>
           <div class="elx-delta delta-flat" id="elx-delta"></div>
         </div>
+
+        <!-- Regime + Bias -->
         <div class="elx-regime-row">
           <span class="regime-label" id="regime-label">Loading</span>
           <span class="bias-badge bias-orange" id="bias-badge">—</span>
         </div>
+
+        <!-- Interpretation -->
         <p class="interpretation" id="interpretation">Calculating macro conditions…</p>
+
+        <!-- Asset Bias Chips -->
         <div class="asset-bias-row" id="asset-bias-row"></div>
+
+        <!-- Chart -->
         <div class="chart-container" id="chart"></div>
+
+        <!-- Correlation strip -->
         <div class="corr-strip" id="corr-strip"></div>
+
+        <!-- Divider -->
         <div class="section-divider"></div>
+
+        <!-- Macro Drivers -->
         <div class="drivers-section">
           <div class="section-label">Macro Drivers</div>
           <div class="drivers-grid" id="drivers-grid"></div>
         </div>
+
+        <!-- Divider -->
         <div class="section-divider"></div>
+
+        <!-- ELX vs Markets -->
         <div class="markets-section">
           <div class="section-label">ELX vs Markets</div>
           <div class="markets-grid" id="markets-grid"></div>
         </div>
+
       </div>
     </section>
+
+    <!-- ─── Footer ─────────────────────────────────────── -->
     <footer class="footer">
       <span>EarthOne Research</span>
       <span>Data is simulated · Not financial advice</span>
     </footer>
+
   </div>
+
   <script src="/static/app.js"></script>
 </body>
 </html>
