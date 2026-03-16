@@ -1,0 +1,16 @@
+EarthOne V2 Live Site Review - Railway Deployment
+
+WORKING:
+- ELX +10 Neutral MILD RISK-ON — real data from FRED
+- Chart renders beautifully with 365 days of real ELX history
+- Smooth curve, gradient fill, glow on last point
+- Asset bias chips display correctly
+- Macro Drivers: Global Liquidity 21.0, Credit Conditions 20.0, Real Yields -22.0, Dollar Strength 6.0, Market Beta 0.0
+- ELX Correlation (90d): DXY -0.89 (real correlation)
+- US Dollar: 119.5, +0.51% 30d with sparkline
+- LIVE badge with green dot animation
+
+ISSUE:
+- SPY, Gold, BTC show 0.00 price and 0 correlation — yfinance blocked on Railway cloud servers
+- Market Beta shows 0.0 and N/A — same yfinance issue
+- Need to fix yfinance or use alternative data source for market prices on Railway

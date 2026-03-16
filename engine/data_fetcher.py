@@ -1,7 +1,7 @@
 """
 EarthOne — Data Fetcher
 Fetches real macro data from FRED (CSV endpoint, no API key)
-and market data from Yahoo Finance (yfinance).
+and market data from Yahoo Finance (direct HTTP, no yfinance).
 Implements time-based caching to avoid hammering sources.
 """
 
@@ -9,7 +9,6 @@ import io
 import time
 import requests
 import pandas as pd
-import yfinance as yf
 from datetime import datetime, timedelta
 
 # ---------------------------------------------------------------------------
@@ -74,7 +73,8 @@ def fetch_all_fred() -> dict[str, pd.DataFrame]:
 
 
 # ---------------------------------------------------------------------------
-# Yahoo Finance fetcher
+# Yahoo Finance direct HTTP fetcher (no yfinance dependency)
+# Works on cloud servers where yfinance is often blocked.
 # ---------------------------------------------------------------------------
 MARKET_TICKERS = {
     "SPY":     "S&P 500",
@@ -82,28 +82,90 @@ MARKET_TICKERS = {
     "BTC-USD": "Bitcoin",
 }
 
+_YF_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/120.0.0.0 Safari/537.36",
+}
+
+
+_yf_session: requests.Session | None = None
+
+
+def _get_yf_session() -> requests.Session:
+    """Get a Yahoo Finance session with valid cookies."""
+    global _yf_session
+    if _yf_session is None:
+        _yf_session = requests.Session()
+        _yf_session.headers.update(_YF_HEADERS)
+        # Get cookies from Yahoo
+        try:
+            _yf_session.get("https://fc.yahoo.com", timeout=10, allow_redirects=True)
+        except Exception:
+            pass  # We just need the cookies
+    return _yf_session
+
+
+def _fetch_yahoo_chart(ticker: str, range_str: str = "2y", interval: str = "1d") -> pd.DataFrame:
+    """Fetch price data directly from Yahoo Finance chart API with retry."""
+    import time as _time
+    session = _get_yf_session()
+
+    endpoints = [
+        f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}",
+        f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}",
+    ]
+    params = f"?range={range_str}&interval={interval}&includeAdjustedClose=true"
+
+    for attempt in range(3):
+        for base in endpoints:
+            url = base + params
+            try:
+                resp = session.get(url, timeout=15)
+                if resp.status_code == 429:
+                    _time.sleep(2 * (attempt + 1))  # backoff
+                    continue
+                resp.raise_for_status()
+                data = resp.json()
+
+                result = data["chart"]["result"][0]
+                timestamps = result["timestamp"]
+                closes = result["indicators"]["quote"][0]["close"]
+
+                df = pd.DataFrame({
+                    "close": closes,
+                }, index=pd.to_datetime(timestamps, unit="s", utc=True))
+
+                df.index = df.index.tz_localize(None)
+                df.index.name = "date"
+                df = df.dropna(subset=["close"])
+                df = df.sort_index()
+                return df
+
+            except Exception as e:
+                print(f"[YF-HTTP] Attempt {attempt+1} error fetching {ticker} from {base}: {e}")
+                _time.sleep(1)
+
+    print(f"[YF-HTTP] All attempts failed for {ticker}")
+    return pd.DataFrame(columns=["close"])
+
+
 def fetch_market_data(ticker: str, period: str = "2y") -> pd.DataFrame:
-    """Fetch market price history from Yahoo Finance."""
+    """Fetch market price history from Yahoo Finance (direct HTTP)."""
     cached = _get_cached(f"yf_{ticker}", MARKET_TTL)
     if cached is not None:
         return cached
 
-    try:
-        data = yf.download(ticker, period=period, progress=False, auto_adjust=True)
-        if data.empty:
-            return pd.DataFrame(columns=["close"])
-        df = data[["Close"]].copy()
-        df.columns = ["close"]
-        # Flatten MultiIndex if present
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.get_level_values(0)
-        df.index = df.index.tz_localize(None) if df.index.tz else df.index
-        df = df.sort_index()
+    # Map period strings to Yahoo range format
+    range_map = {"1y": "1y", "2y": "2y", "5y": "5y", "6mo": "6mo", "1mo": "1mo"}
+    range_str = range_map.get(period, "2y")
+
+    df = _fetch_yahoo_chart(ticker, range_str=range_str)
+
+    if not df.empty:
         _set_cached(f"yf_{ticker}", df)
-        return df
-    except Exception as e:
-        print(f"[YF] Error fetching {ticker}: {e}")
-        return pd.DataFrame(columns=["close"])
+
+    return df
 
 
 def fetch_all_markets() -> dict[str, pd.DataFrame]:
