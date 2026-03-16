@@ -297,8 +297,10 @@ def compute_elx_history(days: int = 365) -> dict:
     all_series = {"liq": liq_z, "crd": crd_z, "ryl": ryl_z, "dol": dol_z, "bet": bet_z}
     combined = pd.DataFrame(all_series)
 
-    # Resample to daily and forward-fill (handles weekly/monthly series)
+    # Ensure DatetimeIndex before resampling
     if not combined.empty:
+        if not isinstance(combined.index, pd.DatetimeIndex):
+            combined.index = pd.to_datetime(combined.index)
         combined = combined.resample("D").last().ffill().dropna()
 
     if combined.empty:
