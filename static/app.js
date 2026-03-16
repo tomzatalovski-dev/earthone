@@ -446,6 +446,68 @@
     URL.revokeObjectURL(url);
   }
 
+  // ---- Subscribe form -----------------------------------------------------
+  function initSubscribe() {
+    const form = document.getElementById("subscribe-form");
+    const input = document.getElementById("subscribe-email");
+    const btn = document.getElementById("subscribe-btn");
+    const msg = document.getElementById("subscribe-msg");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!email) return;
+
+      btn.textContent = "...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, source: "homepage" }),
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          btn.textContent = "Subscribed";
+          btn.classList.add("success");
+          msg.textContent = "You'll receive the daily ELX update.";
+          msg.style.color = "var(--green)";
+          input.value = "";
+        } else {
+          btn.textContent = data.error === "Already subscribed" ? "Already subscribed" : "Try again";
+          btn.classList.add(data.error === "Already subscribed" ? "success" : "error");
+          msg.textContent = data.error || "Something went wrong.";
+          msg.style.color = data.error === "Already subscribed" ? "var(--green)" : "var(--red)";
+        }
+      } catch (err) {
+        btn.textContent = "Error";
+        btn.classList.add("error");
+        msg.textContent = "Network error. Please try again.";
+        msg.style.color = "var(--red)";
+      }
+
+      setTimeout(() => {
+        btn.textContent = "Subscribe";
+        btn.disabled = false;
+        btn.classList.remove("success", "error");
+      }, 3000);
+    });
+  }
+
+  // ---- Analytics tracking --------------------------------------------------
+  function track(event, meta) {
+    try {
+      fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ event, meta: meta || "" }),
+      });
+    } catch (e) { /* silent */ }
+  }
+
   // ---- Init ---------------------------------------------------------------
   setDate();
   fetchELX();
@@ -453,4 +515,5 @@
   fetchMarkets();
   initRangeBar();
   initShare();
+  initSubscribe();
 })();

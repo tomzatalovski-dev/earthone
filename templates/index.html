@@ -5,10 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EarthOne — ELX</title>
   <meta name="description" content="ELX — Earth Liquidity Index. Real-time global macro liquidity conditions."/>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website"/>
   <meta property="og:title" content="ELX — Earth Liquidity Index"/>
-  <meta property="og:description" content="Real-time global macro liquidity conditions. Powered by FRED + Stooq."/>
-  <meta property="og:image" content="/api/elx/share"/>
+  <meta property="og:description" content="Real-time global macro liquidity conditions. One index. One chart. Five drivers."/>
+  <meta property="og:image" content="https://elxindex.com/share/elx_latest.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="675"/>
+  <meta property="og:url" content="https://elxindex.com"/>
+  <meta property="og:site_name" content="EarthOne"/>
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="ELX — Earth Liquidity Index"/>
+  <meta name="twitter:description" content="Real-time global macro liquidity conditions. One index. One chart. Five drivers."/>
+  <meta name="twitter:image" content="https://elxindex.com/share/elx_latest.png"/>
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -86,6 +99,20 @@
         <div class="markets-section">
           <div class="section-label">ELX vs Markets</div>
           <div class="markets-grid" id="markets-grid"></div>
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider"></div>
+
+        <!-- ─── Subscribe ─────────────────────────────── -->
+        <div class="subscribe-section">
+          <div class="subscribe-title">Follow the ELX Index</div>
+          <div class="subscribe-sub">Get the daily ELX update and weekly liquidity report.</div>
+          <form class="subscribe-form" id="subscribe-form">
+            <input type="email" class="subscribe-input" id="subscribe-email" placeholder="your@email.com" required autocomplete="email"/>
+            <button type="submit" class="subscribe-btn" id="subscribe-btn">Subscribe</button>
+          </form>
+          <div class="subscribe-msg" id="subscribe-msg"></div>
         </div>
 
       </div>

@@ -6,3 +6,5 @@ dist/
 build/
 v*_review.txt
 v*_observations.txt
+earthone.db
+static/share/*.png
