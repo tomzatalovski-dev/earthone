@@ -1,5 +1,5 @@
 /* ============================================================
-   EarthOne V2.1 — Real Data + Long-term History + Share
+   EarthOne V4 — Distribution + Regime Intelligence
    ============================================================ */
 
 (function () {
@@ -20,9 +20,11 @@
   const dateEl       = $("#date-now");
   const rangeBar     = $("#range-bar");
   const shareBtn     = $("#share-btn");
+  const regimePointer = $("#regime-pointer");
+  const regimeAlert  = $("#regime-alert");
 
-  // Current range state
   let currentRange = "1Y";
+  let elxHistory90 = null; // cached for overlay charts
   const RANGE_DAYS = { "1Y": 365, "5Y": 1825, "10Y": 3650, "MAX": 7300 };
 
   // ---- Date ---------------------------------------------------------------
@@ -50,6 +52,41 @@
     requestAnimationFrame(tick);
   }
 
+  // ---- Regime Map Pointer -------------------------------------------------
+  function updateRegimeMap(value) {
+    if (!regimePointer) return;
+    // value ranges from -100 to +100, map to 0%-100% of the scale bar
+    const clamped = Math.max(-100, Math.min(100, value));
+    const pct = ((clamped + 100) / 200) * 100;
+    regimePointer.style.left = `calc(${pct}% - 2px)`;
+  }
+
+  // ---- Regime Alert -------------------------------------------------------
+  function updateRegimeAlert(data) {
+    if (!regimeAlert) return;
+    // Fetch alerts endpoint
+    fetch("/api/elx/alerts")
+      .then(r => r.json())
+      .then(alertData => {
+        const alert = alertData.current_alert;
+        if (alert && alert.type !== "none") {
+          regimeAlert.classList.remove("hidden", "alert-shift-up", "alert-shift-down");
+          if (alert.type === "shift_up") {
+            regimeAlert.classList.add("alert-shift-up");
+            regimeAlert.innerHTML = `<span class="alert-icon">\u25B2</span> ${alert.message}`;
+          } else if (alert.type === "shift_down") {
+            regimeAlert.classList.add("alert-shift-down");
+            regimeAlert.innerHTML = `<span class="alert-icon">\u25BC</span> ${alert.message}`;
+          } else {
+            regimeAlert.innerHTML = `<span class="alert-icon">\u25C9</span> ${alert.message}`;
+          }
+        } else {
+          regimeAlert.classList.add("hidden");
+        }
+      })
+      .catch(() => regimeAlert.classList.add("hidden"));
+  }
+
   // ---- Fetch ELX ----------------------------------------------------------
   async function fetchELX() {
     try {
@@ -57,6 +94,8 @@
       const d = await res.json();
 
       animateValue(elxValueEl, d.value);
+      updateRegimeMap(d.value);
+      updateRegimeAlert(d);
 
       if (d.delta !== undefined) {
         const deltaSign = d.delta > 0 ? "+" : "";
@@ -132,6 +171,7 @@
         btn.classList.add("active");
         currentRange = btn.dataset.range;
         fetchHistory(RANGE_DAYS[currentRange]);
+        track("range_change", currentRange);
       });
     });
   }
@@ -162,6 +202,20 @@
     });
   }
 
+  // ---- Catmull-Rom spline helper ------------------------------------------
+  function catmullRomPath(points, tension) {
+    tension = tension || 0.20;
+    let d = `M${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[Math.max(i - 1, 0)];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[Math.min(i + 2, points.length - 1)];
+      d += ` C${(p1.x + (p2.x - p0.x) * tension).toFixed(2)},${(p1.y + (p2.y - p0.y) * tension).toFixed(2)} ${(p2.x - (p3.x - p1.x) * tension).toFixed(2)},${(p2.y - (p3.y - p1.y) * tension).toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+    }
+    return d;
+  }
+
   // ---- Premium SVG Chart --------------------------------------------------
   function drawChart(series) {
     if (!series || series.length < 2) return;
@@ -184,27 +238,13 @@
       v: v,
     }));
 
-    // Catmull-Rom spline
-    function catmullRom(points) {
-      let d = `M${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`;
-      for (let i = 0; i < points.length - 1; i++) {
-        const p0 = points[Math.max(i - 1, 0)];
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        const p3 = points[Math.min(i + 2, points.length - 1)];
-        const t = 0.20;
-        d += ` C${(p1.x + (p2.x - p0.x) * t).toFixed(2)},${(p1.y + (p2.y - p0.y) * t).toFixed(2)} ${(p2.x - (p3.x - p1.x) * t).toFixed(2)},${(p2.y - (p3.y - p1.y) * t).toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
-      }
-      return d;
-    }
-
-    // Downsample for smoothness — adaptive based on data length
+    // Downsample for smoothness
     const step = series.length > 1000 ? 5 : series.length > 300 ? 3 : 2;
     const sampled = [];
     for (let i = 0; i < pts.length; i += step) sampled.push(pts[i]);
     if (sampled[sampled.length - 1] !== pts[pts.length - 1]) sampled.push(pts[pts.length - 1]);
 
-    const linePath = catmullRom(sampled);
+    const linePath = catmullRomPath(sampled);
     const areaPath = linePath
       + ` L${sampled[sampled.length - 1].x.toFixed(2)},${(P.t + pH).toFixed(2)}`
       + ` L${sampled[0].x.toFixed(2)},${(P.t + pH).toFixed(2)} Z`;
@@ -223,7 +263,7 @@
       yL += `<text x="${P.l - 10}" y="${(y + 3.5).toFixed(1)}" text-anchor="end" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${Math.round(v)}</text>`;
     }
 
-    // X labels — adaptive date format
+    // X labels
     let xL = "";
     const labelCount = 7;
     const labelStep = Math.max(1, Math.floor(series.length / labelCount));
@@ -231,7 +271,6 @@
       const p = pts[i];
       if (!p) continue;
       const dt = new Date(series[i].date + "T00:00:00");
-      // For long ranges, show year only; for short, show month
       let label;
       if (series.length > 1000) {
         label = dt.getFullYear().toString();
@@ -241,7 +280,7 @@
       xL += `<text x="${p.x.toFixed(1)}" y="${(H - 12).toFixed(1)}" text-anchor="middle" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${label}</text>`;
     }
 
-    // Zero line if visible
+    // Zero line
     let zeroLine = "";
     if (minV < 0 && maxV > 0) {
       const zeroY = P.t + pH - ((0 - minV) / rV) * pH;
@@ -257,7 +296,7 @@
           <stop offset="100%" stop-color="rgba(${rgb},0)"/>
         </linearGradient>
         <filter id="lGlow" x="-8%" y="-8%" width="116%" height="116%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/>
           <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .5 0"/>
           <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
@@ -308,15 +347,20 @@
     chartWrap.innerHTML = svg;
   }
 
-  // ---- Fetch Markets -------------------------------------------------------
+  // ---- Fetch Markets with Overlay Charts -----------------------------------
   async function fetchMarkets() {
     try {
       const res = await fetch("/api/elx/markets");
       const data = await res.json();
 
+      // Also fetch 90d ELX history for overlay
+      const histRes = await fetch("/api/elx/history?days=90");
+      const histData = await histRes.json();
+      elxHistory90 = histData;
+
       if (Array.isArray(data)) {
         renderCorrStripV2(data);
-        renderMarketsV2(data);
+        renderMarketsOverlay(data);
       }
     } catch (e) { console.error(e); }
   }
@@ -335,9 +379,11 @@
     corrStrip.innerHTML = `<span class="corr-title">ELX Correlation (90d)</span>` + html;
   }
 
-  // ---- Markets cards -------------------------------------------------------
-  function renderMarketsV2(markets) {
+  // ---- Markets with overlay charts (ELX line + Market line) ----------------
+  function renderMarketsOverlay(markets) {
     marketsGrid.innerHTML = "";
+    const labelMap = { "S&P 500": "SPX", "Gold": "Gold", "Bitcoin": "BTC", "US Dollar": "DXY" };
+
     markets.forEach((m) => {
       const cc = m.change_30d > 0.5 ? "change-up" : m.change_30d < -0.5 ? "change-down" : "change-flat";
       const cs = m.change_30d > 0 ? "+" : "";
@@ -351,6 +397,7 @@
       const card = document.createElement("div");
       card.className = "market-card";
       const sparkId = `spark-${m.name.replace(/[^a-zA-Z0-9]/g, "")}`;
+      const shortName = labelMap[m.name] || m.name;
       card.innerHTML = `
         <div class="market-header">
           <span class="market-ticker">${m.name}</span>
@@ -359,49 +406,77 @@
         <div class="market-price">${priceStr}</div>
         <div class="market-change ${cc}">${cs}${m.change_30d}% \u00B7 30d</div>
         <div class="market-spark" id="${sparkId}"></div>
+        <div class="market-overlay-legend">
+          <span class="legend-item"><span class="legend-dot dot-elx"></span>ELX</span>
+          <span class="legend-item"><span class="legend-dot dot-market"></span>${shortName}</span>
+        </div>
       `;
       marketsGrid.appendChild(card);
-      drawSparkline(sparkId, m.series, m.change_30d);
+      drawOverlayChart(sparkId, m.series, m.change_30d);
     });
   }
 
-  // ---- Sparkline ----------------------------------------------------------
-  function drawSparkline(id, data, change) {
+  // ---- Overlay chart: ELX (gray) + Market (colored) on same axes ----------
+  function drawOverlayChart(id, marketData, change) {
     const el = document.getElementById(id);
-    if (!el || !data || data.length < 2) return;
+    if (!el || !marketData || marketData.length < 2) return;
 
-    const W = 160, H = 36;
-    const min = Math.min(...data);
-    const max = Math.max(...data);
-    const r = max - min || 1;
-
-    const pts = data.map((v, i) => ({
-      x: (i / (data.length - 1)) * W,
-      y: H - 3 - ((v - min) / r) * (H - 6),
-    }));
-
-    let d = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
-    for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[Math.max(i - 1, 0)];
-      const p1 = pts[i];
-      const p2 = pts[i + 1];
-      const p3 = pts[Math.min(i + 2, pts.length - 1)];
-      const t = 0.22;
-      d += ` C${(p1.x + (p2.x - p0.x) * t).toFixed(1)},${(p1.y + (p2.y - p0.y) * t).toFixed(1)} ${(p2.x - (p3.x - p1.x) * t).toFixed(1)},${(p2.y - (p3.y - p1.y) * t).toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
-    }
-
+    const W = 280, H = 80;
     const color = change > 0.5 ? "#30d158" : change < -0.5 ? "#ff453a" : "#ff9f0a";
     const rgb = change > 0.5 ? "48,209,88" : change < -0.5 ? "255,69,58" : "255,159,10";
-    const area = d + ` L${W},${H} L0,${H} Z`;
+
+    // Normalize market data to 0-1
+    const mMin = Math.min(...marketData);
+    const mMax = Math.max(...marketData);
+    const mRange = mMax - mMin || 1;
+    const mNorm = marketData.map(v => (v - mMin) / mRange);
+
+    // Normalize ELX data to 0-1 (match length to market data)
+    let elxNorm = [];
+    if (elxHistory90 && elxHistory90.values && elxHistory90.values.length > 0) {
+      const elxVals = elxHistory90.values;
+      const eMin = Math.min(...elxVals);
+      const eMax = Math.max(...elxVals);
+      const eRange = eMax - eMin || 1;
+      // Resample ELX to match market data length
+      const elxResampled = [];
+      for (let i = 0; i < marketData.length; i++) {
+        const idx = Math.floor((i / marketData.length) * elxVals.length);
+        elxResampled.push(elxVals[Math.min(idx, elxVals.length - 1)]);
+      }
+      elxNorm = elxResampled.map(v => (v - eMin) / eRange);
+    }
+
+    // Build market line points
+    const mPts = mNorm.map((v, i) => ({
+      x: (i / (mNorm.length - 1)) * W,
+      y: H - 4 - v * (H - 8),
+    }));
+
+    const marketPath = catmullRomPath(mPts, 0.22);
+    const marketArea = marketPath + ` L${W},${H} L0,${H} Z`;
+
+    // Build ELX line points (if available)
+    let elxPath = "";
+    if (elxNorm.length > 0) {
+      const ePts = elxNorm.map((v, i) => ({
+        x: (i / (elxNorm.length - 1)) * W,
+        y: H - 4 - v * (H - 8),
+      }));
+      elxPath = catmullRomPath(ePts, 0.22);
+    }
 
     el.innerHTML = `
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs><linearGradient id="sg-${id}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="rgba(${rgb},.14)"/>
-        <stop offset="100%" stop-color="rgba(${rgb},0)"/>
-      </linearGradient></defs>
-      <path d="${area}" fill="url(#sg-${id})"/>
-      <path d="${d}" fill="none" stroke="${color}" stroke-width="1.2" stroke-linecap="round"/>
+      <defs>
+        <linearGradient id="og-${id}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(${rgb},.12)"/>
+          <stop offset="100%" stop-color="rgba(${rgb},0)"/>
+        </linearGradient>
+      </defs>
+      <path d="${marketArea}" fill="url(#og-${id})"/>
+      ${elxPath ? `<path d="${elxPath}" fill="none" stroke="#86868b" stroke-width="1" stroke-linecap="round" opacity=".4" stroke-dasharray="3,3"/>` : ""}
+      <path d="${marketPath}" fill="none" stroke="${color}" stroke-width="1.4" stroke-linecap="round"/>
     </svg>`;
   }
 
@@ -411,18 +486,17 @@
     shareBtn.addEventListener("click", async () => {
       shareBtn.classList.add("sharing");
       shareBtn.textContent = "Generating...";
+      track("share_click");
       try {
         const res = await fetch("/api/elx/share");
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
 
-        // Try native share if available
         if (navigator.share && navigator.canShare) {
           const file = new File([blob], "elx-share.png", { type: "image/png" });
           try {
-            await navigator.share({ files: [file], title: "ELX — Earth Liquidity Index" });
+            await navigator.share({ files: [file], title: "ELX \u2014 Earth Liquidity Index" });
           } catch (shareErr) {
-            // Fallback: download
             downloadBlob(url);
           }
         } else {

@@ -60,6 +60,29 @@
           <span class="bias-badge bias-orange" id="bias-badge">—</span>
         </div>
 
+        <!-- Regime Map Visual Scale -->
+        <div class="regime-map" id="regime-map">
+          <div class="regime-scale">
+            <div class="regime-zone zone-deep-contraction" data-zone="deep_contraction"></div>
+            <div class="regime-zone zone-contraction" data-zone="contraction"></div>
+            <div class="regime-zone zone-neutral" data-zone="neutral"></div>
+            <div class="regime-zone zone-expansion" data-zone="expansion"></div>
+            <div class="regime-zone zone-full-expansion" data-zone="full_expansion"></div>
+            <div class="regime-pointer" id="regime-pointer"></div>
+          </div>
+          <div class="regime-labels">
+            <span>-100</span>
+            <span>-40</span>
+            <span>-20</span>
+            <span>+20</span>
+            <span>+40</span>
+            <span>+100</span>
+          </div>
+        </div>
+
+        <!-- Regime Alert Banner -->
+        <div class="regime-alert hidden" id="regime-alert"></div>
+
         <!-- Interpretation -->
         <p class="interpretation" id="interpretation">Calculating macro conditions…</p>
 
@@ -95,7 +118,7 @@
         <!-- Divider -->
         <div class="section-divider"></div>
 
-        <!-- ELX vs Markets -->
+        <!-- ELX vs Markets — Overlay Charts -->
         <div class="markets-section">
           <div class="section-label">ELX vs Markets</div>
           <div class="markets-grid" id="markets-grid"></div>

@@ -101,6 +101,52 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .bias-orange{color:var(--orange);background:var(--orange-dim)}
 .bias-red{color:var(--red);background:var(--red-dim)}
 
+/* ─── Regime Map Visual Scale ────────────────────────────── */
+.regime-map{
+  margin-top:20px;margin-bottom:8px;
+  opacity:0;animation:fadeIn .6s var(--ease) .55s forwards;
+}
+.regime-scale{
+  position:relative;display:flex;height:10px;border-radius:5px;overflow:visible;
+  background:rgba(0,0,0,.03);
+}
+.regime-zone{height:100%;transition:opacity .3s}
+.zone-deep-contraction{flex:2;background:linear-gradient(90deg,#ff453a,#ff6961);border-radius:5px 0 0 5px}
+.zone-contraction{flex:1;background:linear-gradient(90deg,#ff6961,#ff9f0a)}
+.zone-neutral{flex:2;background:linear-gradient(90deg,#ff9f0a,#ffd60a,#30d158)}
+.zone-expansion{flex:1;background:linear-gradient(90deg,#30d158,#34c759)}
+.zone-full-expansion{flex:2;background:linear-gradient(90deg,#34c759,#00c7be);border-radius:0 5px 5px 0}
+.regime-pointer{
+  position:absolute;top:-6px;width:4px;height:22px;
+  background:#1d1d1f;border-radius:2px;
+  box-shadow:0 0 8px rgba(0,0,0,.25);
+  transition:left .8s var(--ease);
+  z-index:2;
+}
+.regime-pointer::after{
+  content:'';position:absolute;top:-4px;left:-4px;width:12px;height:12px;
+  border-radius:50%;background:#1d1d1f;
+  box-shadow:0 0 0 3px rgba(255,255,255,.9),0 0 12px rgba(0,0,0,.15);
+}
+.regime-labels{
+  display:flex;justify-content:space-between;
+  margin-top:8px;padding:0 2px;
+}
+.regime-labels span{font-size:.55rem;font-weight:500;color:var(--text-4);font-variant-numeric:tabular-nums}
+
+/* ─── Regime Alert Banner ───────────────────────────────── */
+.regime-alert{
+  margin-top:14px;padding:10px 16px;border-radius:10px;
+  font-size:.74rem;font-weight:500;line-height:1.5;color:var(--text-2);
+  border:1px solid var(--border);
+  background:rgba(255,159,10,.04);
+  animation:fadeIn .4s var(--ease) forwards;
+}
+.regime-alert.alert-shift-up{border-color:rgba(48,209,88,.15);background:rgba(48,209,88,.04)}
+.regime-alert.alert-shift-down{border-color:rgba(255,69,58,.15);background:rgba(255,69,58,.04)}
+.regime-alert .alert-icon{margin-right:6px}
+.regime-alert.hidden{display:none}
+
 /* ─── Interpretation ─────────────────────────────────────── */
 .interpretation{
   font-size:.88rem;line-height:1.6;color:var(--text-2);max-width:600px;
@@ -217,8 +263,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .weight-track{height:2px;border-radius:1px;background:rgba(0,0,0,.04);margin-top:5px;overflow:hidden}
 .weight-fill{height:100%;border-radius:1px;background:var(--text-4);transition:width .8s var(--ease)}
 
-/* ─── Markets ────────────────────────────────────────────── */
-.markets-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* ─── Markets (with overlay charts) ─────────────────────── */
+.markets-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .market-card{
   background:var(--surface-s);border:1px solid var(--border-s);border-radius:var(--radius-sm);
   padding:20px 18px 14px;transition:all .35s var(--ease);overflow:hidden;
@@ -232,7 +278,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .change-up{color:var(--green)}
 .change-down{color:var(--red)}
 .change-flat{color:var(--orange)}
-.market-spark{width:100%;height:36px}
+.market-spark{width:100%;height:80px}
 .market-spark svg{width:100%;height:100%;display:block}
 
 /* ─── Footer ─────────────────────────────────────────────── */
@@ -267,6 +313,19 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .subscribe-msg{font-size:.75rem;margin-top:12px;color:var(--text-3);min-height:20px}
 
 /* ─── Responsive ─────────────────────────────────────────── */
+.market-overlay-legend{
+  display:flex;gap:14px;margin-top:6px;
+}
+.legend-item{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.56rem;font-weight:500;color:var(--text-4);
+}
+.legend-dot{
+  width:6px;height:6px;border-radius:50%;
+}
+.legend-dot.dot-elx{background:var(--text-3)}
+.legend-dot.dot-market{background:var(--green)}
+
 @media(max-width:1024px){.drivers-grid{grid-template-columns:repeat(3,1fr)}.markets-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
   .container{padding:0 24px}

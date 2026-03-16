@@ -1,6 +1,7 @@
 """
-EarthOne — FastAPI Application (V3 — Distribution Stack)
-Serves the ELX (Earth Liquidity Index) with real data + distribution features.
+EarthOne — FastAPI Application (V4 — Distribution + Regime Intelligence)
+Serves the ELX (Earth Liquidity Index) with real data, distribution features,
+regime map, alerts, and enhanced social content.
 """
 
 import io
@@ -18,8 +19,9 @@ from engine.elx_engine import compute_elx, compute_elx_history, compute_correlat
 from engine.database import init_db, track_event, add_subscriber, get_analytics_summary, get_subscribers
 from engine.daily_image import generate_daily_image, save_daily_image
 from engine.social_post import generate_post, generate_daily_report
+from engine.regime_alerts import detect_regime_changes, get_current_alert, get_regime_map
 
-app = FastAPI(title="EarthOne", version="3.0")
+app = FastAPI(title="EarthOne", version="4.0")
 
 BASE = Path(__file__).resolve().parent
 app.mount("/static", StaticFiles(directory=BASE / "static"), name="static")
@@ -40,14 +42,12 @@ def startup():
             compute_elx_history(7300)
             compute_correlations(90)
             print("[EarthOne] Cache warm complete.")
-            # Generate daily share image
             _generate_daily()
         except Exception as e:
             print(f"[EarthOne] Startup error: {e}")
 
     threading.Thread(target=_warm, daemon=True).start()
 
-    # Background thread: regenerate daily image every 6 hours
     def _daily_loop():
         while True:
             time.sleep(6 * 3600)
@@ -60,7 +60,7 @@ def startup():
 
 
 def _generate_daily():
-    """Generate the daily share image + social post."""
+    """Generate the daily share image."""
     try:
         elx = compute_elx()
         hist = compute_elx_history(90)
@@ -89,17 +89,19 @@ def homepage(request: Request):
 @app.get("/api/elx")
 @app.get("/api/elx/current")
 def api_elx_current(request: Request):
-    """Current ELX value with drivers, regime, bias, interpretation."""
+    """Current ELX value with drivers, regime, bias, interpretation, regime_map."""
     track_event("api_call", path="/api/elx/current", ip=request.client.host if request.client else "")
     try:
         data = compute_elx()
+        # Enrich with regime map
+        data["regime_map"] = get_regime_map(data.get("value", 0))
         return JSONResponse(content=data)
     except Exception as e:
         return JSONResponse(
             content={
                 "error": str(e), "value": 0, "regime": "Loading", "bias": "—",
                 "interpretation": "Data is loading, please refresh.",
-                "asset_bias": [], "drivers": [],
+                "asset_bias": [], "drivers": [], "regime_map": get_regime_map(0),
             },
             status_code=200,
         )
@@ -143,6 +145,62 @@ def api_elx_markets(request: Request):
         return JSONResponse(content=[], status_code=200)
 
 
+@app.get("/api/elx/correlations")
+def api_elx_correlations(request: Request, window: int = 90):
+    """Dedicated correlations endpoint with configurable window."""
+    track_event("api_call", path="/api/elx/correlations", meta=f"window={window}",
+                ip=request.client.host if request.client else "")
+    try:
+        data = compute_correlations(min(window, 365))
+        return JSONResponse(content={
+            "window_days": min(window, 365),
+            "correlations": data,
+            "updated_at": datetime.now().isoformat(),
+        })
+    except Exception as e:
+        return JSONResponse(content={"correlations": [], "error": str(e)}, status_code=200)
+
+
+# ---------------------------------------------------------------------------
+# Regime Map + Alerts
+# ---------------------------------------------------------------------------
+
+@app.get("/api/elx/regime")
+def api_elx_regime(request: Request):
+    """Current regime map with visual scale data."""
+    track_event("api_call", path="/api/elx/regime", ip=request.client.host if request.client else "")
+    try:
+        data = compute_elx()
+        regime_map = get_regime_map(data.get("value", 0))
+        return JSONResponse(content={
+            "value": data.get("value", 0),
+            "regime": data.get("regime", "—"),
+            "bias": data.get("bias", "—"),
+            "regime_map": regime_map,
+            "updated_at": datetime.now().isoformat(),
+        })
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=200)
+
+
+@app.get("/api/elx/alerts")
+def api_elx_alerts(request: Request):
+    """Check for recent regime change alerts."""
+    track_event("api_call", path="/api/elx/alerts", ip=request.client.host if request.client else "")
+    try:
+        elx = compute_elx()
+        hist = compute_elx_history(90)
+        alert = get_current_alert(elx, hist)
+        changes = detect_regime_changes(hist)[:10]  # Last 10 changes
+        return JSONResponse(content={
+            "current_alert": alert,
+            "recent_changes": changes,
+            "updated_at": datetime.now().isoformat(),
+        })
+    except Exception as e:
+        return JSONResponse(content={"current_alert": None, "recent_changes": [], "error": str(e)}, status_code=200)
+
+
 # ---------------------------------------------------------------------------
 # Share image — dynamic with mini chart
 # ---------------------------------------------------------------------------
@@ -158,7 +216,7 @@ def api_elx_share(request: Request):
             content=png_bytes,
             media_type="image/png",
             headers={
-                "Content-Disposition": f"attachment; filename=elx-share.png",
+                "Content-Disposition": "attachment; filename=elx-share.png",
                 "Cache-Control": "public, max-age=3600",
             },
         )
@@ -168,9 +226,6 @@ def api_elx_share(request: Request):
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
 
-# ---------------------------------------------------------------------------
-# Static share image for OG tags (pre-generated, fast)
-# ---------------------------------------------------------------------------
 @app.get("/share/elx_latest.png")
 def share_image_static():
     """Serve the pre-generated daily share image for OG/Twitter cards."""
@@ -181,7 +236,6 @@ def share_image_static():
             media_type="image/png",
             headers={"Cache-Control": "public, max-age=3600"},
         )
-    # Fallback: generate on the fly
     try:
         elx = compute_elx()
         hist = compute_elx_history(90)
@@ -192,11 +246,11 @@ def share_image_static():
 
 
 # ---------------------------------------------------------------------------
-# Social post generator
+# Social post generator (V4 — includes weekly thread + video script)
 # ---------------------------------------------------------------------------
 @app.get("/api/elx/social")
 def api_social_post(request: Request):
-    """Generate ready-to-post social media text for X/Twitter and Threads."""
+    """Generate ready-to-post social media text for X/Twitter, Threads, weekly thread, and video script."""
     track_event("api_call", path="/api/elx/social", ip=request.client.host if request.client else "")
     try:
         elx = compute_elx()
