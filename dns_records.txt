@@ -1,0 +1,8 @@
+DNS Records for elxindex.com → Railway
+
+Option 1: One-click Cloudflare Connect (recommended)
+- Click "Connect" button in Railway — it auto-configures DNS via Cloudflare
+
+Option 2: Manual DNS records
+- CNAME @ → y0quwc2a.up.railway.app
+- TXT _railway-verify → railway-verify=93b1e89eb68d35eebfd5d864...
