@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EarthOne — ELX</title>
+  <meta name="description" content="ELX — Earth Liquidity Index. Real-time global macro liquidity conditions."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/styles.css"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◉</text></svg>"/>
+</head>
+<body class="loading">
+  <div class="container">
+    <nav class="navbar">
+      <div class="logo">Earth<span>One</span></div>
+      <div class="nav-right">
+        <span class="live-badge"><span class="live-dot"></span>Live</span>
+        <span class="nav-date" id="date-now"></span>
+      </div>
+    </nav>
+    <section class="hero">
+      <div class="card-primary">
+        <div class="elx-eyebrow">ELX — Earth Liquidity Index</div>
+        <div class="elx-hero-row">
+          <div class="elx-value" id="elx-value">—</div>
+          <div class="elx-delta delta-flat" id="elx-delta"></div>
+        </div>
+        <div class="elx-regime-row">
+          <span class="regime-label" id="regime-label">Loading</span>
+          <span class="bias-badge bias-orange" id="bias-badge">—</span>
+        </div>
+        <p class="interpretation" id="interpretation">Calculating macro conditions…</p>
+        <div class="asset-bias-row" id="asset-bias-row"></div>
+        <div class="chart-container" id="chart"></div>
+        <div class="corr-strip" id="corr-strip"></div>
+        <div class="section-divider"></div>
+        <div class="drivers-section">
+          <div class="section-label">Macro Drivers</div>
+          <div class="drivers-grid" id="drivers-grid"></div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="markets-section">
+          <div class="section-label">ELX vs Markets</div>
+          <div class="markets-grid" id="markets-grid"></div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <span>EarthOne Research</span>
+      <span>Data is simulated · Not financial advice</span>
+    </footer>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
