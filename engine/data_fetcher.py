@@ -1,7 +1,8 @@
 """
 EarthOne — Data Fetcher
 Fetches real macro data from FRED (CSV endpoint, no API key)
-and market data from Yahoo Finance (direct HTTP, no yfinance).
+and market data from Stooq (CSV endpoint, no API key).
+Both sources are public, reliable, and work on cloud servers.
 Implements time-based caching to avoid hammering sources.
 """
 
@@ -73,97 +74,60 @@ def fetch_all_fred() -> dict[str, pd.DataFrame]:
 
 
 # ---------------------------------------------------------------------------
-# Yahoo Finance direct HTTP fetcher (no yfinance dependency)
-# Works on cloud servers where yfinance is often blocked.
+# Stooq CSV fetcher — reliable, no API key, works on cloud servers
 # ---------------------------------------------------------------------------
 MARKET_TICKERS = {
-    "SPY":     "S&P 500",
-    "GC=F":    "Gold",
-    "BTC-USD": "Bitcoin",
+    "spy.us":  "S&P 500",
+    "xauusd":  "Gold",
+    "btcusd":  "Bitcoin",
 }
 
-_YF_HEADERS = {
+_STOOQ_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
                   "AppleWebKit/537.36 (KHTML, like Gecko) "
                   "Chrome/120.0.0.0 Safari/537.36",
 }
 
 
-_yf_session: requests.Session | None = None
+def _fetch_stooq(ticker: str, years: int = 2) -> pd.DataFrame:
+    """Fetch historical price data from Stooq CSV endpoint."""
+    start = (datetime.now() - timedelta(days=years * 365)).strftime("%Y%m%d")
+    end = datetime.now().strftime("%Y%m%d")
+    url = f"https://stooq.com/q/d/l/?s={ticker}&d1={start}&d2={end}&i=d"
 
+    try:
+        resp = requests.get(url, headers=_STOOQ_HEADERS, timeout=15)
+        resp.raise_for_status()
 
-def _get_yf_session() -> requests.Session:
-    """Get a Yahoo Finance session with valid cookies."""
-    global _yf_session
-    if _yf_session is None:
-        _yf_session = requests.Session()
-        _yf_session.headers.update(_YF_HEADERS)
-        # Get cookies from Yahoo
-        try:
-            _yf_session.get("https://fc.yahoo.com", timeout=10, allow_redirects=True)
-        except Exception:
-            pass  # We just need the cookies
-    return _yf_session
+        text = resp.text.strip()
+        if not text or "No data" in text or len(text) < 50:
+            print(f"[Stooq] No data for {ticker}")
+            return pd.DataFrame(columns=["close"])
 
+        df = pd.read_csv(io.StringIO(text), parse_dates=["Date"])
+        df = df.rename(columns={"Date": "date", "Close": "close"})
+        df["close"] = pd.to_numeric(df["close"], errors="coerce")
+        df = df.dropna(subset=["close"])
+        df = df.set_index("date").sort_index()
+        df = df[["close"]]
+        return df
 
-def _fetch_yahoo_chart(ticker: str, range_str: str = "2y", interval: str = "1d") -> pd.DataFrame:
-    """Fetch price data directly from Yahoo Finance chart API with retry."""
-    import time as _time
-    session = _get_yf_session()
-
-    endpoints = [
-        f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}",
-        f"https://query2.finance.yahoo.com/v8/finance/chart/{ticker}",
-    ]
-    params = f"?range={range_str}&interval={interval}&includeAdjustedClose=true"
-
-    for attempt in range(3):
-        for base in endpoints:
-            url = base + params
-            try:
-                resp = session.get(url, timeout=15)
-                if resp.status_code == 429:
-                    _time.sleep(2 * (attempt + 1))  # backoff
-                    continue
-                resp.raise_for_status()
-                data = resp.json()
-
-                result = data["chart"]["result"][0]
-                timestamps = result["timestamp"]
-                closes = result["indicators"]["quote"][0]["close"]
-
-                df = pd.DataFrame({
-                    "close": closes,
-                }, index=pd.to_datetime(timestamps, unit="s", utc=True))
-
-                df.index = df.index.tz_localize(None)
-                df.index.name = "date"
-                df = df.dropna(subset=["close"])
-                df = df.sort_index()
-                return df
-
-            except Exception as e:
-                print(f"[YF-HTTP] Attempt {attempt+1} error fetching {ticker} from {base}: {e}")
-                _time.sleep(1)
-
-    print(f"[YF-HTTP] All attempts failed for {ticker}")
-    return pd.DataFrame(columns=["close"])
+    except Exception as e:
+        print(f"[Stooq] Error fetching {ticker}: {e}")
+        return pd.DataFrame(columns=["close"])
 
 
 def fetch_market_data(ticker: str, period: str = "2y") -> pd.DataFrame:
-    """Fetch market price history from Yahoo Finance (direct HTTP)."""
-    cached = _get_cached(f"yf_{ticker}", MARKET_TTL)
+    """Fetch market price history from Stooq."""
+    cached = _get_cached(f"stooq_{ticker}", MARKET_TTL)
     if cached is not None:
         return cached
 
-    # Map period strings to Yahoo range format
-    range_map = {"1y": "1y", "2y": "2y", "5y": "5y", "6mo": "6mo", "1mo": "1mo"}
-    range_str = range_map.get(period, "2y")
-
-    df = _fetch_yahoo_chart(ticker, range_str=range_str)
+    years = {"1y": 1, "2y": 2, "5y": 5, "6mo": 1, "1mo": 1}.get(period, 2)
+    df = _fetch_stooq(ticker, years=years)
 
     if not df.empty:
-        _set_cached(f"yf_{ticker}", df)
+        _set_cached(f"stooq_{ticker}", df)
 
     return df
 
@@ -174,7 +138,7 @@ def fetch_all_markets() -> dict[str, pd.DataFrame]:
 
 
 # ---------------------------------------------------------------------------
-# Dollar index (also from FRED for consistency)
+# Dollar index (from FRED for consistency)
 # ---------------------------------------------------------------------------
 def fetch_dollar_index() -> pd.DataFrame:
     return fetch_fred_series("DTWEXBGS")

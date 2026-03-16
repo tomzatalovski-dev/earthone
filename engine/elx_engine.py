@@ -139,7 +139,7 @@ def _compute_dollar() -> tuple[pd.Series, float, str]:
 
 def _compute_market_beta() -> tuple[pd.Series, float, str]:
     """Market Beta: z-score of SPY 6-month return (daily, 126 periods)."""
-    spy = fetch_market_data("SPY", period="5y")
+    spy = fetch_market_data("spy.us", period="5y")
     if spy.empty or len(spy) < 130:
         return pd.Series(dtype=float), 0.0, "N/A"
 
@@ -353,7 +353,7 @@ def compute_correlations(window: int = 90) -> list[dict]:
         "elx": history["values"],
     }).set_index("date")
 
-    tickers = {"SPY": "S&P 500", "GC=F": "Gold", "BTC-USD": "Bitcoin"}
+    tickers = {"spy.us": "S&P 500", "xauusd": "Gold", "btcusd": "Bitcoin"}
     dxy = fetch_fred_series("DTWEXBGS")
 
     results = []
