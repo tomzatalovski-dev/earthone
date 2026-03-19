@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/analytics
+Disallow: /api/subscribers
+Disallow: /analytics
+
+Sitemap: https://elxindex.com/sitemap.xml

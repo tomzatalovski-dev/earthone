@@ -1,0 +1,11 @@
+{
+  "S&P 500": {
+    "error": "Insufficient overlap"
+  },
+  "Gold": {
+    "error": "Insufficient overlap"
+  },
+  "Bitcoin": {
+    "error": "Insufficient overlap"
+  }
+}

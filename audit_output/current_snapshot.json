@@ -1,0 +1,66 @@
+{
+  "value": -10,
+  "regime": "Neutral",
+  "bias": "Mild Risk-Off",
+  "interpretation": "Balanced liquidity conditions \u2014 no strong directional bias, stay nimble.",
+  "asset_bias": [
+    {
+      "asset": "Equities",
+      "direction": "down",
+      "call": "Underweight"
+    },
+    {
+      "asset": "Gold",
+      "direction": "up",
+      "call": "Hedge"
+    },
+    {
+      "asset": "BTC",
+      "direction": "down",
+      "call": "Risk-Off"
+    },
+    {
+      "asset": "USD",
+      "direction": "up",
+      "call": "Strong"
+    },
+    {
+      "asset": "Bonds",
+      "direction": "down",
+      "call": "Duration -"
+    }
+  ],
+  "drivers": [
+    {
+      "name": "Global Liquidity",
+      "score": -15,
+      "direction": "Contractionary",
+      "weight": "40%"
+    },
+    {
+      "name": "Credit Conditions",
+      "score": 26,
+      "direction": "Expansionary",
+      "weight": "25%"
+    },
+    {
+      "name": "Real Yields",
+      "score": -30,
+      "direction": "Contractionary",
+      "weight": "20%"
+    },
+    {
+      "name": "Dollar Strength",
+      "score": -39,
+      "direction": "Contractionary",
+      "weight": "10%"
+    },
+    {
+      "name": "Market Beta",
+      "score": -12,
+      "direction": "Contractionary",
+      "weight": "5%"
+    }
+  ],
+  "updated": "2026-03-18T10:33:13.794382"
+}

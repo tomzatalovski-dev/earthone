@@ -1,0 +1,42 @@
+{
+  "liquidity": {
+    "weight": 0.4,
+    "current_z": -0.449,
+    "plus_1std_delta": 13,
+    "minus_1std_delta": -13,
+    "plus_3std_delta": 40,
+    "max_possible_impact": 40.0
+  },
+  "credit": {
+    "weight": 0.25,
+    "current_z": 0.78,
+    "plus_1std_delta": 8,
+    "minus_1std_delta": -8,
+    "plus_3std_delta": 25,
+    "max_possible_impact": 25.0
+  },
+  "real_yields": {
+    "weight": 0.2,
+    "current_z": -0.886,
+    "plus_1std_delta": 7,
+    "minus_1std_delta": -7,
+    "plus_3std_delta": 20,
+    "max_possible_impact": 20.0
+  },
+  "dollar": {
+    "weight": 0.1,
+    "current_z": -1.172,
+    "plus_1std_delta": 3,
+    "minus_1std_delta": -3,
+    "plus_3std_delta": 10,
+    "max_possible_impact": 10.0
+  },
+  "market_beta": {
+    "weight": 0.05,
+    "current_z": -0.375,
+    "plus_1std_delta": 2,
+    "minus_1std_delta": -2,
+    "plus_3std_delta": 5,
+    "max_possible_impact": 5.0
+  }
+}

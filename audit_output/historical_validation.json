@@ -1,0 +1,134 @@
+{
+  "2008 GFC Peak Stress": {
+    "period": "2008-09-01 to 2009-03-31",
+    "data_points": 15,
+    "elx_mean": -21.6,
+    "elx_min": -33,
+    "elx_max": -12,
+    "elx_start": -15,
+    "elx_end": -17,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2009 QE1 Recovery": {
+    "period": "2009-04-01 to 2010-06-30",
+    "data_points": 33,
+    "elx_mean": -1.3,
+    "elx_min": -13,
+    "elx_max": 20,
+    "elx_start": -13,
+    "elx_end": -11,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2011 Euro Crisis": {
+    "period": "2011-06-01 to 2012-01-31",
+    "data_points": 17,
+    "elx_mean": 8.8,
+    "elx_min": 3,
+    "elx_max": 13,
+    "elx_start": 7,
+    "elx_end": 12,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2013 Taper Tantrum": {
+    "period": "2013-05-01 to 2013-09-30",
+    "data_points": 11,
+    "elx_mean": 13.5,
+    "elx_min": 9,
+    "elx_max": 20,
+    "elx_start": 20,
+    "elx_end": 13,
+    "regime_at_start": "Growth",
+    "regime_at_end": "Neutral"
+  },
+  "2015 China Deval": {
+    "period": "2015-08-01 to 2016-02-28",
+    "data_points": 16,
+    "elx_mean": -8.1,
+    "elx_min": -16,
+    "elx_max": -1,
+    "elx_start": -1,
+    "elx_end": -10,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2018 QT + Rate Hikes": {
+    "period": "2018-09-01 to 2019-01-31",
+    "data_points": 11,
+    "elx_mean": -7.6,
+    "elx_min": -13,
+    "elx_max": -2,
+    "elx_start": -4,
+    "elx_end": -9,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2020 COVID Crash": {
+    "period": "2020-02-15 to 2020-04-15",
+    "data_points": 4,
+    "elx_mean": 4.5,
+    "elx_min": -13,
+    "elx_max": 11,
+    "elx_start": 10,
+    "elx_end": 11,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "2020-2021 QE Infinity": {
+    "period": "2020-05-01 to 2021-12-31",
+    "data_points": 44,
+    "elx_mean": 40.9,
+    "elx_min": 27,
+    "elx_max": 61,
+    "elx_start": 30,
+    "elx_end": 27,
+    "regime_at_start": "Growth",
+    "regime_at_end": "Growth"
+  },
+  "2022 Tightening Cycle": {
+    "period": "2022-01-01 to 2022-12-31",
+    "data_points": 26,
+    "elx_mean": -1.5,
+    "elx_min": -24,
+    "elx_max": 24,
+    "elx_start": 24,
+    "elx_end": -21,
+    "regime_at_start": "Growth",
+    "regime_at_end": "Tightening"
+  },
+  "2023 Bank Stress (SVB)": {
+    "period": "2023-03-01 to 2023-05-31",
+    "data_points": 7,
+    "elx_mean": -21.9,
+    "elx_min": -24,
+    "elx_max": -20,
+    "elx_start": -22,
+    "elx_end": -24,
+    "regime_at_start": "Tightening",
+    "regime_at_end": "Tightening"
+  },
+  "2024 Soft Landing": {
+    "period": "2024-01-01 to 2024-12-31",
+    "data_points": 26,
+    "elx_mean": -15.2,
+    "elx_min": -20,
+    "elx_max": -11,
+    "elx_start": -20,
+    "elx_end": -15,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  },
+  "Current (2025-2026)": {
+    "period": "2025-01-01 to 2026-03-18",
+    "data_points": 32,
+    "elx_mean": -10.9,
+    "elx_min": -20,
+    "elx_max": -6,
+    "elx_start": -16,
+    "elx_end": -11,
+    "regime_at_start": "Neutral",
+    "regime_at_end": "Neutral"
+  }
+}

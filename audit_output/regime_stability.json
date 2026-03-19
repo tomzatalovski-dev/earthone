@@ -1,0 +1,43 @@
+{
+  "total_observations": 523,
+  "date_range": "2006-03-26 to 2026-03-29",
+  "daily_change_stats": {
+    "mean": -0.013,
+    "std": 3.081,
+    "median": 0.0,
+    "max_up": 24,
+    "max_down": -23,
+    "pct_zero_change": 24.1
+  },
+  "regime_transitions": {
+    "total_transitions": 22,
+    "avg_per_year": 15.4,
+    "avg_regime_duration_days": 22.7,
+    "median_regime_duration_days": 4.0,
+    "min_regime_duration_days": 1,
+    "max_regime_duration_days": 180
+  },
+  "signal_to_noise": {
+    "signal_std_30d_ma": 14.98,
+    "noise_std_daily_change": 3.08,
+    "snr_ratio": 4.86
+  },
+  "regime_distribution": {
+    "Neutral": {
+      "count": 443,
+      "pct": 84.7
+    },
+    "Growth": {
+      "count": 48,
+      "pct": 9.2
+    },
+    "Tightening": {
+      "count": 29,
+      "pct": 5.5
+    },
+    "Expansion": {
+      "count": 3,
+      "pct": 0.6
+    }
+  }
+}

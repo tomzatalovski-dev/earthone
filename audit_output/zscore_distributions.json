@@ -1,0 +1,37 @@
+{
+  "liquidity": {
+    "skewness": 1.8571,
+    "kurtosis": 3.6048,
+    "pct_within_1std": 84.9,
+    "pct_within_2std": 92.9,
+    "pct_extreme_3std": 0.94
+  },
+  "credit": {
+    "skewness": -2.5283,
+    "kurtosis": 8.9066,
+    "pct_within_1std": 86.9,
+    "pct_within_2std": 96.7,
+    "pct_extreme_3std": 2.28
+  },
+  "real_yields": {
+    "skewness": 0.3003,
+    "kurtosis": -0.9457,
+    "pct_within_1std": 65.1,
+    "pct_within_2std": 98.4,
+    "pct_extreme_3std": 0.0
+  },
+  "dollar": {
+    "skewness": 0.0404,
+    "kurtosis": -1.4626,
+    "pct_within_1std": 54.0,
+    "pct_within_2std": 100.0,
+    "pct_extreme_3std": 0.0
+  },
+  "market_beta": {
+    "skewness": -1.0367,
+    "kurtosis": 3.5672,
+    "pct_within_1std": 77.2,
+    "pct_within_2std": 95.3,
+    "pct_extreme_3std": 2.55
+  }
+}

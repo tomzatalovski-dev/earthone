@@ -1,150 +1,291 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/WebApplication">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EarthOne — ELX</title>
-  <meta name="description" content="ELX — Earth Liquidity Index. Real-time global macro liquidity conditions."/>
 
-  <!-- Open Graph -->
+  <!-- Primary Meta Tags -->
+  <title>ELX Index — Global Macro Liquidity Index | EarthOne</title>
+  <meta name="title" content="ELX Index — Global Macro Liquidity Index | EarthOne"/>
+  <meta name="description" content="ELX (Earth Liquidity Index) tracks real-time global macro liquidity conditions across central bank balance sheets, real rates, USD strength, energy prices, and credit spreads. One index. Five drivers. Every regime."/>
+  <meta name="keywords" content="ELX Index, Earth Liquidity Index, global liquidity, macro index, liquidity index, central bank balance sheet, Fed liquidity, macro regime, risk-on risk-off, global macro, financial index, liquidity tracker, macro conditions"/>
+  <meta name="author" content="EarthOne Research"/>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+  <meta name="googlebot" content="index, follow"/>
+  <link rel="canonical" href="https://elxindex.com/"/>
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website"/>
-  <meta property="og:title" content="ELX — Earth Liquidity Index"/>
-  <meta property="og:description" content="Real-time global macro liquidity conditions. One index. One chart. Five drivers."/>
+  <meta property="og:url" content="https://elxindex.com/"/>
+  <meta property="og:title" content="ELX Index — Global Macro Liquidity Index"/>
+  <meta property="og:description" content="Real-time global macro liquidity conditions. One index. Five drivers. Every regime. Track central bank liquidity, rates, USD, energy, and credit spreads."/>
   <meta property="og:image" content="https://elxindex.com/share/elx_latest.png"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="675"/>
-  <meta property="og:url" content="https://elxindex.com"/>
+  <meta property="og:image:alt" content="ELX Index — Earth Liquidity Index current value and chart"/>
   <meta property="og:site_name" content="EarthOne"/>
+  <meta property="og:locale" content="en_US"/>
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="ELX — Earth Liquidity Index"/>
-  <meta name="twitter:description" content="Real-time global macro liquidity conditions. One index. One chart. Five drivers."/>
+  <meta name="twitter:url" content="https://elxindex.com/"/>
+  <meta name="twitter:title" content="ELX Index — Global Macro Liquidity Index"/>
+  <meta name="twitter:description" content="Real-time global macro liquidity conditions. One index. Five drivers. Every regime."/>
   <meta name="twitter:image" content="https://elxindex.com/share/elx_latest.png"/>
+  <meta name="twitter:image:alt" content="ELX Index — Earth Liquidity Index"/>
+  <meta name="twitter:creator" content="@EarthOneResearch"/>
+  <meta name="twitter:site" content="@EarthOneResearch"/>
 
+  <!-- Schema.org / Structured Data -->
+  <meta itemprop="name" content="ELX Index — Global Macro Liquidity Index"/>
+  <meta itemprop="description" content="Real-time global macro liquidity index tracking central bank balance sheets, real rates, USD strength, energy prices, and credit spreads."/>
+  <meta itemprop="image" content="https://elxindex.com/share/elx_latest.png"/>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ELX Index",
+    "alternateName": "Earth Liquidity Index",
+    "url": "https://elxindex.com",
+    "description": "Real-time global macro liquidity index tracking central bank balance sheets, real rates, USD strength, energy prices, and credit spreads. Used by macro analysts and portfolio managers to identify liquidity regimes.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "creator": {
+      "@type": "Organization",
+      "name": "EarthOne Research",
+      "url": "https://elxindex.com"
+    },
+    "featureList": [
+      "Real-time global liquidity index",
+      "5 macro driver breakdown",
+      "20-year historical data",
+      "Regime classification (Risk-On / Neutral / Risk-Off)",
+      "Market correlation analysis (SPX, Gold, BTC, DXY)",
+      "Shareable daily image cards",
+      "Public REST API"
+    ]
+  }
+  </script>
+
+  <!-- FAQ Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the ELX Index?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The ELX (Earth Liquidity Index) is a composite macro index that measures global liquidity conditions in real-time. It aggregates five key drivers: central bank balance sheets (Fed), real interest rates, USD strength (DXY), energy prices (Oil), and credit spreads (High Yield). The index ranges from -100 (extreme contraction) to +100 (full expansion)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is the ELX Index calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ELX uses z-score normalization of each input against its 5-year rolling history, applies economically-justified weights (Central Banks 30%, Real Rates 25%, USD 20%, Energy 15%, Credit 10%), and produces a composite score scaled to -100/+100. The methodology is transparent and based on established macro theory."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the ELX regime classifications?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ELX classifies macro regimes into five zones: Deep Contraction (below -40), Contraction (-40 to -20), Neutral (-20 to +20), Expansion (+20 to +40), and Full Expansion (above +40). Each regime corresponds to specific asset allocation biases."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the ELX Index free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the ELX Index is completely free. You can view the real-time index on elxindex.com, access historical data, and use the public API at /api/elx for integration into your own tools and dashboards."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Breadcrumb Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ELX Index",
+        "item": "https://elxindex.com"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QKR9BJMKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1QKR9BJMKF');
+  </script>
+
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preconnect" href="https://www.googletagmanager.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/styles.css"/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x25C9;</text></svg>"/>
+
+  <!-- Alternate language hints -->
+  <link rel="alternate" hreflang="en" href="https://elxindex.com/"/>
+  <link rel="alternate" hreflang="x-default" href="https://elxindex.com/"/>
 </head>
 <body class="loading">
 
   <div class="container">
 
-    <!-- ─── Navbar ─────────────────────────────────────── -->
-    <nav class="navbar">
-      <div class="logo">Earth<span>One</span></div>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+      <div class="logo"><a href="/" aria-label="EarthOne Home">Earth<span>One</span></a></div>
       <div class="nav-right">
-        <span class="live-badge"><span class="live-dot"></span>Live</span>
+        <span class="live-badge" aria-label="Live data"><span class="live-dot"></span>Live</span>
         <span class="nav-date" id="date-now"></span>
       </div>
     </nav>
 
-    <!-- ─── Hero ───────────────────────────────────────── -->
-    <section class="hero">
-      <div class="card-primary">
+    <!-- Hero Section -->
+    <main>
+      <section class="hero" aria-label="ELX Index Overview">
+        <article class="card-primary">
 
-        <!-- Eyebrow -->
-        <div class="elx-eyebrow">ELX — Earth Liquidity Index</div>
+          <!-- Eyebrow -->
+          <div class="elx-eyebrow">ELX — Earth Liquidity Index</div>
 
-        <!-- THE STAR: Value + Delta -->
-        <div class="elx-hero-row">
-          <div class="elx-value" id="elx-value">—</div>
-          <div class="elx-delta delta-flat" id="elx-delta"></div>
-        </div>
-
-        <!-- Regime + Bias -->
-        <div class="elx-regime-row">
-          <span class="regime-label" id="regime-label">Loading</span>
-          <span class="bias-badge bias-orange" id="bias-badge">—</span>
-        </div>
-
-        <!-- Regime Map Visual Scale -->
-        <div class="regime-map" id="regime-map">
-          <div class="regime-scale">
-            <div class="regime-zone zone-deep-contraction" data-zone="deep_contraction"></div>
-            <div class="regime-zone zone-contraction" data-zone="contraction"></div>
-            <div class="regime-zone zone-neutral" data-zone="neutral"></div>
-            <div class="regime-zone zone-expansion" data-zone="expansion"></div>
-            <div class="regime-zone zone-full-expansion" data-zone="full_expansion"></div>
-            <div class="regime-pointer" id="regime-pointer"></div>
+          <!-- Value + Delta -->
+          <div class="elx-hero-row">
+            <h1 class="elx-value" id="elx-value" aria-live="polite">—</h1>
+            <div class="elx-delta delta-flat" id="elx-delta" aria-label="Daily change"></div>
           </div>
-          <div class="regime-labels">
-            <span>-100</span>
-            <span>-40</span>
-            <span>-20</span>
-            <span>+20</span>
-            <span>+40</span>
-            <span>+100</span>
+
+          <!-- Regime + Bias -->
+          <div class="elx-regime-row">
+            <span class="regime-label" id="regime-label">Loading</span>
+            <span class="bias-badge bias-orange" id="bias-badge" aria-label="Market bias">—</span>
           </div>
-        </div>
 
-        <!-- Regime Alert Banner -->
-        <div class="regime-alert hidden" id="regime-alert"></div>
-
-        <!-- Interpretation -->
-        <p class="interpretation" id="interpretation">Calculating macro conditions…</p>
-
-        <!-- Asset Bias Chips -->
-        <div class="asset-bias-row" id="asset-bias-row"></div>
-
-        <!-- Chart controls: Range selector + Share button -->
-        <div class="chart-controls">
-          <div class="range-bar" id="range-bar">
-            <button class="range-btn active" data-range="1Y">1Y</button>
-            <button class="range-btn" data-range="5Y">5Y</button>
-            <button class="range-btn" data-range="10Y">10Y</button>
-            <button class="range-btn" data-range="MAX">MAX</button>
+          <!-- Regime Map Visual Scale -->
+          <div class="regime-map" id="regime-map" role="img" aria-label="Regime scale from -100 to +100">
+            <div class="regime-scale">
+              <div class="regime-zone zone-deep-contraction" data-zone="deep_contraction"></div>
+              <div class="regime-zone zone-contraction" data-zone="contraction"></div>
+              <div class="regime-zone zone-neutral" data-zone="neutral"></div>
+              <div class="regime-zone zone-expansion" data-zone="expansion"></div>
+              <div class="regime-zone zone-full-expansion" data-zone="full_expansion"></div>
+              <div class="regime-pointer" id="regime-pointer"></div>
+            </div>
+            <div class="regime-labels">
+              <span>-100</span>
+              <span>-40</span>
+              <span>-20</span>
+              <span>+20</span>
+              <span>+40</span>
+              <span>+100</span>
+            </div>
           </div>
-          <button class="share-btn" id="share-btn"><span class="share-icon">&#x2197;</span> Share ELX</button>
-        </div>
 
-        <!-- Chart -->
-        <div class="chart-container" id="chart"></div>
+          <!-- Regime Alert Banner -->
+          <div class="regime-alert hidden" id="regime-alert" role="alert"></div>
 
-        <!-- Correlation strip -->
-        <div class="corr-strip" id="corr-strip"></div>
+          <!-- Interpretation -->
+          <p class="interpretation" id="interpretation">Calculating macro conditions…</p>
 
-        <!-- Divider -->
-        <div class="section-divider"></div>
+          <!-- Asset Bias Chips -->
+          <div class="asset-bias-row" id="asset-bias-row" aria-label="Asset bias signals"></div>
 
-        <!-- Macro Drivers -->
-        <div class="drivers-section">
-          <div class="section-label">Macro Drivers</div>
-          <div class="drivers-grid" id="drivers-grid"></div>
-        </div>
+          <!-- Chart controls -->
+          <div class="chart-controls">
+            <div class="range-bar" id="range-bar" role="tablist" aria-label="Chart time range">
+              <button class="range-btn active" data-range="1Y" role="tab" aria-selected="true">1Y</button>
+              <button class="range-btn" data-range="5Y" role="tab" aria-selected="false">5Y</button>
+              <button class="range-btn" data-range="10Y" role="tab" aria-selected="false">10Y</button>
+              <button class="range-btn" data-range="MAX" role="tab" aria-selected="false">MAX</button>
+            </div>
+            <button class="share-btn" id="share-btn" aria-label="Share ELX Index"><span class="share-icon">&#x2197;</span> Share ELX</button>
+          </div>
 
-        <!-- Divider -->
-        <div class="section-divider"></div>
+          <!-- Chart -->
+          <div class="chart-container" id="chart" role="img" aria-label="ELX Index historical chart"></div>
 
-        <!-- ELX vs Markets — Overlay Charts -->
-        <div class="markets-section">
-          <div class="section-label">ELX vs Markets</div>
-          <div class="markets-grid" id="markets-grid"></div>
-        </div>
+          <!-- Correlation strip -->
+          <div class="corr-strip" id="corr-strip" aria-label="Market correlations"></div>
 
-        <!-- Divider -->
-        <div class="section-divider"></div>
+          <div class="section-divider"></div>
 
-        <!-- ─── Subscribe ─────────────────────────────── -->
-        <div class="subscribe-section">
-          <div class="subscribe-title">Follow the ELX Index</div>
-          <div class="subscribe-sub">Get the daily ELX update and weekly liquidity report.</div>
-          <form class="subscribe-form" id="subscribe-form">
-            <input type="email" class="subscribe-input" id="subscribe-email" placeholder="your@email.com" required autocomplete="email"/>
-            <button type="submit" class="subscribe-btn" id="subscribe-btn">Subscribe</button>
-          </form>
-          <div class="subscribe-msg" id="subscribe-msg"></div>
-        </div>
+          <!-- Macro Drivers -->
+          <section class="drivers-section" aria-label="Macro Drivers">
+            <h2 class="section-label">Macro Drivers</h2>
+            <div class="drivers-grid" id="drivers-grid"></div>
+          </section>
 
-      </div>
-    </section>
+          <div class="section-divider"></div>
 
-    <!-- ─── Footer ─────────────────────────────────────── -->
-    <footer class="footer">
+          <!-- ELX vs Markets -->
+          <section class="markets-section" aria-label="ELX vs Markets">
+            <h2 class="section-label">ELX vs Markets</h2>
+            <div class="markets-grid" id="markets-grid"></div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <!-- About ELX (SEO content) -->
+          <section class="about-section" aria-label="About ELX Index">
+            <h2 class="section-label">About the ELX Index</h2>
+            <div class="about-content">
+              <p>The <strong>ELX (Earth Liquidity Index)</strong> is a composite macro indicator that measures global liquidity conditions in real-time. Built by EarthOne Research, it aggregates five critical macro drivers into a single, interpretable score ranging from <strong>-100</strong> (extreme contraction) to <strong>+100</strong> (full expansion).</p>
+              <p>The five drivers are: <strong>Central Bank Balance Sheets</strong> (Fed total assets), <strong>Real Interest Rates</strong> (10Y Treasury minus CPI), <strong>USD Strength</strong> (DXY index), <strong>Energy Prices</strong> (WTI Crude Oil), and <strong>Credit Spreads</strong> (High Yield OAS). Each input is z-score normalized against its 5-year rolling history and weighted according to its empirical impact on global liquidity.</p>
+              <p>ELX classifies macro conditions into five regimes: Deep Contraction, Contraction, Neutral, Expansion, and Full Expansion. Portfolio managers use these regime signals to calibrate risk exposure across equities, bonds, commodities, and digital assets.</p>
+            </div>
+          </section>
+
+          <div class="section-divider"></div>
+
+          <!-- Subscribe -->
+          <section class="subscribe-section" aria-label="Subscribe to ELX updates">
+            <h2 class="subscribe-title">Follow the ELX Index</h2>
+            <p class="subscribe-sub">Get the daily ELX update and weekly liquidity report.</p>
+            <form class="subscribe-form" id="subscribe-form" aria-label="Email subscription form">
+              <input type="email" class="subscribe-input" id="subscribe-email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address"/>
+              <button type="submit" class="subscribe-btn" id="subscribe-btn">Subscribe</button>
+            </form>
+            <div class="subscribe-msg" id="subscribe-msg" aria-live="polite"></div>
+          </section>
+
+        </article>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
       <span>EarthOne Research</span>
       <span>Data: FRED + Stooq · Not financial advice</span>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="/api/elx" rel="noopener">API</a>
+        <a href="/analytics" rel="noopener">Analytics</a>
+        <a href="/sitemap.xml" rel="noopener">Sitemap</a>
+      </nav>
     </footer>
 
   </div>

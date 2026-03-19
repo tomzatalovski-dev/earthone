@@ -90,13 +90,22 @@ def get_analytics_summary() -> dict:
         ORDER BY day DESC LIMIT 30
     """).fetchall()
 
+    # Event breakdown with counts and last seen
+    events_breakdown = conn.execute("""
+        SELECT event, COUNT(*) as cnt, MAX(created_at) as last_seen
+        FROM analytics
+        GROUP BY event
+        ORDER BY cnt DESC
+    """).fetchall()
+
     return {
-        "total_views": total_views,
+        "page_views": total_views,
         "today_views": today_views,
-        "total_shares": total_shares,
-        "total_api_calls": total_api,
-        "total_subscribers": total_subs,
+        "share_clicks": total_shares,
+        "api_calls": total_api,
+        "subscribers": total_subs,
         "daily_views": [{"date": r["day"], "count": r["cnt"]} for r in daily],
+        "events": [{"event": r["event"], "count": r["cnt"], "last_seen": r["last_seen"]} for r in events_breakdown],
     }
 
 

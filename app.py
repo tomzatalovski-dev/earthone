@@ -83,6 +83,39 @@ def homepage(request: Request):
 
 
 # ---------------------------------------------------------------------------
+# Analytics Dashboard Page
+# ---------------------------------------------------------------------------
+@app.get("/analytics", response_class=HTMLResponse)
+def analytics_page(request: Request):
+    track_event("page_view", path="/analytics", ip=request.client.host if request.client else "")
+    return HTMLResponse(
+        content=(BASE / "templates" / "analytics.html").read_text(),
+        status_code=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# SEO — robots.txt and sitemap.xml
+# ---------------------------------------------------------------------------
+@app.get("/robots.txt")
+def robots_txt():
+    path = BASE / "static" / "robots.txt"
+    return Response(
+        content=path.read_text() if path.exists() else "User-agent: *\nAllow: /\n",
+        media_type="text/plain",
+    )
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml():
+    path = BASE / "static" / "sitemap.xml"
+    return Response(
+        content=path.read_text() if path.exists() else "",
+        media_type="application/xml",
+    )
+
+
+# ---------------------------------------------------------------------------
 # PUBLIC API — Clean, stable, structured
 # ---------------------------------------------------------------------------
 

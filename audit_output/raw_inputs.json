@@ -1,0 +1,95 @@
+{
+  "WALCL": {
+    "description": "Fed Balance Sheet (weekly)",
+    "start_date": "2002-12-18 00:00:00",
+    "end_date": "2026-03-11 00:00:00",
+    "count": 1213,
+    "min": 712809.0,
+    "max": 8965487.0,
+    "mean": 3936332.8104,
+    "std": 2579271.5051,
+    "latest": 6646344.0
+  },
+  "M2SL": {
+    "description": "M2 Money Supply (monthly)",
+    "start_date": "2001-03-01 00:00:00",
+    "end_date": "2026-01-01 00:00:00",
+    "count": 299,
+    "min": 5074.8,
+    "max": 22442.1,
+    "mean": 12146.89,
+    "std": 5558.3552,
+    "latest": 22442.1
+  },
+  "BAMLH0A0HYM2": {
+    "description": "HY Credit Spread (daily)",
+    "start_date": "2001-03-26 00:00:00",
+    "end_date": "2026-03-17 00:00:00",
+    "count": 6523,
+    "min": 2.41,
+    "max": 21.82,
+    "mean": 5.2778,
+    "std": 2.6395,
+    "latest": 3.22
+  },
+  "DGS10": {
+    "description": "US 10Y Yield (daily)",
+    "start_date": "2001-03-26 00:00:00",
+    "end_date": "2026-03-16 00:00:00",
+    "count": 6244,
+    "min": 0.52,
+    "max": 5.54,
+    "mean": 3.2041,
+    "std": 1.1879,
+    "latest": 4.23
+  },
+  "T10YIE": {
+    "description": "10Y Breakeven Inflation (daily)",
+    "start_date": "2003-01-02 00:00:00",
+    "end_date": "2026-03-17 00:00:00",
+    "count": 5804,
+    "min": 0.04,
+    "max": 3.02,
+    "mean": 2.104,
+    "std": 0.3942,
+    "latest": 2.37
+  },
+  "DTWEXBGS": {
+    "description": "Trade-Weighted Dollar (daily)",
+    "start_date": "2006-01-02 00:00:00",
+    "end_date": "2026-03-13 00:00:00",
+    "count": 5062,
+    "min": 85.4692,
+    "max": 130.0413,
+    "mean": 106.1138,
+    "std": 12.3237,
+    "latest": 120.5518
+  },
+  "spy.us": {
+    "description": "S&P 500 (SPY)",
+    "start_date": "2005-02-25 00:00:00",
+    "end_date": "2026-03-17 00:00:00",
+    "count": 5296,
+    "min": 52.55,
+    "max": 695.49,
+    "latest": 670.79
+  },
+  "xauusd": {
+    "description": "Gold",
+    "start_date": "2001-03-26 00:00:00",
+    "end_date": "2026-03-17 00:00:00",
+    "count": 6429,
+    "min": 255.55,
+    "max": 5415.17,
+    "latest": 5003.05
+  },
+  "btcusd": {
+    "description": "Bitcoin",
+    "start_date": "2010-07-19 00:00:00",
+    "end_date": "2026-03-17 00:00:00",
+    "count": 4053,
+    "min": 0.05,
+    "max": 125173.0,
+    "latest": 74240.1
+  }
+}

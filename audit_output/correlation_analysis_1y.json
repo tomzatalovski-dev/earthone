@@ -1,0 +1,43 @@
+{
+  "S&P 500": {
+    "level_correlation": 0.94,
+    "change_correlation": 0.547,
+    "data_points": 251,
+    "rolling_30p": {
+      "mean": 0.705,
+      "std": 0.216,
+      "min": -0.059,
+      "max": 0.939,
+      "latest": 0.877
+    }
+  },
+  "Gold": {
+    "level_correlation": 0.638,
+    "change_correlation": 0.063,
+    "data_points": 258,
+    "rolling_30p": {
+      "mean": 0.228,
+      "std": 0.348,
+      "min": -0.524,
+      "max": 0.937,
+      "latest": 0.034
+    }
+  },
+  "Bitcoin": {
+    "level_correlation": 0.108,
+    "change_correlation": 0.295,
+    "data_points": 259,
+    "rolling_30p": {
+      "mean": 0.326,
+      "std": 0.407,
+      "min": -0.61,
+      "max": 0.955,
+      "latest": -0.573
+    }
+  },
+  "US Dollar (DXY)": {
+    "level_correlation": -0.745,
+    "change_correlation": -0.221,
+    "data_points": 248
+  }
+}

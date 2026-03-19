@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics — ELX Index | EarthOne</title>
+  <meta name="description" content="ELX Index analytics dashboard — page views, API calls, shares, and subscriber metrics."/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="canonical" href="https://elxindex.com/analytics"/>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QKR9BJMKF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1QKR9BJMKF');
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/styles.css"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x25C9;</text></svg>"/>
+  <style>
+    .analytics-page { margin-top: 44px; }
+    .analytics-card {
+      background: var(--surface);
+      backdrop-filter: blur(80px) saturate(1.9);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 56px 56px;
+    }
+    .analytics-title {
+      font-size: 1.8rem; font-weight: 700; letter-spacing: -.04em;
+      margin-bottom: 6px;
+    }
+    .analytics-subtitle {
+      font-size: .85rem; color: var(--text-3); margin-bottom: 40px; line-height: 1.5;
+    }
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+      margin-bottom: 40px;
+    }
+    .metric-card {
+      background: var(--surface-s); border: 1px solid var(--border-s);
+      border-radius: var(--radius-sm); padding: 22px 20px;
+      transition: all .35s var(--ease);
+    }
+    .metric-card:hover {
+      background: rgba(255,255,255,.8); box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+    .metric-label {
+      font-size: .6rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text-4); margin-bottom: 10px;
+    }
+    .metric-value {
+      font-size: 2.2rem; font-weight: 700; letter-spacing: -.04em;
+      color: var(--text); font-variant-numeric: tabular-nums;
+    }
+    .metric-sub {
+      font-size: .7rem; color: var(--text-3); margin-top: 4px;
+    }
+
+    /* Events table */
+    .events-section { margin-top: 40px; }
+    .events-table {
+      width: 100%; border-collapse: collapse; margin-top: 16px;
+    }
+    .events-table th {
+      font-size: .6rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--text-4);
+      text-align: left; padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .events-table td {
+      font-size: .78rem; color: var(--text-2); padding: 10px 14px;
+      border-bottom: 1px solid var(--border-s);
+      font-variant-numeric: tabular-nums;
+    }
+    .events-table tr:hover td { background: rgba(0,0,0,.01); }
+
+    /* Subscribers section */
+    .subs-section { margin-top: 40px; }
+    .sub-list {
+      display: flex; flex-direction: column; gap: 6px; margin-top: 16px;
+    }
+    .sub-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: var(--surface-s);
+      border: 1px solid var(--border-s); border-radius: 10px;
+      font-size: .78rem; color: var(--text-2);
+    }
+    .sub-email { font-weight: 600; color: var(--text); }
+    .sub-date { font-size: .68rem; color: var(--text-4); }
+
+    /* Refresh button */
+    .refresh-btn {
+      font-family: var(--font); font-size: .72rem; font-weight: 600;
+      padding: 8px 20px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface-s);
+      color: var(--text-2); cursor: pointer; transition: all .25s var(--ease);
+    }
+    .refresh-btn:hover { background: #fff; box-shadow: var(--shadow-sm); color: var(--text); }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .78rem; font-weight: 500; color: var(--text-3);
+      text-decoration: none; margin-bottom: 24px;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    @media(max-width:768px) {
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .analytics-card { padding: 36px 28px 40px; }
+    }
+    @media(max-width:480px) {
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <nav class="navbar">
+      <div class="logo"><a href="/" style="text-decoration:none;color:inherit">Earth<span>One</span></a></div>
+      <div class="nav-right">
+        <span class="nav-date" id="date-now"></span>
+      </div>
+    </nav>
+
+    <div class="analytics-page">
+      <a href="/" class="back-link">&larr; Back to ELX Index</a>
+
+      <div class="analytics-card">
+        <h1 class="analytics-title">Analytics Dashboard</h1>
+        <p class="analytics-subtitle">Internal metrics for elxindex.com — page views, API usage, shares, and subscribers.</p>
+
+        <!-- KPI Metrics -->
+        <div class="metrics-grid" id="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Page Views</div>
+            <div class="metric-value" id="m-pageviews">—</div>
+            <div class="metric-sub">All time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">API Calls</div>
+            <div class="metric-value" id="m-apicalls">—</div>
+            <div class="metric-sub">All time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Share Clicks</div>
+            <div class="metric-value" id="m-shares">—</div>
+            <div class="metric-sub">All time</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Subscribers</div>
+            <div class="metric-value" id="m-subs">—</div>
+            <div class="metric-sub">Email list</div>
+          </div>
+        </div>
+
+        <!-- Event Breakdown -->
+        <div class="events-section">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 class="section-label">Event Breakdown</h2>
+            <button class="refresh-btn" id="refresh-btn">Refresh</button>
+          </div>
+          <table class="events-table" id="events-table">
+            <thead>
+              <tr>
+                <th>Event Type</th>
+                <th>Count</th>
+                <th>Last Seen</th>
+              </tr>
+            </thead>
+            <tbody id="events-body">
+              <tr><td colspan="3" style="text-align:center;color:var(--text-4)">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Subscribers List -->
+        <div class="subs-section">
+          <h2 class="section-label">Subscribers</h2>
+          <div class="sub-list" id="sub-list">
+            <div class="sub-item" style="justify-content:center;color:var(--text-4)">Loading...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>EarthOne Research</span>
+      <span>Analytics Dashboard</span>
+    </footer>
+
+  </div>
+
+  <script>
+  (function() {
+    "use strict";
+
+    // Date
+    const dateEl = document.getElementById("date-now");
+    if (dateEl) {
+      const d = new Date();
+      dateEl.textContent = d.toLocaleDateString("en-US", {
+        weekday: "short", year: "numeric", month: "short", day: "numeric"
+      });
+    }
+
+    async function loadAnalytics() {
+      try {
+        const res = await fetch("/api/analytics");
+        const data = await res.json();
+
+        document.getElementById("m-pageviews").textContent = (data.page_views || 0).toLocaleString();
+        document.getElementById("m-apicalls").textContent = (data.api_calls || 0).toLocaleString();
+        document.getElementById("m-shares").textContent = (data.share_clicks || 0).toLocaleString();
+        document.getElementById("m-subs").textContent = (data.subscribers || 0).toLocaleString();
+
+        // Event breakdown table
+        const tbody = document.getElementById("events-body");
+        if (data.events && data.events.length > 0) {
+          tbody.innerHTML = "";
+          data.events.forEach(ev => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td style="font-weight:600">${ev.event || ev.type || "—"}</td>
+              <td>${(ev.count || 0).toLocaleString()}</td>
+              <td>${ev.last_seen || "—"}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-4)">No events recorded yet</td></tr>';
+        }
+      } catch (e) {
+        console.error("Analytics load error:", e);
+      }
+    }
+
+    async function loadSubscribers() {
+      try {
+        const res = await fetch("/api/subscribers");
+        const data = await res.json();
+        const list = document.getElementById("sub-list");
+
+        if (data.subscribers && data.subscribers.length > 0) {
+          list.innerHTML = "";
+          data.subscribers.forEach(sub => {
+            const item = document.createElement("div");
+            item.className = "sub-item";
+            item.innerHTML = `
+              <span class="sub-email">${sub.email}</span>
+              <span class="sub-date">${sub.subscribed_at || sub.date || "—"}</span>
+            `;
+            list.appendChild(item);
+          });
+        } else {
+          list.innerHTML = '<div class="sub-item" style="justify-content:center;color:var(--text-4)">No subscribers yet</div>';
+        }
+      } catch (e) {
+        console.error("Subscribers load error:", e);
+      }
+    }
+
+    // Initial load
+    loadAnalytics();
+    loadSubscribers();
+
+    // Refresh button
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+      loadAnalytics();
+      loadSubscribers();
+    });
+  })();
+  </script>
+</body>
+</html>

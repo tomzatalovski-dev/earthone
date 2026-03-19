@@ -312,6 +312,19 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .subscribe-btn.error{background:var(--red)}
 .subscribe-msg{font-size:.75rem;margin-top:12px;color:var(--text-3);min-height:20px}
 
+/* ─── About Section (SEO) ───────────────────────────────── */
+.about-section{opacity:0;animation:fadeIn .6s var(--ease) 1.5s forwards}
+.about-content{max-width:700px}
+.about-content p{font-size:.82rem;line-height:1.7;color:var(--text-2);margin-bottom:14px}
+.about-content p:last-child{margin-bottom:0}
+.about-content strong{color:var(--text);font-weight:600}
+
+/* ─── Footer nav ────────────────────────────────────────── */
+.footer-nav{display:flex;gap:16px}
+.footer-nav a{font-size:.66rem;color:var(--text-4);text-decoration:none;letter-spacing:.01em;transition:color .2s}
+.footer-nav a:hover{color:var(--text-2)}
+.logo a{text-decoration:none;color:inherit}
+
 /* ─── Responsive ─────────────────────────────────────────── */
 .market-overlay-legend{
   display:flex;gap:14px;margin-top:6px;
