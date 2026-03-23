@@ -2,403 +2,276 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ELX Index Pro — Dashboard | EarthOne</title>
-  <meta name="description" content="ELX Index Pro decision dashboard — regime classification, hedge allocation, scenario analysis, and portfolio decisions."/>
-  <meta name="robots" content="noindex, nofollow"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ELX OS — Decision Machine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QKR9BJMKF"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-1QKR9BJMKF');</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
     :root{
-      --bg:#f5f5f7;--surface:rgba(255,255,255,.84);--surface-s:#fff;
-      --border:rgba(0,0,0,.05);--text:#1d1d1f;--text-2:#6e6e73;--text-3:#86868b;--text-4:#aeaeb2;
-      --green:#30d158;--green-dim:rgba(48,209,88,.08);
-      --orange:#ff9f0a;--orange-dim:rgba(255,159,10,.08);
-      --red:#ff453a;--red-dim:rgba(255,69,58,.08);
+      --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      --bg:#fafafa;
+      --card:#fff;
+      --border:rgba(0,0,0,.06);
+      --text-1:#1d1d1f;
+      --text-2:#3a3a3c;
+      --text-3:#6e6e73;
+      --text-4:#aeaeb2;
+      --green:#34c759;
+      --red:#ff3b30;
+      --orange:#ff9f0a;
       --amber:#b8860b;
-      --radius:20px;--radius-sm:14px;
-      --shadow:0 1px 2px rgba(0,0,0,.02),0 4px 16px rgba(0,0,0,.04);
-      --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
-      --ease:cubic-bezier(.22,1,.36,1);
+      --radius:20px;
+      --radius-sm:12px;
     }
-    html{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d1d6;border-radius:3px}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:var(--font);background:var(--bg);color:var(--text-1);-webkit-font-smoothing:antialiased}
 
-    /* ─── LAYOUT ──────────────────────────────────────── */
+    /* ─── Layout ─────────────────────────────────── */
     .layout{display:flex;min-height:100vh}
-    .sidebar{width:200px;border-right:1px solid rgba(0,0,0,.06);background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:4px;position:fixed;top:0;left:0;bottom:0;z-index:10}
-    .sidebar-brand{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-    .sidebar-brand .pro{font-size:9px;background:#1d1d1f;color:#fff;padding:2px 5px;border-radius:6px;font-weight:600;letter-spacing:.05em}
-    .sidebar-sub{font-size:11px;color:var(--text-4);margin-bottom:16px}
-    .sidebar-sub a{color:var(--text-4);text-decoration:none}.sidebar-sub a:hover{color:var(--text-2)}
-    .nav-link{display:block;padding:8px 12px;border-radius:10px;font-size:13px;color:var(--text-2);text-decoration:none;transition:all .15s}
-    .nav-link:hover{background:var(--bg);color:var(--text)}
-    .nav-link.active{background:var(--bg);color:var(--text);font-weight:600}
-    .sidebar-free{margin-top:auto;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:11px;color:var(--text-4)}
-    .sidebar-free a{color:var(--text-2);text-decoration:none;font-weight:500}
+    .sidebar{width:220px;background:#fff;border-right:1px solid var(--border);padding:28px 20px;position:fixed;top:0;left:0;bottom:0;z-index:10}
+    .sidebar-brand{font-size:17px;font-weight:700;letter-spacing:-.02em}
+    .sidebar-brand .pro{font-size:10px;font-weight:600;background:#1d1d1f;color:#fff;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle}
+    .sidebar-sub{font-size:11px;color:var(--text-4);margin-top:2px;margin-bottom:28px}
+    .sidebar-sub a{color:var(--text-4);text-decoration:none}
+    .nav-link{display:block;font-size:13px;font-weight:500;color:var(--text-3);padding:8px 12px;border-radius:8px;text-decoration:none;margin-bottom:2px;transition:all .15s}
+    .nav-link:hover{background:rgba(0,0,0,.03);color:var(--text-1)}
+    .nav-link.active{background:rgba(0,0,0,.04);color:var(--text-1);font-weight:600}
+    .sidebar-free{position:absolute;bottom:20px;left:20px;right:20px;font-size:10px;color:var(--text-4)}
+    .sidebar-free a{color:var(--text-4);text-decoration:none}
+    .main{margin-left:220px;flex:1;min-width:0}
 
-    .main{margin-left:200px;flex:1;min-width:0}
+    /* ─── Topbar ─────────────────────────────────── */
+    .topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 32px;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:5;font-size:12px}
+    .topbar-left{display:flex;align-items:center;gap:12px}
+    .topbar-elx-label{font-weight:700;font-size:13px;letter-spacing:.02em}
+    .topbar-elx-value{font-weight:800;font-size:15px}
+    .topbar-sep{width:1px;height:14px;background:var(--border)}
+    .topbar-regime{font-weight:600;font-size:12px}
+    .topbar-bias{font-size:11px;color:var(--text-3)}
+    .topbar-right{display:flex;align-items:center;gap:16px;font-size:11px;color:var(--text-4)}
 
-    /* ─── TOPBAR ──────────────────────────────────────── */
-    .topbar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.9);backdrop-filter:blur(20px);padding:10px 24px;position:sticky;top:0;z-index:5}
-    .topbar-left{display:flex;align-items:center;gap:16px}
-    .topbar-elx-label{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4)}
-    .topbar-elx-value{font-size:20px;font-weight:700}
-    .topbar-sep{width:1px;height:16px;background:rgba(0,0,0,.06)}
-    .topbar-regime{font-size:13px;font-weight:600}
-    .topbar-bias{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-4)}
-    .topbar-right{display:flex;align-items:center;gap:12px;font-size:11px;color:#c7c7cc}
+    /* ─── Content ─────────────────────────────────── */
+    .content{max-width:900px;margin:0 auto;padding:32px 32px 80px}
 
-    .content{padding:24px;display:flex;flex-direction:column;gap:20px;max-width:1400px}
-
-    /* ─── CHART HERO (ported from elxindex.com) ───────── */
-    .chart-hero{
-      background:var(--surface-s);border:1px solid var(--border);
-      border-radius:var(--radius);box-shadow:var(--shadow);
-      padding:40px 48px 32px;position:relative;overflow:hidden;
-    }
-    .chart-hero::before{content:'';position:absolute;top:0;left:48px;right:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04) 30%,rgba(0,0,0,.04) 70%,transparent)}
-
-    .chart-eyebrow{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:12px}
-    .chart-hero-row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:2px}
-    .chart-elx-value{font-size:5.5rem;font-weight:700;letter-spacing:-.065em;line-height:.85;color:var(--text);font-variant-numeric:tabular-nums}
-    .chart-elx-sign{font-weight:400;opacity:.35}
-    .chart-delta{font-size:1rem;font-weight:600;padding:4px 0 8px;align-self:flex-end;margin-bottom:8px}
-    .delta-up{color:var(--green)}.delta-down{color:var(--red)}.delta-flat{color:var(--orange)}
-
-    .chart-regime-row{display:flex;align-items:center;gap:14px;margin-top:6px}
-    .chart-regime-label{font-size:1.4rem;font-weight:600;letter-spacing:-.02em}
-    .chart-bias-badge{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
-    .bias-green{color:var(--green);background:var(--green-dim)}
-    .bias-orange{color:var(--orange);background:var(--orange-dim)}
-    .bias-red{color:var(--red);background:var(--red-dim)}
-
-    /* Regime scale bar */
-    .chart-regime-map{margin-top:18px;margin-bottom:6px}
-    .chart-regime-scale{position:relative;display:flex;height:8px;border-radius:4px;overflow:visible}
-    .chart-rz{height:100%;transition:opacity .3s}
-    .rz-1{flex:2;background:linear-gradient(90deg,#ff453a,#ff6961);border-radius:4px 0 0 4px}
-    .rz-2{flex:1;background:linear-gradient(90deg,#ff6961,#ff9f0a)}
-    .rz-3{flex:2;background:linear-gradient(90deg,#ff9f0a,#ffd60a,#30d158)}
-    .rz-4{flex:1;background:linear-gradient(90deg,#30d158,#34c759)}
-    .rz-5{flex:2;background:linear-gradient(90deg,#34c759,#00c7be);border-radius:0 4px 4px 0}
-    .chart-regime-pointer{
-      position:absolute;top:-5px;width:4px;height:18px;
-      background:#1d1d1f;border-radius:2px;
-      box-shadow:0 0 6px rgba(0,0,0,.2);
-      transition:left .8s var(--ease);z-index:2;
-    }
-    .chart-regime-pointer::after{
-      content:'';position:absolute;top:-3px;left:-3px;width:10px;height:10px;
-      border-radius:50%;background:#1d1d1f;
-      box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 10px rgba(0,0,0,.12);
-    }
-    .chart-regime-labels{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px}
-    .chart-regime-labels span{font-size:.52rem;font-weight:500;color:var(--text-4);font-variant-numeric:tabular-nums}
-
-    .chart-interpretation{font-size:.84rem;line-height:1.6;color:var(--text-2);max-width:600px;margin-top:14px;margin-bottom:16px}
-
-    /* Asset bias chips */
-    .chart-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
-    .chart-chip{font-size:.68rem;font-weight:600;padding:6px 14px;border-radius:100px;background:rgba(0,0,0,.03);color:var(--text-2);display:inline-flex;align-items:center;gap:5px}
-    .chart-chip .up{color:var(--green)}.chart-chip .down{color:var(--red)}
-
-    /* Chart controls */
-    .chart-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    .range-bar{display:flex;gap:4px}
-    .range-btn{
-      font-size:.66rem;font-weight:600;letter-spacing:.06em;
-      padding:6px 16px;border-radius:100px;border:none;cursor:pointer;
-      background:transparent;color:var(--text-3);transition:all .2s;
-    }
-    .range-btn:hover{background:rgba(0,0,0,.04)}
-    .range-btn.active{background:var(--text);color:#fff}
-
-    /* Chart container */
-    .chart-container{width:100%;min-height:380px;position:relative}
-    .chart-container svg{width:100%;height:auto;display:block}
-
-    /* Crosshair tooltip */
-    .chart-tooltip{
-      position:absolute;pointer-events:none;opacity:0;
-      transition:opacity .15s;z-index:10;
-    }
-    .chart-tooltip.visible{opacity:1}
-    .tooltip-line{position:absolute;top:0;width:1px;background:rgba(0,0,0,.08);pointer-events:none}
-    .tooltip-dot{
-      position:absolute;width:8px;height:8px;border-radius:50%;
-      border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.15);
-      transform:translate(-50%,-50%);pointer-events:none;
-    }
-    .tooltip-box{
-      position:absolute;transform:translateX(-50%);
-      background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
-      border:1px solid rgba(0,0,0,.06);border-radius:10px;
-      padding:8px 14px;box-shadow:0 4px 16px rgba(0,0,0,.08);
-      white-space:nowrap;
-    }
-    .tooltip-date{font-size:.62rem;color:var(--text-3);margin-bottom:2px}
-    .tooltip-val{font-size:.9rem;font-weight:700}
-
-    /* Correlation strip */
-    .chart-corr{display:flex;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-    .corr-title{font-size:.58rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4);margin-right:8px;align-self:center}
-    .corr-item{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:500}
-    .corr-label{color:var(--text-3)}.corr-val{font-weight:600;font-variant-numeric:tabular-nums}
-    .corr-pos .corr-val{color:var(--green)}.corr-neg .corr-val{color:var(--red)}.corr-neu .corr-val{color:var(--text-3)}    /* ─── COPILOT CARD ───────────────────────────────────── */
-    .copilot-card{background:var(--surface-s);border:1px solid var(--border);border-radius:28px;padding:32px 36px;box-shadow:0 1px 2px rgba(0,0,0,.02),0 8px 32px rgba(0,0,0,.05);position:relative;overflow:hidden}
-    .copilot-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1d1d1f 0%,#6e6e73 50%,#1d1d1f 100%)}
-    .copilot-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .copilot-brand{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4)}
-    .copilot-action-badge{font-size:.82rem;font-weight:600;padding:8px 18px;border-radius:100px}
-    .copilot-action-badge.ADD_RISK{background:rgba(48,209,88,.1);color:#1a7a3a;border:1px solid rgba(48,209,88,.2)}
-    .copilot-action-badge.WAIT{background:rgba(0,0,0,.04);color:var(--text-3);border:1px solid rgba(0,0,0,.06)}
-    .copilot-action-badge.REDUCE{background:rgba(255,69,58,.08);color:#ff453a;border:1px solid rgba(255,69,58,.15)}
-    .copilot-action-badge.HEDGE{background:rgba(255,159,10,.08);color:#ff9f0a;border:1px solid rgba(255,159,10,.15)}
-    .copilot-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;margin-bottom:12px;line-height:1.15}
-    .copilot-summary{font-size:1rem;line-height:1.7;color:var(--text-2);margin-bottom:28px;max-width:600px}
-    .copilot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .copilot-cell{background:var(--bg);border:1px solid rgba(0,0,0,.05);border-radius:16px;padding:16px 18px}
-    .copilot-cell-label{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4);margin-bottom:10px}
-    .copilot-cell-text{font-size:.85rem;line-height:1.65;color:var(--text-2)}
-    .copilot-portfolio-note{margin-top:20px;padding:12px 16px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;font-size:.82rem;color:#92400e;line-height:1.5}
-    .copilot-invalidation{margin-top:16px;font-size:.72rem;color:var(--text-4)}
-    .copilot-loading{text-align:center;padding:24px;font-size:.82rem;color:var(--text-4)}
-    .copilot-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
-    .copilot-confidence{text-align:right}
-    .copilot-confidence-label{font-size:.68rem;color:var(--text-4);margin-bottom:2px}
-    .copilot-confidence-value{font-size:1.6rem;font-weight:700}
-    .copilot-alloc{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
-    .copilot-alloc-item{border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
-    .copilot-alloc-name{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-4);margin-bottom:4px}
-    .copilot-alloc-val{font-size:1.1rem;font-weight:600}
-    .copilot-alloc-val.pos{color:var(--green)}
-    .copilot-alloc-val.neg{color:var(--red)}
-    .copilot-alloc-val.flat{color:var(--text-3)}
-    @media(max-width:900px){.copilot-grid{grid-template-columns:1fr}.copilot-alloc{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:640px){.copilot-card{padding:24px 20px;border-radius:20px}.copilot-title{font-size:1.4rem}.copilot-alloc{grid-template-columns:repeat(2,1fr)}}
-
-    /* ─── CARDS ─────────────────────────────────────────── */
-    .card{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-    .card-header{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:12px}
-    .section-title{font-size:18px;font-weight:600;margin-bottom:4px}
-    .section-desc{font-size:13px;color:var(--text-2);margin-bottom:16px}
-
-    /* Decision Block */
-    .decision{border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
-    .decision.red{background:#fef2f2;border:1px solid #fecaca}
-    .decision.orange{background:#fff7ed;border:1px solid #fed7aa}
-    .decision.amber{background:#fffbeb;border:1px solid #fde68a}
-    .decision.green{background:#f0fdf4;border:1px solid #bbf7d0}
-    .decision-top{display:flex;align-items:center;gap:16px;margin-bottom:12px}
-    .decision-action{font-size:14px;font-weight:700;padding:8px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:6px}
-    .decision-action.red{background:#ef4444;color:#fff}
-    .decision-action.orange{background:#f97316;color:#fff}
-    .decision-action.amber{background:#d4a017;color:#fff}
-    .decision-action.green{background:#22c55e;color:#fff}
-    .decision-label{font-size:15px;font-weight:600;color:var(--text)}
-    .decision-sublabel{font-size:13px;color:var(--text-2);margin-bottom:12px}
-    .decision-conviction{position:absolute;top:16px;right:20px;text-align:center}
-    .decision-conviction-value{font-size:28px;font-weight:700}
-    .decision-conviction-label{font-size:10px;color:var(--text-4);text-transform:uppercase;letter-spacing:.1em}
-    .decision-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border-radius:14px;overflow:hidden;margin-top:8px}
-    .decision-strip-item{background:rgba(0,0,0,.02);padding:10px 12px}
-    .decision-strip-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text-4);margin-bottom:4px}
-    .decision-strip-value{font-size:14px;font-weight:600}
-
-    /* Regime Hero */
-    .regime-hero{display:flex;gap:20px;flex-wrap:wrap}
-    .regime-left{flex:1;min-width:300px}
-    .regime-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:280px;flex-shrink:0}
-    .metric-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:10px 12px}
-    .metric-box-label{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:4px}
-    .metric-box-value{font-size:18px;font-weight:600}
-    .metric-box-value.small{font-size:13px}
-
-    /* Scores */
-    .scores-grid{display:flex;flex-direction:column;gap:10px}
-    .score-row{display:flex;align-items:center;gap:12px}
-    .score-label{width:120px;font-size:12px;color:var(--text-2);flex-shrink:0}
-    .score-bar-bg{flex:1;height:6px;background:rgba(0,0,0,.03);border-radius:3px;overflow:hidden}
-    .score-bar-fill{height:100%;border-radius:3px;transition:width .5s}
-    .score-value{width:30px;text-align:right;font-size:12px;font-weight:600}
-
-    /* Grid layouts */
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-    .grid-wide{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}
-
-    /* Driver cards */
-    .driver-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
-    .driver-name{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:8px}
-    .driver-score{font-size:24px;font-weight:700}
-    .driver-weight{font-size:11px;color:var(--text-4);margin-top:4px}
-    .driver-bar{height:4px;background:rgba(0,0,0,.03);border-radius:2px;margin-top:8px;overflow:hidden}
-    .driver-bar-fill{height:100%;border-radius:2px}
-
-    /* Asset cards */
-    .asset-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
-    .asset-header{display:flex;justify-content:space-between;margin-bottom:8px}
-    .asset-name{font-weight:500}.asset-ticker{font-size:11px;color:var(--text-4)}
-    .asset-price{font-size:18px;font-weight:600;margin-bottom:8px}
-    .asset-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0}
-    .asset-row-label{color:var(--text-4)}.asset-row-value{color:var(--text-2)}
-
-    /* Hedge */
-    .hedge-alloc{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-    .hedge-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--bg)}
-    .hedge-asset{width:80px;font-size:12px;font-weight:500}
-    .hedge-delta{font-size:14px;font-weight:700;width:60px;text-align:right}
-    .hedge-delta.up{color:#34c759}.hedge-delta.down{color:#ff3b30}.hedge-delta.neutral{color:var(--text-4)}
-
-    /* Scenarios */
-    .scenario-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
-    .scenario-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .scenario-horizon{font-size:11px;font-weight:600;color:var(--text-2)}
-    .scenario-action-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
-    .scenario-action-tag.red{background:rgba(255,69,58,.06);color:#ef4444}
-    .scenario-action-tag.orange{background:rgba(249,115,22,.06);color:#f97316}
-    .scenario-action-tag.amber{background:rgba(184,134,11,.06);color:#b8860b}
-    .scenario-action-tag.green{background:rgba(52,199,89,.06);color:#22c55e}
-    .scenario-action-tag.gray{background:rgba(0,0,0,.03);color:var(--text-2)}
-    .scenario-title{font-size:14px;font-weight:600;margin-bottom:4px}
-    .scenario-prob{font-size:12px;color:var(--text-4);margin-bottom:8px}
-    .scenario-desc{font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:10px}
-    .scenario-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
-    .scenario-tag{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid var(--border)}
-    .scenario-tag.fav{color:#34c759;border-color:rgba(52,199,89,.2);background:rgba(52,199,89,.04)}
-    .scenario-tag.press{color:#ff3b30;border-color:rgba(255,59,48,.2);background:rgba(255,59,48,.04)}
-    .scenario-actions{border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
-    .scenario-actions-title{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text-4);margin-bottom:6px}
-    .scenario-action-item{font-size:12px;color:var(--text);padding:2px 0}
-
-    /* Alerts */
-    .alert-item{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:8px}
-    .alert-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
-    .alert-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
-    .alert-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-    .alert-dot.high{background:#ff3b30}.alert-dot.medium{background:#b8860b}.alert-dot.low{background:var(--text-4)}
-    .alert-severity{font-size:9px;padding:2px 6px;border-radius:4px}
-    .alert-severity.high{background:rgba(255,59,48,.06);color:#ff3b30;border:1px solid rgba(255,59,48,.12)}
-    .alert-severity.medium{background:rgba(184,134,11,.06);color:#b8860b;border:1px solid rgba(184,134,11,.12)}
-    .alert-severity.low{background:rgba(0,0,0,.03);color:var(--text-2);border:1px solid var(--border)}
-    .alert-desc{font-size:11px;color:var(--text-2);margin-bottom:6px}
-    .alert-action{font-size:11px;color:var(--text);font-weight:500}
-
-    /* Brief */
-    .brief-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
-    .brief-text{font-size:13px;line-height:1.7;color:var(--text)}
-
-    .color-green{color:#34c759}.color-red{color:#ff3b30}.color-amber{color:#b8860b}.color-gray{color:var(--text-2)}
-
-    /* ─── V18: PROFILE SELECTOR ─────────────────────────────────── */
-    .profile-bar{display:flex;gap:8px;margin-bottom:0}
-    .profile-btn{flex:1;padding:14px 16px;border-radius:16px;border:1px solid var(--border);background:var(--surface-s);cursor:pointer;text-align:center;transition:all .2s var(--ease);font-family:var(--font)}
-    .profile-btn:hover{border-color:var(--text-3)}
-    .profile-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
-    .profile-btn-label{font-size:.82rem;font-weight:600;display:block}
-    .profile-btn-desc{font-size:.62rem;color:var(--text-4);margin-top:2px;display:block}
+    /* ─── Profile Bar ─────────────────────────────── */
+    .profile-bar{display:flex;gap:8px;margin-bottom:24px}
+    .profile-btn{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font)}
+    .profile-btn:hover{border-color:rgba(0,0,0,.12)}
+    .profile-btn.active{border-color:#1d1d1f;background:#1d1d1f;color:#fff}
+    .profile-btn-label{display:block;font-size:13px;font-weight:600}
+    .profile-btn-desc{display:block;font-size:10px;color:var(--text-4);margin-top:2px}
     .profile-btn.active .profile-btn-desc{color:rgba(255,255,255,.6)}
 
-    /* ─── V18: TODAY VS YESTERDAY ──────────────────────────────── */
-    .tvy-card{display:flex;align-items:center;justify-content:space-between;background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 32px}
-    .tvy-block{text-align:center}
-    .tvy-label{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:6px}
-    .tvy-value{font-size:2.2rem;font-weight:700;letter-spacing:-.03em}
-    .tvy-regime{font-size:.72rem;color:var(--text-3);margin-top:2px}
-    .tvy-arrow{font-size:1.8rem;color:var(--text-4)}
-    .tvy-delta{text-align:center}
-    .tvy-delta-value{font-size:1.6rem;font-weight:700}
-    .tvy-delta-label{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em}
+    /* ═══════════════════════════════════════════════
+       1. HERO — THE DECISION
+       ═══════════════════════════════════════════════ */
+    .hero-decision{
+      background:linear-gradient(180deg,#1d1d1f 0%,#2c2c2e 100%);
+      border-radius:24px;
+      padding:48px 40px 40px;
+      color:#fff;
+      margin-bottom:24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-decision::before{
+      content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;
+      background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero-brand{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:20px}
+    .hero-action{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:8px}
+    .hero-action .action-add{color:#30d158}
+    .hero-action .action-reduce{color:#ff453a}
+    .hero-action .action-hedge{color:#ff9f0a}
+    .hero-action .action-wait{color:rgba(255,255,255,.5)}
+    .hero-summary{font-size:17px;font-weight:400;color:rgba(255,255,255,.65);line-height:1.5;max-width:600px;margin-bottom:32px}
+    .hero-confidence{position:absolute;top:48px;right:40px;text-align:right}
+    .hero-confidence-value{font-size:40px;font-weight:800;letter-spacing:-.02em}
+    .hero-confidence-label{font-size:11px;font-weight:500;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase}
+
+    /* Allocation strip */
+    .hero-alloc{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+    .hero-alloc-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 16px;min-width:100px;text-align:center}
+    .hero-alloc-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.05em}
+    .hero-alloc-val{font-size:18px;font-weight:700;margin-top:2px}
+    .hero-alloc-val.pos{color:#30d158}
+    .hero-alloc-val.neg{color:#ff453a}
+    .hero-alloc-val.flat{color:rgba(255,255,255,.25)}
+
+    /* Action grid */
+    .hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+    .hero-cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px}
+    .hero-cell-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
+    .hero-cell-text{font-size:13px;line-height:1.6;color:rgba(255,255,255,.7)}
+
+    .hero-invalidation{font-size:12px;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.06);padding-top:16px}
+    .hero-portfolio-note{font-size:13px;color:#ff9f0a;margin-bottom:12px}
+
+    /* ═══════════════════════════════════════════════
+       2. REGIME STRIP
+       ═══════════════════════════════════════════════ */
+    .regime-strip{display:flex;align-items:center;gap:16px;padding:14px 0;margin-bottom:24px;font-size:14px;font-weight:500;color:var(--text-2)}
+    .regime-strip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .regime-strip-sep{color:var(--text-4);font-weight:300}
+
+    /* ═══════════════════════════════════════════════
+       3. ALERTS
+       ═══════════════════════════════════════════════ */
+    .alert-card{display:flex;gap:12px;padding:14px 18px;border-radius:var(--radius-sm);margin-bottom:8px;font-size:13px;align-items:flex-start}
+    .alert-card.warning{background:#fff8e6;border:1px solid #ffe0a0}
+    .alert-card.danger{background:#fff2f0;border:1px solid #ffc8c4}
+    .alert-card.info{background:#f0f4ff;border:1px solid #c8d8ff}
+    .alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+    .alert-body{flex:1}
+    .alert-title{font-weight:600;margin-bottom:2px}
+    .alert-msg{color:var(--text-3);font-size:12px}
+    .alert-action-text{font-size:12px;font-weight:600;color:var(--text-1);margin-top:4px}
+
+    /* ═══════════════════════════════════════════════
+       4. TODAY VS YESTERDAY
+       ═══════════════════════════════════════════════ */
+    .tvy-card{display:flex;align-items:center;gap:24px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:24px}
+    .tvy-block{text-align:center;min-width:80px}
+    .tvy-label{font-size:11px;font-weight:500;color:var(--text-4);letter-spacing:.05em;text-transform:uppercase}
+    .tvy-value{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+    .tvy-regime{font-size:11px;color:var(--text-3);margin-top:2px}
+    .tvy-arrow{font-size:20px;color:var(--text-4)}
+    .tvy-delta{flex:1;text-align:right}
+    .tvy-delta-value{font-size:18px;font-weight:700}
+    .tvy-delta-label{font-size:11px;color:var(--text-4);margin-top:2px}
     .tvy-up{color:var(--green)}
     .tvy-down{color:var(--red)}
-    .tvy-flat{color:var(--orange)}
+    .tvy-flat{color:var(--text-4)}
 
-    /* ─── V18: ALERTS ─────────────────────────────────────────── */
-    .alerts-container{display:flex;flex-direction:column;gap:8px}
-    .alert-card{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:16px;border:1px solid var(--border);background:var(--surface-s)}
-    .alert-card.danger{border-color:rgba(255,69,58,.2);background:rgba(255,69,58,.03)}
-    .alert-card.warning{border-color:rgba(255,159,10,.2);background:rgba(255,159,10,.03)}
-    .alert-card.info{border-color:rgba(48,209,88,.2);background:rgba(48,209,88,.03)}
-    .alert-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
-    .alert-body{flex:1}
-    .alert-title{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:3px}
-    .alert-msg{font-size:.75rem;color:var(--text-2);line-height:1.5;margin-bottom:4px}
-    .alert-action-text{font-size:.72rem;font-weight:600;color:var(--text)}
+    /* ═══════════════════════════════════════════════
+       5. ELX CHART (simplified)
+       ═══════════════════════════════════════════════ */
+    .chart-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px}
+    .chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+    .chart-elx-value{font-size:48px;font-weight:900;letter-spacing:-.04em;line-height:1}
+    .chart-elx-sign{font-weight:300;opacity:.4;font-size:36px}
+    .chart-delta{font-size:12px;font-weight:500;margin-top:4px}
+    .delta-up{color:var(--green)}.delta-down{color:var(--red)}.delta-flat{color:var(--text-4)}
+    .chart-regime-info{text-align:right}
+    .chart-regime-label{font-size:14px;font-weight:600}
+    .chart-bias-badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:4px}
+    .bias-green{background:#e8f9ee;color:#1a7f37}
+    .bias-orange{background:#fff4e0;color:#9a6700}
+    .bias-red{background:#ffe8e6;color:#cf222e}
 
-    /* ─── V18: PERFORMANCE ────────────────────────────────────── */
-    .perf-card{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 32px}
-    .perf-header{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:16px}
-    .perf-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-    .perf-row:last-child{border-bottom:none}
-    .perf-label{font-size:.85rem;color:var(--text-2)}
-    .perf-value{font-size:1.1rem;font-weight:700}
-    .perf-delta-row{margin-top:12px;padding:12px 16px;background:var(--bg);border-radius:12px;display:flex;align-items:center;justify-content:space-between}
-    .perf-delta-label{font-size:.72rem;color:var(--text-3)}
-    .perf-delta-value{font-size:1rem;font-weight:700}
+    .chart-container{width:100%;position:relative;margin-bottom:16px}
+    .chart-container svg{width:100%;height:auto;display:block}
 
-    /* ─── PORTFOLIO ───────────────────────────────────────────────── */
-    .portfolio-section{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 36px;position:relative;overflow:hidden}
-    .portfolio-section::before{content:'';position:absolute;top:0;left:36px;right:36px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04) 30%,rgba(0,0,0,.04) 70%,transparent)}
-    .portfolio-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-    .portfolio-title{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4)}
-    .portfolio-status-badge{display:inline-block;padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:600}
-    .pf-BALANCED{color:#1a7a3a;background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.2)}
-    .pf-OVEREXPOSED{color:#ff453a;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.15)}
-    .pf-UNDEREXPOSED{color:#ff9f0a;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.15)}
-    .pf-UNDERHEDGED{color:#b8860b;background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.15)}
-    .portfolio-summary{font-size:.95rem;line-height:1.65;color:var(--text-2);margin-bottom:24px}
-    .portfolio-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-    .pf-metric{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;text-align:center}
-    .pf-metric-label{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:6px}
-    .pf-metric-value{font-size:1.5rem;font-weight:700;color:var(--text)}
-    .portfolio-recs{margin-bottom:20px}
-    .portfolio-recs h4{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:8px}
-    .portfolio-recs ul{list-style:none;padding:0;margin:0}
-    .portfolio-recs li{font-size:.85rem;line-height:1.7;color:var(--text-2);padding:2px 0}
-    .portfolio-recs li::before{content:'• ';color:var(--text-4)}
-    .portfolio-form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-    .pf-input-group label{display:block;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4);margin-bottom:4px}
-    .pf-input-group input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.9rem;font-family:var(--font);color:var(--text);text-align:center;outline:none;transition:border .2s}
-    .pf-input-group input:focus{border-color:var(--text-3)}
-    .pf-save-btn{background:var(--text);color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+    .chart-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .range-bar{display:flex;gap:4px}
+    .range-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);color:var(--text-3);transition:all .15s}
+    .range-btn:hover{border-color:rgba(0,0,0,.15)}
+    .range-btn.active{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+
+    .chart-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .chart-chip{font-size:12px;font-weight:500;color:var(--text-2);background:var(--bg);padding:5px 12px;border-radius:20px;border:1px solid var(--border)}
+    .chart-chip .up{color:var(--green)}.chart-chip .down{color:var(--red)}
+
+    .chart-corr{display:flex;align-items:center;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:11px}
+    .corr-title{font-weight:600;color:var(--text-3)}
+    .corr-item{color:var(--text-3)}.corr-label{font-weight:500}.corr-val{font-weight:600}
+    .corr-pos .corr-val{color:var(--green)}.corr-neg .corr-val{color:var(--red)}.corr-neu .corr-val{color:var(--text-4)}
+
+    .chart-tooltip{position:absolute;pointer-events:none;opacity:0;transition:opacity .15s;z-index:5}
+    .chart-tooltip.visible{opacity:1}
+    .tooltip-box{background:#1d1d1f;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;white-space:nowrap;text-align:center}
+    .tooltip-date{font-weight:400;opacity:.6;margin-bottom:1px}
+    .tooltip-val{font-weight:700;font-size:13px}
+
+    /* ═══════════════════════════════════════════════
+       6. MACRO DRIVERS (Bloomberg clean)
+       ═══════════════════════════════════════════════ */
+    .macro-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px}
+    .macro-title{font-size:13px;font-weight:600;color:var(--text-3);letter-spacing:.05em;margin-bottom:16px}
+    .macro-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.03)}
+    .macro-row:last-child{border-bottom:none}
+    .macro-name{font-size:14px;font-weight:500;color:var(--text-2)}
+    .macro-right{display:flex;align-items:center;gap:12px}
+    .macro-arrow{font-size:14px;font-weight:600}
+    .macro-status{font-size:13px;font-weight:500;color:var(--text-3)}
+    .macro-score{font-size:14px;font-weight:700;min-width:40px;text-align:right}
+    .macro-risk{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .macro-risk-label{font-size:13px;font-weight:600;color:var(--text-3)}
+    .macro-risk-value{font-size:14px;font-weight:700}
+
+    /* ═══════════════════════════════════════════════
+       7. PORTFOLIO
+       ═══════════════════════════════════════════════ */
+    .portfolio-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px}
+    .portfolio-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .portfolio-title{font-size:15px;font-weight:700}
+    .portfolio-status-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
+    .pf-BALANCED{background:#e8f9ee;color:#1a7f37}
+    .pf-OVEREXPOSED{background:#ffe8e6;color:#cf222e}
+    .pf-UNDEREXPOSED{background:#fff4e0;color:#9a6700}
+    .pf-UNDERHEDGED{background:#f0f4ff;color:#0550ae}
+    .portfolio-form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+    .pf-input-group label{display:block;font-size:11px;font-weight:500;color:var(--text-4);margin-bottom:4px}
+    .pf-input-group input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-weight:600;font-family:var(--font);text-align:center;transition:border .15s}
+    .pf-input-group input:focus{outline:none;border-color:#1d1d1f}
+    .pf-total{font-size:13px;font-weight:600;text-align:center;padding:8px 0;color:var(--text-3)}
+    .pf-total.over{color:var(--red)}
+    .pf-save-btn{width:100%;padding:12px;background:#1d1d1f;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .15s}
     .pf-save-btn:hover{opacity:.85}
-    .pf-total{font-size:.75rem;color:var(--text-3);text-align:right;margin-bottom:8px}
-    .pf-total.over{color:#ff3b30}
+    .pf-save-btn:disabled{opacity:.5;cursor:not-allowed}
+    .portfolio-summary{font-size:13px;color:var(--text-2);margin-bottom:12px;line-height:1.5}
+    .portfolio-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+    .pf-metric{text-align:center;padding:12px;background:var(--bg);border-radius:var(--radius-sm)}
+    .pf-metric-label{font-size:11px;color:var(--text-4);font-weight:500}
+    .pf-metric-value{font-size:20px;font-weight:800;margin-top:4px}
+    .portfolio-recs{margin-top:12px}
+    .portfolio-recs h4{font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px}
+    .portfolio-recs ul{list-style:none;padding:0}
+    .portfolio-recs li{font-size:13px;color:var(--text-2);padding:4px 0;padding-left:16px;position:relative}
+    .portfolio-recs li::before{content:'\2192';position:absolute;left:0;color:var(--text-4)}
 
-    /* ─── RESPONSIVE ──────────────────────────────────────────────── */
-    @media(max-width:1024px){
-      .grid-4{grid-template-columns:repeat(2,1fr)}
-      .grid-5{grid-template-columns:repeat(2,1fr)}
-      .grid-wide{grid-template-columns:1fr}
-      .regime-hero{flex-direction:column}
-      .regime-metrics{width:100%}
-      .chart-hero{padding:28px 24px 20px}
-      .chart-elx-value{font-size:4rem}
-    }
+    /* ═══════════════════════════════════════════════
+       8. PERFORMANCE
+       ═══════════════════════════════════════════════ */
+    .perf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px}
+    .perf-header{font-size:13px;font-weight:600;color:var(--text-3);margin-bottom:16px}
+    .perf-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+    .perf-label{font-size:14px;font-weight:500;color:var(--text-2)}
+    .perf-value{font-size:18px;font-weight:800}
+    .perf-delta-row{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:8px;border-top:1px solid var(--border)}
+    .perf-delta-label{font-size:13px;font-weight:600;color:var(--text-3)}
+    .perf-delta-value{font-size:20px;font-weight:800}
+
+    /* ═══════════════════════════════════════════════
+       TOGGLE
+       ═══════════════════════════════════════════════ */
+    .toggle-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);text-decoration:underline;padding:4px 0;font-family:var(--font);margin-bottom:16px;display:block}
+
+    /* ═══════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════ */
     @media(max-width:768px){
       .sidebar{display:none}
       .main{margin-left:0}
-      .grid-2,.grid-3{grid-template-columns:1fr}
-      .decision-strip{grid-template-columns:repeat(2,1fr)}
-      .chart-hero{padding:20px 16px 16px}
-      .chart-elx-value{font-size:3rem}
-      .chart-hero-row{gap:12px}
-      .chart-regime-label{font-size:1.1rem}
-      .chart-controls{flex-direction:column;gap:8px;align-items:flex-start}
+      .content{padding:16px 16px 60px}
+      .hero-decision{padding:32px 24px 28px;border-radius:20px}
+      .hero-action{font-size:36px}
+      .hero-summary{font-size:15px}
+      .hero-confidence{position:static;text-align:left;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+      .hero-confidence-value{font-size:28px}
+      .hero-alloc{flex-wrap:wrap}
+      .hero-alloc-item{min-width:70px;padding:8px 12px}
+      .hero-alloc-val{font-size:15px}
+      .hero-grid{grid-template-columns:1fr}
+      .tvy-card{flex-wrap:wrap;gap:16px;padding:16px}
+      .tvy-value{font-size:24px}
+      .chart-elx-value{font-size:36px}
+      .macro-row{flex-wrap:wrap;gap:4px}
       .portfolio-form{grid-template-columns:repeat(2,1fr)}
       .portfolio-metrics{grid-template-columns:1fr}
-      .portfolio-section{padding:24px 20px}
       .profile-bar{flex-direction:column}
-      .tvy-card{flex-direction:column;gap:16px;padding:20px}
-      .tvy-arrow{transform:rotate(90deg)}
-      .perf-card{padding:20px}
+      .topbar{padding:10px 16px}
     }
   </style>
 </head>
@@ -438,7 +311,7 @@
       <!-- Content -->
       <div class="content" id="dashboard-content">
 
-        <!-- ═══ 1. PROFILE SELECTOR ═══ -->
+        <!-- PROFILE SELECTOR -->
         <div class="profile-bar" id="profile-bar">
           <button class="profile-btn" data-profile="conservative" onclick="selectProfile('conservative')">
             <span class="profile-btn-label">Conservative</span>
@@ -454,42 +327,49 @@
           </button>
         </div>
 
-        <!-- ═══ 2. ALERTS ═══ -->
-        <div class="alerts-container" id="alerts-container"></div>
-
-        <!-- ═══ 3. YOUR PORTFOLIO STATUS ═══ -->
-        <div id="copilot-container">
-          <div class="copilot-card">
-            <div class="copilot-loading">Loading EarthOne Copilot…</div>
+        <!-- 1. HERO DECISION -->
+        <div class="hero-decision" id="hero-decision">
+          <div class="hero-brand">EarthOne Copilot</div>
+          <div class="hero-action" id="hero-action">Loading&hellip;</div>
+          <div class="hero-summary" id="hero-summary">Analyzing macro conditions&hellip;</div>
+          <div class="hero-confidence" id="hero-confidence">
+            <div class="hero-confidence-value" id="hero-conf-val">&mdash;</div>
+            <div class="hero-confidence-label">Confidence</div>
           </div>
+          <div class="hero-alloc" id="hero-alloc"></div>
+          <div class="hero-grid" id="hero-grid"></div>
+          <div id="hero-portfolio-note"></div>
+          <div class="hero-invalidation" id="hero-invalidation"></div>
         </div>
 
-        <!-- ═══ 4. TODAY VS YESTERDAY ═══ -->
+        <!-- 2. REGIME STRIP -->
+        <div class="regime-strip" id="regime-strip">
+          <div class="regime-strip-dot" id="regime-dot" style="background:var(--text-4)"></div>
+          <span>ELX: <strong id="strip-elx">&mdash;</strong></span>
+          <span class="regime-strip-sep">&bull;</span>
+          <span id="strip-regime">&mdash;</span>
+          <span class="regime-strip-sep">&bull;</span>
+          <span id="strip-bias" style="color:var(--text-3)">&mdash;</span>
+        </div>
+
+        <!-- 3. ALERTS -->
+        <div id="alerts-container"></div>
+
+        <!-- 4. TODAY VS YESTERDAY -->
         <div id="tvy-container"></div>
 
-        <!-- ═══ 5. ELX CHART ═══ -->
-        <div class="chart-hero" id="chart-hero">
-          <div class="chart-eyebrow">ELX &mdash; Earth Liquidity Index</div>
-          <div class="chart-hero-row">
-            <div class="chart-elx-value" id="elx-value">&mdash;</div>
-            <div class="chart-delta delta-flat" id="elx-delta"></div>
-          </div>
-          <div class="chart-regime-row">
-            <span class="chart-regime-label" id="regime-label">Loading</span>
-            <span class="chart-bias-badge bias-orange" id="bias-badge">&mdash;</span>
-          </div>
-          <div class="chart-regime-map">
-            <div class="chart-regime-scale">
-              <div class="chart-rz rz-1"></div><div class="chart-rz rz-2"></div><div class="chart-rz rz-3"></div><div class="chart-rz rz-4"></div><div class="chart-rz rz-5"></div>
-              <div class="chart-regime-pointer" id="regime-pointer"></div>
+        <!-- 5. ELX CHART -->
+        <div class="chart-section" id="chart-section">
+          <div class="chart-header">
+            <div>
+              <div class="chart-elx-value" id="elx-value">&mdash;</div>
+              <div class="chart-delta delta-flat" id="elx-delta"></div>
             </div>
-            <div class="chart-regime-labels">
-              <span>-100</span><span>-40</span><span>-20</span><span>+20</span><span>+40</span><span>+100</span>
+            <div class="chart-regime-info">
+              <div class="chart-regime-label" id="regime-label">Loading</div>
+              <span class="chart-bias-badge bias-orange" id="bias-badge">&mdash;</span>
             </div>
           </div>
-          <p class="chart-interpretation" id="interpretation">Calculating macro conditions&hellip;</p>
-          <div class="chart-chips" id="asset-chips"></div>
-
           <div class="chart-controls">
             <div class="range-bar" id="range-bar">
               <button class="range-btn active" data-range="1Y">1Y</button>
@@ -499,32 +379,28 @@
             </div>
           </div>
           <div class="chart-container" id="chart"></div>
+          <div class="chart-chips" id="asset-chips"></div>
           <div class="chart-corr" id="corr-strip"></div>
         </div>
 
-        <!-- ═══ 6. PERFORMANCE ═══ -->
-        <div id="perf-container"></div>
-
-        <!-- ═══ PSYCHO TRIGGER ═══ -->
-        <div id="psycho-trigger" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:13px">
-          <span style="color:var(--text-2)">Following ELX (30d)</span>
-          <span id="psycho-elx" style="color:var(--green);font-weight:600">+8.2%</span>
-          <span style="color:var(--text-3);margin-left:24px">Market</span>
-          <span style="color:var(--text-3);font-weight:500">+2.1%</span>
+        <!-- 6. MACRO DRIVERS -->
+        <div class="macro-section" id="macro-section">
+          <div class="macro-title">Macro Drivers</div>
+          <div id="macro-rows">Loading&hellip;</div>
         </div>
 
-        <!-- ═══ PORTFOLIO ASSESSMENT ═══ -->
-        <div id="portfolio-section" class="portfolio-section">
+        <!-- 7. PORTFOLIO -->
+        <div class="portfolio-section" id="portfolio-section">
           <div class="portfolio-header">
-            <div class="portfolio-title">Your Portfolio vs Current Regime</div>
+            <div class="portfolio-title">Your Portfolio</div>
             <div class="portfolio-status-badge" id="pf-status">Enter your portfolio</div>
           </div>
           <div id="pf-result" style="display:none">
             <p class="portfolio-summary" id="pf-summary"></p>
             <div class="portfolio-metrics">
-              <div class="pf-metric"><div class="pf-metric-label">Risk Exposure</div><div class="pf-metric-value" id="pf-risk">—</div></div>
-              <div class="pf-metric"><div class="pf-metric-label">Defensive</div><div class="pf-metric-value" id="pf-defensive">—</div></div>
-              <div class="pf-metric"><div class="pf-metric-label">Hedge Coverage</div><div class="pf-metric-value" id="pf-hedge">—</div></div>
+              <div class="pf-metric"><div class="pf-metric-label">Risk Exposure</div><div class="pf-metric-value" id="pf-risk">&mdash;</div></div>
+              <div class="pf-metric"><div class="pf-metric-label">Defensive</div><div class="pf-metric-value" id="pf-defensive">&mdash;</div></div>
+              <div class="pf-metric"><div class="pf-metric-label">Hedge Coverage</div><div class="pf-metric-value" id="pf-hedge">&mdash;</div></div>
             </div>
             <div class="portfolio-recs" id="pf-recs-wrap" style="display:none">
               <h4>Recommended Changes</h4>
@@ -543,15 +419,15 @@
           <button class="pf-save-btn" id="pf-save" onclick="assessPortfolio()">Analyze my portfolio</button>
         </div>
 
-        <!-- ═══ MACRO TOGGLE ═══ -->
-        <button id="macro-toggle" onclick="document.getElementById('dashboard-dynamic').style.display=document.getElementById('dashboard-dynamic').style.display==='none'?'block':'none';this.textContent=document.getElementById('dashboard-dynamic').style.display==='none'?'Show macro details \u2192':'Hide macro details \u2191'" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);text-decoration:underline;padding:4px 0;font-family:var(--font)">
-          Show macro details &rarr;
-        </button>
+        <!-- 8. PERFORMANCE -->
+        <div id="perf-container"></div>
 
-        <!-- ═══ REST OF DASHBOARD (loaded dynamically) ═══ -->
+        <!-- SCENARIOS (hidden toggle) -->
+        <button class="toggle-btn" id="scenario-toggle" onclick="toggleScenarios()">Show scenarios &rarr;</button>
         <div id="dashboard-dynamic" style="display:none">
           <div style="text-align:center;padding:40px;color:var(--text-4);font-size:13px">Loading decision engine&hellip;</div>
         </div>
+
       </div>
     </div>
   </div>
@@ -565,15 +441,13 @@
   const elxDeltaEl = document.getElementById("elx-delta");
   const regimeLabel = document.getElementById("regime-label");
   const biasBadge = document.getElementById("bias-badge");
-  const interpEl = document.getElementById("interpretation");
   const chipsEl = document.getElementById("asset-chips");
   const chartWrap = document.getElementById("chart");
   const corrStrip = document.getElementById("corr-strip");
   const rangeBar = document.getElementById("range-bar");
-  const regimePointer = document.getElementById("regime-pointer");
 
   let currentRange = "1Y";
-  let chartSeries = null; // store for crosshair
+  let chartSeries = null;
   let chartPts = null;
   let chartDims = null;
   const RANGE_DAYS = { "1Y": 365, "5Y": 1825, "10Y": 3650, "MAX": 7300 };
@@ -593,14 +467,6 @@
     requestAnimationFrame(tick);
   }
 
-  // ─── Regime pointer ────────────────────────────────────
-  function updateRegimeMap(value){
-    if(!regimePointer) return;
-    const clamped=Math.max(-100,Math.min(100,value));
-    const pct=((clamped+100)/200)*100;
-    regimePointer.style.left=`calc(${pct}% - 2px)`;
-  }
-
   // ─── Fetch ELX ─────────────────────────────────────────
   async function fetchELX(){
     try{
@@ -608,7 +474,6 @@
       const d=await res.json();
 
       animateValue(elxValueEl, d.value);
-      updateRegimeMap(d.value);
 
       if(d.delta!==undefined){
         const ds=d.delta>0?"+":"";
@@ -624,8 +489,6 @@
       else if(d.bias.includes("Risk-Off")) biasBadge.classList.add("bias-red");
       else biasBadge.classList.add("bias-orange");
 
-      interpEl.textContent=d.interpretation;
-
       if(d.asset_bias && chipsEl){
         chipsEl.innerHTML=d.asset_bias.map(a=>{
           const arrow=a.direction==="up"?"\u2191":"\u2193";
@@ -634,7 +497,7 @@
         }).join("");
       }
 
-      // Update topbar
+      // Topbar
       document.getElementById("topbar-elx").textContent=d.value;
       const tr=document.getElementById("topbar-regime");
       tr.textContent=d.regime;
@@ -642,8 +505,60 @@
       document.getElementById("topbar-bias").textContent=d.bias;
       document.getElementById("topbar-time").textContent=new Date().toLocaleTimeString();
 
+      // Regime strip
+      document.getElementById("strip-elx").textContent=d.value;
+      document.getElementById("strip-regime").textContent=d.regime;
+      document.getElementById("strip-bias").textContent=d.bias;
+      const dot=document.getElementById("regime-dot");
+      dot.style.background=d.regime==="Risk-On"?"var(--green)":d.regime==="Risk-Off"?"var(--red)":"var(--orange)";
+
+      // Macro drivers
+      renderMacro(d.drivers||[]);
+
       return d;
     }catch(e){console.error(e);return null;}
+  }
+
+  // ─── Macro Drivers (Bloomberg clean) ───────────────────
+  function renderMacro(drivers){
+    const container=document.getElementById("macro-rows");
+    if(!container||!drivers.length) return;
+
+    const statusMap={
+      'Global Liquidity':s=>s>0?'Expanding':'Contracting',
+      'Real Yields':s=>s>0?'Falling':'Rising',
+      'USD Strength':s=>s>0?'Weakening':'Strong',
+      'Credit Conditions':s=>s>0?'Easing':'Tightening',
+      'Market Beta':s=>s>0?'Risk-On':'Risk-Off'
+    };
+
+    let html=drivers.map(d=>{
+      const arrow=d.score>=0?'\u2191':'\u2193';
+      const arrowColor=d.score>=0?'var(--green)':'var(--red)';
+      const status=statusMap[d.name]?statusMap[d.name](d.score):(d.score>=0?'Positive':'Negative');
+      const scoreColor=d.score>=0?'var(--green)':'var(--red)';
+      return `
+        <div class="macro-row">
+          <div class="macro-name">${d.name}</div>
+          <div class="macro-right">
+            <span class="macro-arrow" style="color:${arrowColor}">${arrow}</span>
+            <span class="macro-status">${status}</span>
+            <span class="macro-score" style="color:${scoreColor}">${d.score>=0?'+':''}${d.score}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Risk level summary
+    const avgScore=drivers.reduce((s,d)=>s+d.score,0)/drivers.length;
+    const riskLevel=avgScore<-10?'Elevated':avgScore>10?'Low':'Moderate';
+    const riskColor=avgScore<-10?'var(--red)':avgScore>10?'var(--green)':'var(--orange)';
+    html+=`
+      <div class="macro-risk">
+        <span class="macro-risk-label">Risk Level</span>
+        <span class="macro-risk-value" style="color:${riskColor}">${riskLevel}</span>
+      </div>`;
+
+    container.innerHTML=html;
   }
 
   // ─── Smoothing (5-period MA) ───────────────────────────
@@ -672,12 +587,12 @@
     return d;
   }
 
-  // ─── Premium SVG Chart (exact port from elxindex.com) ──
+  // ─── Premium SVG Chart ─────────────────────────────────
   function drawChart(series){
     if(!series||series.length<2) return;
     chartSeries=series;
 
-    const W=1060, H=400;
+    const W=1060, H=380;
     const P={t:28,r:16,b:40,l:44};
     const pW=W-P.l-P.r, pH=H-P.t-P.b;
 
@@ -696,7 +611,6 @@
     chartPts=pts;
     chartDims={W,H,P,pW,pH,minV,maxV,rV};
 
-    // Downsample for smoothness
     const step=series.length>1000?5:series.length>300?3:2;
     const sampled=[];
     for(let i=0;i<pts.length;i+=step) sampled.push(pts[i]);
@@ -746,8 +660,8 @@
     <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" id="elx-svg">
       <defs>
         <linearGradient id="aG" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="rgba(${rgb},.25)"/>
-          <stop offset="30%" stop-color="rgba(${rgb},.10)"/>
+          <stop offset="0%" stop-color="rgba(${rgb},.20)"/>
+          <stop offset="40%" stop-color="rgba(${rgb},.06)"/>
           <stop offset="100%" stop-color="rgba(${rgb},0)"/>
         </linearGradient>
         <filter id="lGlow" x="-8%" y="-8%" width="116%" height="116%">
@@ -767,48 +681,28 @@
         </radialGradient>
         <clipPath id="pClip"><rect x="${P.l}" y="${P.t}" width="${pW}" height="${pH}"/></clipPath>
       </defs>
-
       ${grid}${yL}${xL}${zeroLine}
-
       <path d="${areaPath}" fill="url(#aG)" clip-path="url(#pClip)"/>
-
       <path id="chart-line" d="${linePath}" fill="none"
         stroke="${accent}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         filter="url(#lGlow)"
         style="stroke-dasharray:6000;stroke-dashoffset:6000"/>
-
-      <!-- Crosshair overlay (invisible rect for mouse events) -->
       <rect id="chart-hover-area" x="${P.l}" y="${P.t}" width="${pW}" height="${pH}" fill="transparent" style="cursor:crosshair"/>
-
-      <!-- Crosshair elements (hidden by default) -->
       <line id="xhair-line" x1="0" y1="${P.t}" x2="0" y2="${P.t+pH}" stroke="rgba(0,0,0,.08)" stroke-width="1" stroke-dasharray="3,3" opacity="0"/>
       <circle id="xhair-dot" cx="0" cy="0" r="4" fill="${accent}" stroke="#fff" stroke-width="2" opacity="0"/>
-
       <g class="chart-pulse">
         <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="28" fill="url(#haloG)"/>
-        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="5"
-          fill="none" stroke="${accent}" stroke-width="1" opacity=".3">
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="5" fill="none" stroke="${accent}" stroke-width="1" opacity=".3">
           <animate attributeName="r" values="6;28" dur="3s" repeatCount="indefinite"/>
           <animate attributeName="opacity" values=".3;0" dur="3s" repeatCount="indefinite"/>
         </circle>
-        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="5"
-          fill="none" stroke="${accent}" stroke-width=".8" opacity=".2">
-          <animate attributeName="r" values="6;22" dur="3s" begin="1.5s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".2;0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6"
-          fill="${accent}" filter="url(#pGlow)" opacity=".8"/>
-        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.2"
-          fill="#fff"/>
-        <line x1="${last.x.toFixed(1)}" y1="${(last.y+14).toFixed(1)}"
-              x2="${last.x.toFixed(1)}" y2="${(P.t+pH).toFixed(1)}"
-          stroke="${accent}" stroke-width=".5" stroke-dasharray="2,5" opacity=".1"/>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6" fill="${accent}" filter="url(#pGlow)" opacity=".8"/>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.2" fill="#fff"/>
       </g>
     </svg>`;
 
     chartWrap.innerHTML=svg;
 
-    // Animate line draw
     const line=document.getElementById("chart-line");
     if(line){
       requestAnimationFrame(()=>{
@@ -816,8 +710,6 @@
         line.style.strokeDashoffset="0";
       });
     }
-
-    // Setup crosshair interaction
     setupCrosshair(accent);
   }
 
@@ -828,7 +720,6 @@
     const xhairDot=document.getElementById("xhair-dot");
     if(!hoverArea||!chartPts||!chartSeries) return;
 
-    // Create tooltip div
     let tooltip=document.getElementById("chart-tooltip");
     if(!tooltip){
       tooltip=document.createElement("div");
@@ -848,7 +739,6 @@
 
     hoverArea.addEventListener("mousemove",function(e){
       const svgX=getMouseSVGX(e);
-      // Find closest point
       let closest=0, minDist=Infinity;
       for(let i=0;i<chartPts.length;i++){
         const dist=Math.abs(chartPts[i].x-svgX);
@@ -860,16 +750,13 @@
       xhairLine.setAttribute("x1",pt.x.toFixed(1));
       xhairLine.setAttribute("x2",pt.x.toFixed(1));
       xhairLine.setAttribute("opacity","1");
-
       xhairDot.setAttribute("cx",pt.x.toFixed(1));
       xhairDot.setAttribute("cy",pt.y.toFixed(1));
       xhairDot.setAttribute("opacity","1");
 
-      // Position tooltip
       const rect=svgEl.getBoundingClientRect();
       const pxX=(pt.x/chartDims.W)*rect.width;
       const pxY=(pt.y/chartDims.H)*rect.height;
-
       tooltip.style.left=pxX+"px";
       tooltip.style.top=(pxY-52)+"px";
       tooltip.classList.add("visible");
@@ -914,14 +801,12 @@
     });
   }
 
-  // ─── Fetch Markets + Correlation ───────────────────────
+  // ─── Markets + Correlation ─────────────────────────────
   async function fetchMarkets(){
     try{
       const res=await fetch("/api/elx/markets");
       const data=await res.json();
-      if(Array.isArray(data)){
-        renderCorrStrip(data);
-      }
+      if(Array.isArray(data)) renderCorrStrip(data);
     }catch(e){console.error(e);}
   }
 
@@ -938,7 +823,7 @@
     corrStrip.innerHTML=html;
   }
 
-  // ─── Load Decision Engine (rest of dashboard) ──────────
+  // ─── Load Decision Engine (hidden section) ─────────────
   async function loadDashboard(){
     try{
       const [decisionRes,hedgeRes,scenariosRes,marketsRes,alertsRes,elxRes]=await Promise.all([
@@ -949,201 +834,90 @@
         fetch('/api/dashboard/alerts').then(r=>r.json()),
         fetch('/api/elx').then(r=>r.json()),
       ]);
-
       document.getElementById("topbar-conviction").textContent=`Conviction ${decisionRes.conviction}%`;
       renderDashboard(elxRes,decisionRes,hedgeRes,scenariosRes,marketsRes,alertsRes);
     }catch(e){
       console.error('Dashboard load error:',e);
-      document.getElementById('dashboard-dynamic').innerHTML='<div style="text-align:center;padding:40px;color:#ff3b30;font-size:13px">Error loading dashboard. Refresh to retry.</div>';
+      document.getElementById('dashboard-dynamic').innerHTML='<div style="text-align:center;padding:40px;color:#ff3b30;font-size:13px">Error loading. Refresh to retry.</div>';
     }
   }
 
-  function regimeColor(regime){
-    if(regime==='Risk-On') return '#34c759';
-    if(regime==='Risk-Off') return '#ff3b30';
-    return '#b8860b';
-  }
-  function regimeClass(regime){
-    if(regime==='Risk-On') return 'green';
-    if(regime==='Risk-Off') return 'red';
-    return 'amber';
-  }
-  function actionTagClass(action){
-    if(action==='HEDGE NOW') return 'red';
-    if(action==='REDUCE RISK') return 'orange';
-    if(action==='ADD RISK') return 'green';
-    if(action==='SELECTIVE') return 'amber';
-    return 'gray';
-  }
-  function renderScoreBar(label,value){
-    const color=value>70?'#ff3b30':value>40?'#b8860b':'#34c759';
-    return `<div class="score-row"><span class="score-label">${label}</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:${value}%;background:${color}"></div></div><span class="score-value">${Math.round(value)}</span></div>`;
-  }
+  function regimeColor(r){return r==='Risk-On'?'#34c759':r==='Risk-Off'?'#ff3b30':'#b8860b'}
+  function actionTagClass(a){if(a==='HEDGE NOW')return'red';if(a==='REDUCE RISK')return'orange';if(a==='ADD RISK')return'green';return'gray'}
 
   function renderDashboard(elx,decision,hedge,scenarios,markets,alerts){
     const drivers=elx.drivers||[];
-    const rc=regimeClass(elx.regime);
-    const ac=decision.actionColor;
-
-    const liqScore=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Global Liquidity')?.score||0)/2));
-    const macroScore=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Credit Conditions')?.score||0)/2));
-    const stressScore=decision.stressScore;
-    const crossAsset=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Market Beta')?.score||0)/2));
-    const hedgeNeed=decision.hedgeNeed;
-
     let html='';
 
-    // DECISION BLOCK
-    html+=`
-      <div class="decision ${ac}">
-        <div class="decision-top">
-          <span class="decision-action ${ac}">\u26A1 ${decision.action}</span>
-          <span class="decision-label">${decision.actionLabel}</span>
-        </div>
-        <div class="decision-sublabel">${elx.bias} regime + hedge need ${decision.hedgeNeed} \u2014 ${decision.action==='HEDGE NOW'?'deploy defensive positions immediately':decision.action==='REDUCE RISK'?'reduce exposure and add hedges':decision.action==='ADD RISK'?'liquidity supports broader allocation':'wait for clearer signal'}.</div>
-        <div class="decision-conviction">
-          <div class="decision-conviction-value">${decision.conviction}</div>
-          <div class="decision-conviction-label">conf</div>
-        </div>
-        <div class="decision-strip">
-          <div class="decision-strip-item"><div class="decision-strip-label">Regime</div><div class="decision-strip-value" style="color:${regimeColor(elx.regime)}">${elx.regime}</div></div>
-          <div class="decision-strip-item"><div class="decision-strip-label">ELX</div><div class="decision-strip-value">${elx.value}</div></div>
-          <div class="decision-strip-item"><div class="decision-strip-label">Liquidity</div><div class="decision-strip-value">${decision.liquidityDirection}</div></div>
-          <div class="decision-strip-item"><div class="decision-strip-label">Risk Level</div><div class="decision-strip-value">${decision.stressScore>70?'Critical':decision.stressScore>40?'Elevated':'Low'}</div></div>
-        </div>
-      </div>`;
-
-    // ELX DECISION LAYER + CORE SCORES
-    html+=`
-      <div class="grid-wide">
-        <div class="brief-card">
-          <div class="card-header">ELX Decision Layer</div>
-          <div class="brief-text">Regime ${elx.regime}. ELX ${elx.value}. Dominant risk: ${elx.bias}. ${elx.interpretation} Liquidity score: ${drivers.find(d=>d.name==='Global Liquidity')?.score||'N/A'}. Credit: ${drivers.find(d=>d.name==='Credit Conditions')?.score||'N/A'}. Real Yields: ${drivers.find(d=>d.name==='Real Yields')?.score||'N/A'}.</div>
-        </div>
-        <div class="card">
-          <div class="card-header">Core Scores</div>
-          <div class="scores-grid">
-            ${renderScoreBar('Liquidity Score',liqScore)}
-            ${renderScoreBar('Macro Score',macroScore)}
-            ${renderScoreBar('Stress Score',stressScore)}
-            ${renderScoreBar('Cross Asset',crossAsset)}
-            ${renderScoreBar('Hedge Need',hedgeNeed)}
-          </div>
-        </div>
-      </div>`;
-
-    // MACRO DRIVERS
-    html+=`
-      <div>
-        <div class="section-title">Macro Drivers</div>
-        <div class="section-desc">Dominant macro inputs driving the ELX composite score.</div>
-        <div class="grid-5">
-          ${drivers.map(d=>`
-            <div class="driver-card">
-              <div class="driver-name">${d.name}</div>
-              <div class="driver-score" style="color:${d.score>=0?'#34c759':'#ff3b30'}">${d.score>=0?'+':''}${d.score}</div>
-              <div class="driver-weight">${d.weight}</div>
-              <div class="driver-bar"><div class="driver-bar-fill" style="width:${Math.abs(d.score)/2+50}%;background:${d.score>=0?'#34c759':'#ff3b30'}"></div></div>
+    // Scenarios
+    html+=`<div style="margin-bottom:20px"><div style="font-size:15px;font-weight:700;margin-bottom:12px">Scenario Engine</div>
+      <div style="font-size:12px;color:var(--text-4);margin-bottom:16px">Probabilistic view across 3 horizons</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        ${scenarios.map(s=>`
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:11px;font-weight:600;color:var(--text-3)">${s.horizon}</span>
+              <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:${s.action==='ADD RISK'?'#e8f9ee':s.action==='HEDGE NOW'?'#ffe8e6':'#fff4e0'};color:${s.action==='ADD RISK'?'#1a7f37':s.action==='HEDGE NOW'?'#cf222e':'#9a6700'}">${s.action}</span>
             </div>
-          `).join('')}
-        </div>
-      </div>`;
-
-    // ELX VS MARKETS
-    html+=`
-      <div>
-        <div class="section-title">ELX vs Markets</div>
-        <div class="grid-4">
-          ${markets.map(m=>`
-            <div class="asset-card">
-              <div class="asset-header"><span class="asset-name">${m.name}</span><span class="asset-ticker">${m.ticker.replace('.us','').toUpperCase()}</span></div>
-              <div class="asset-price">${typeof m.price==='number'?(m.price>1000?'$'+m.price.toLocaleString():m.price.toFixed(1)):m.price}</div>
-              <div class="asset-row"><span class="asset-row-label">30d Change</span><span class="asset-row-value" style="color:${m.change_30d>0?'#34c759':'#ff3b30'}">${m.change_30d>0?'+':''}${m.change_30d}%</span></div>
-              <div class="asset-row"><span class="asset-row-label">ELX Corr</span><span class="asset-row-value" style="color:${m.correlation>0.3?'#34c759':m.correlation<-0.3?'#ff3b30':'#6e6e73'}">${m.correlation>0?'+':''}${m.correlation.toFixed(2)}</span></div>
-            </div>
-          `).join('')}
-        </div>
-      </div>`;
-
-    // SCENARIO ENGINE
-    html+=`
-      <div>
-        <div class="section-title">Scenario Engine</div>
-        <div class="section-desc">AI-generated. Probabilistic view across 3 horizons.</div>
-        <div class="grid-3">
-          ${scenarios.map(s=>`
-            <div class="scenario-card">
-              <div class="scenario-header"><span class="scenario-horizon">${s.horizon}</span><span class="scenario-action-tag ${actionTagClass(s.action)}">${s.action}</span></div>
-              <div class="scenario-title">${s.title}</div>
-              <div class="scenario-prob">${s.probability}%</div>
-              <div class="scenario-desc">${s.description}</div>
-              <div class="scenario-tags">${s.favored.map(f=>`<span class="scenario-tag fav">${f}</span>`).join('')}${s.pressured.map(p=>`<span class="scenario-tag press">${p}</span>`).join('')}</div>
-              <div class="scenario-actions"><div class="scenario-actions-title">Action</div>${s.actions.map(a=>`<div class="scenario-action-item">\u2192 ${a}</div>`).join('')}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>`;
-
-    // HEDGE ENGINE + ALERTS
-    html+=`
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-title">Hedge Engine</div>
-          <div class="section-desc">Rule-based \u00B7 ELX + regime + scores \u00B7 ${hedge.horizon} horizon</div>
-          <div style="display:flex;gap:16px;margin-bottom:12px">
-            <div><span style="font-size:11px;color:var(--text-4)">Confidence</span><br/><strong>${hedge.confidence}%</strong></div>
-            <div><span style="font-size:11px;color:var(--text-4)">Dominant Risk</span><br/><strong>${hedge.dominantRisk}</strong></div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:4px">${s.title}</div>
+            <div style="font-size:22px;font-weight:800;color:var(--text-1);margin-bottom:6px">${s.probability}%</div>
+            <div style="font-size:12px;color:var(--text-3);line-height:1.5">${s.description}</div>
           </div>
-          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px"><strong>Suggested:</strong> ${hedge.suggestion}</div>
-          <div class="hedge-alloc">
-            ${hedge.allocation.map(a=>`
-              <div class="hedge-row">
-                <span class="hedge-asset">${a.direction==='up'?'\u2191':a.direction==='down'?'\u2193':'\u2192'} ${a.asset}</span>
-                <span class="hedge-delta ${a.direction}">${a.delta>0?'+':''}${a.delta}%</span>
-              </div>
-            `).join('')}
+        `).join('')}
+      </div>
+    </div>`;
+
+    // Hedge engine
+    html+=`<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin-bottom:16px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Hedge Engine</div>
+      <div style="font-size:13px;color:var(--text-2);margin-bottom:12px">${hedge.suggestion}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        ${hedge.allocation.map(a=>`
+          <span style="font-size:12px;font-weight:600;padding:4px 12px;border-radius:8px;background:${a.direction==='up'?'#e8f9ee':a.direction==='down'?'#ffe8e6':'var(--bg)'};color:${a.direction==='up'?'#1a7f37':a.direction==='down'?'#cf222e':'var(--text-3)'}">${a.direction==='up'?'\u2191':a.direction==='down'?'\u2193':'\u2192'} ${a.asset} ${a.delta>0?'+':''}${a.delta}%</span>
+        `).join('')}
+      </div>
+    </div>`;
+
+    // Alerts
+    if(alerts.length){
+      html+=`<div style="margin-bottom:16px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:8px">System Alerts</div>
+        ${alerts.map(a=>`
+          <div style="display:flex;gap:8px;padding:10px 14px;border-radius:8px;margin-bottom:6px;font-size:12px;background:${a.severity==='critical'?'#ffe8e6':a.severity==='warning'?'#fff8e6':'#f0f4ff'};border:1px solid ${a.severity==='critical'?'#ffc8c4':a.severity==='warning'?'#ffe0a0':'#c8d8ff'}">
+            <span style="font-weight:600">${a.title}</span>
+            <span style="color:var(--text-3)">${a.description}</span>
           </div>
-          <div style="margin-top:12px;font-size:11px;color:var(--text-4)">${hedge.invalidation}</div>
-        </div>
-        <div class="card">
-          <div class="section-title">ELX Alerts</div>
-          <div class="section-desc">Rule-based. Updated with each ELX computation.</div>
-          ${alerts.length===0?'<div style="text-align:center;padding:20px;color:var(--text-4);font-size:12px">No active alerts.</div>':
-            alerts.map(a=>`
-              <div class="alert-item">
-                <div class="alert-header"><div class="alert-title"><span class="alert-dot ${a.severity}"></span>${a.title}</div><span class="alert-severity ${a.severity}">${a.severity}</span></div>
-                <div class="alert-desc">${a.description}</div>
-                <div class="alert-action">${a.action}</div>
-              </div>
-            `).join('')}
-        </div>
+        `).join('')}
       </div>`;
+    }
 
     document.getElementById('dashboard-dynamic').innerHTML=html;
   }
 
-   // ─── Copilot ─────────────────────────────────────────
+  // ─── Copilot (Hero Decision) ───────────────────────────
   async function fetchCopilot(){
-    const container=document.getElementById('copilot-container');
-    if(!container) return;
     try{
       const res=await fetch('/api/copilot/latest');
       const d=await res.json();
-      if(d.error){throw new Error(d.error);}
-      renderCopilot(d);
+      if(d.error) throw new Error(d.error);
+      renderHeroDecision(d);
     }catch(e){
       console.error('Copilot error:',e);
-      container.innerHTML='<div class="copilot-card"><div class="copilot-loading">Copilot unavailable</div></div>';
+      document.getElementById('hero-action').textContent='Unavailable';
+      document.getElementById('hero-summary').textContent='Copilot is temporarily unavailable. Refresh to retry.';
     }
   }
 
-  function renderCopilot(d){
-    const container=document.getElementById('copilot-container');
-    if(!container) return;
+  function renderHeroDecision(d){
     const actionLabel=d.action?d.action.replace('_',' '):'WAIT';
+    const actionClass=d.action==='ADD_RISK'?'action-add':d.action==='REDUCE'?'action-reduce':d.action==='HEDGE'?'action-hedge':'action-wait';
     const toText=(arr)=>arr&&arr.length?arr.map(i=>'\u2022 '+i).join('<br>'):'\u2014';
 
-    // Derive allocation suggestions from hedge data
+    document.getElementById('hero-action').innerHTML=`<span class="${actionClass}">${actionLabel}</span>`;
+    document.getElementById('hero-summary').textContent=d.summary||'';
+    document.getElementById('hero-conf-val').textContent=(d.confidence||0)+'%';
+
+    // Allocation
     const allocMap={Equities:'0%',Gold:'0%',Cash:'0%',BTC:'0%',Bonds:'0%'};
     if(d.hedge&&d.hedge.length){
       d.hedge.forEach(h=>{
@@ -1160,50 +934,40 @@
 
     function allocClass(v){if(v.startsWith('+'))return'pos';if(v.startsWith('-'))return'neg';return'flat';}
 
-    let html=`
-      <div class="copilot-card">
-        <div class="copilot-top">
-          <div>
-            <div class="copilot-brand">EarthOne Copilot</div>
-            <h3 class="copilot-title">Today\u2019s verdict: <span style="color:${d.action==='ADD_RISK'?'var(--green)':d.action==='REDUCE'?'var(--red)':d.action==='HEDGE'?'var(--orange)':'var(--text-3)'}">${actionLabel}</span></h3>
-            <p class="copilot-summary">${d.summary||''}</p>
-          </div>
-          <div class="copilot-confidence">
-            <div class="copilot-confidence-label">Confidence</div>
-            <div class="copilot-confidence-value">${d.confidence||0}%</div>
-          </div>
-        </div>
+    document.getElementById('hero-alloc').innerHTML=Object.entries(allocMap).map(([k,v])=>`
+      <div class="hero-alloc-item">
+        <div class="hero-alloc-name">${k}</div>
+        <div class="hero-alloc-val ${allocClass(v)}">${v}</div>
+      </div>`).join('');
 
-        <div class="copilot-alloc">
-          ${Object.entries(allocMap).map(([k,v])=>`
-            <div class="copilot-alloc-item">
-              <div class="copilot-alloc-name">${k}</div>
-              <div class="copilot-alloc-val ${allocClass(v)}">${v}</div>
-            </div>`).join('')}
-        </div>
+    // Grid: Do now / Avoid / Hedge
+    document.getElementById('hero-grid').innerHTML=`
+      <div class="hero-cell">
+        <div class="hero-cell-label">Do now</div>
+        <div class="hero-cell-text">${toText(d.actions)}</div>
+      </div>
+      <div class="hero-cell">
+        <div class="hero-cell-label">Avoid</div>
+        <div class="hero-cell-text">${toText(d.avoid)}</div>
+      </div>
+      <div class="hero-cell">
+        <div class="hero-cell-label">Hedge</div>
+        <div class="hero-cell-text">${toText(d.hedge)}</div>
+      </div>`;
 
-        <div class="copilot-grid">
-          <div class="copilot-cell">
-            <div class="copilot-cell-label">Do now</div>
-            <div class="copilot-cell-text">${toText(d.actions)}</div>
-          </div>
-          <div class="copilot-cell">
-            <div class="copilot-cell-label">Avoid</div>
-            <div class="copilot-cell-text">${toText(d.avoid)}</div>
-          </div>
-          <div class="copilot-cell">
-            <div class="copilot-cell-label">Hedge</div>
-            <div class="copilot-cell-text">${toText(d.hedge)}</div>
-          </div>
-        </div>`;
+    // Portfolio note
+    const pnEl=document.getElementById('hero-portfolio-note');
     if(d.portfolio_note){
-      html+=`<div class="copilot-portfolio-note">\u26A0 ${d.portfolio_note}</div>`;
+      pnEl.innerHTML=`<div class="hero-portfolio-note">\u26A0 ${d.portfolio_note}</div>`;
+    }else{
+      pnEl.innerHTML='';
     }
-    html+=`<div class="copilot-invalidation">Invalidation: ${d.invalidation||'N/A'}</div></div>`;
-    container.innerHTML=html;
+
+    // Invalidation
+    document.getElementById('hero-invalidation').textContent='Invalidation: '+(d.invalidation||'N/A');
   }
 
-  // ─── Portfolio ─────────────────────────────────────────────
+  // ─── Portfolio ─────────────────────────────────────────
   const PF_FIELDS=['equities','btc','gold','cash','bonds','other'];
   function updateTotal(){
     let t=0;
@@ -1216,7 +980,6 @@
     const inp=document.getElementById('pf-'+f);
     if(inp) inp.addEventListener('input',updateTotal);
   });
-  // Restore from localStorage
   const saved=localStorage.getItem('elx_portfolio');
   if(saved){
     try{
@@ -1238,9 +1001,8 @@
       const res=await fetch('/api/portfolio/assess',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(portfolio)});
       const d=await res.json();
       renderAssessment(d);
-      // Also send to Copilot for personalized verdict
       fetch('/api/copilot/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({portfolio})})
-        .then(r=>r.json()).then(v=>{if(v&&v.action) renderCopilot(v)}).catch(()=>{});
+        .then(r=>r.json()).then(v=>{if(v&&v.action) renderHeroDecision(v)}).catch(()=>{});
     }catch(e){
       console.error('Portfolio assessment failed:',e);
     }
@@ -1267,7 +1029,7 @@
     }
   }
 
-  // ─── V18: Profile Selector ──────────────────────────────────────
+  // ─── Profile Selector ──────────────────────────────────
   let currentProfile = localStorage.getItem('elx_profile') || 'balanced';
 
   function selectProfile(p) {
@@ -1276,19 +1038,17 @@
     document.querySelectorAll('.profile-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.profile === p);
     });
-    // Re-fetch alerts and copilot with new profile
     fetchAlerts();
     fetchCopilot();
   }
 
-  // Restore saved profile on load
   (function initProfile() {
     document.querySelectorAll('.profile-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.profile === currentProfile);
     });
   })();
 
-  // ─── V18: Today vs Yesterday ───────────────────────────────────
+  // ─── Today vs Yesterday ────────────────────────────────
   async function fetchTVY() {
     const c = document.getElementById('tvy-container');
     if (!c) return;
@@ -1322,7 +1082,7 @@
     }
   }
 
-  // ─── V18: Alerts ─────────────────────────────────────────────
+  // ─── Alerts ────────────────────────────────────────────
   async function fetchAlerts() {
     const c = document.getElementById('alerts-container');
     if (!c) return;
@@ -1350,7 +1110,7 @@
     }
   }
 
-  // ─── V18: Performance ───────────────────────────────────────
+  // ─── Performance ───────────────────────────────────────
   async function fetchPerformance() {
     const c = document.getElementById('perf-container');
     if (!c) return;
@@ -1381,7 +1141,20 @@
     }
   }
 
-  // ─── Init ──────────────────────────────────────────────────────
+  // ─── Scenarios toggle ──────────────────────────────────
+  function toggleScenarios(){
+    const el=document.getElementById('dashboard-dynamic');
+    const btn=document.getElementById('scenario-toggle');
+    if(el.style.display==='none'){
+      el.style.display='block';
+      btn.textContent='Hide scenarios \u2191';
+    }else{
+      el.style.display='none';
+      btn.textContent='Show scenarios \u2192';
+    }
+  }
+
+  // ─── Init ──────────────────────────────────────────────
   fetchCopilot();
   fetchELX();
   fetchHistory();
@@ -1392,12 +1165,12 @@
   fetchAlerts();
   fetchPerformance();
 
-  // Refresh every 2 minutes
-  setInterval(()=>{fetchELX();loadDashboard();fetchTVY();fetchAlerts();fetchPerformance();},120000);
+  setInterval(()=>{fetchELX();loadDashboard();fetchTVY();fetchAlerts();fetchPerformance()},120000);
 
-  // Expose functions needed by onclick handlers to global scope
+  // Expose to global scope for onclick handlers
   window.selectProfile = selectProfile;
   window.assessPortfolio = assessPortfolio;
+  window.toggleScenarios = toggleScenarios;
 })();
 </script>
 </body>
