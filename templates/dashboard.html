@@ -7,49 +7,158 @@
   <meta name="description" content="ELX Index Pro decision dashboard — regime classification, hedge allocation, scenario analysis, and portfolio decisions."/>
   <meta name="robots" content="noindex, nofollow"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <!-- GA4 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QKR9BJMKF"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-1QKR9BJMKF');</script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1d1d1f;-webkit-font-smoothing:antialiased}
+    :root{
+      --bg:#f5f5f7;--surface:rgba(255,255,255,.84);--surface-s:#fff;
+      --border:rgba(0,0,0,.05);--text:#1d1d1f;--text-2:#6e6e73;--text-3:#86868b;--text-4:#aeaeb2;
+      --green:#30d158;--green-dim:rgba(48,209,88,.08);
+      --orange:#ff9f0a;--orange-dim:rgba(255,159,10,.08);
+      --red:#ff453a;--red-dim:rgba(255,69,58,.08);
+      --amber:#b8860b;
+      --radius:20px;--radius-sm:14px;
+      --shadow:0 1px 2px rgba(0,0,0,.02),0 4px 16px rgba(0,0,0,.04);
+      --font:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+      --ease:cubic-bezier(.22,1,.36,1);
+    }
+    html{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
     ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d1d6;border-radius:3px}
 
-    /* Layout */
+    /* ─── LAYOUT ──────────────────────────────────────── */
     .layout{display:flex;min-height:100vh}
-    .sidebar{width:200px;border-right:1px solid #e5e5e7;background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:4px;position:fixed;top:0;left:0;bottom:0;z-index:10}
+    .sidebar{width:200px;border-right:1px solid rgba(0,0,0,.06);background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:4px;position:fixed;top:0;left:0;bottom:0;z-index:10}
     .sidebar-brand{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
-    .sidebar-brand .pro{font-size:9px;background:#1d1d1f;color:#fff;padding:2px 5px;border-radius:6px;font-weight:600;letter-spacing:0.05em}
-    .sidebar-sub{font-size:11px;color:#aeaeb2;margin-bottom:16px}
-    .sidebar-sub a{color:#aeaeb2;text-decoration:none}
-    .sidebar-sub a:hover{color:#6e6e73}
-    .nav-link{display:block;padding:8px 12px;border-radius:10px;font-size:13px;color:#6e6e73;text-decoration:none;transition:all 0.15s}
-    .nav-link:hover{background:#f5f5f7;color:#1d1d1f}
-    .nav-link.active{background:#f5f5f7;color:#1d1d1f;font-weight:600}
-    .sidebar-free{margin-top:auto;padding:10px 12px;border-radius:12px;background:#f5f5f7;font-size:11px;color:#aeaeb2}
-    .sidebar-free a{color:#6e6e73;text-decoration:none;font-weight:500}
+    .sidebar-brand .pro{font-size:9px;background:#1d1d1f;color:#fff;padding:2px 5px;border-radius:6px;font-weight:600;letter-spacing:.05em}
+    .sidebar-sub{font-size:11px;color:var(--text-4);margin-bottom:16px}
+    .sidebar-sub a{color:var(--text-4);text-decoration:none}.sidebar-sub a:hover{color:var(--text-2)}
+    .nav-link{display:block;padding:8px 12px;border-radius:10px;font-size:13px;color:var(--text-2);text-decoration:none;transition:all .15s}
+    .nav-link:hover{background:var(--bg);color:var(--text)}
+    .nav-link.active{background:var(--bg);color:var(--text);font-weight:600}
+    .sidebar-free{margin-top:auto;padding:10px 12px;border-radius:12px;background:var(--bg);font-size:11px;color:var(--text-4)}
+    .sidebar-free a{color:var(--text-2);text-decoration:none;font-weight:500}
 
     .main{margin-left:200px;flex:1;min-width:0}
-    .topbar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e7;background:#fff;padding:10px 20px;position:sticky;top:0;z-index:5}
+
+    /* ─── TOPBAR ──────────────────────────────────────── */
+    .topbar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.9);backdrop-filter:blur(20px);padding:10px 24px;position:sticky;top:0;z-index:5}
     .topbar-left{display:flex;align-items:center;gap:16px}
-    .topbar-elx-label{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2}
+    .topbar-elx-label{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4)}
     .topbar-elx-value{font-size:20px;font-weight:700}
-    .topbar-sep{width:1px;height:16px;background:#e5e5e7}
+    .topbar-sep{width:1px;height:16px;background:rgba(0,0,0,.06)}
     .topbar-regime{font-size:13px;font-weight:600}
-    .topbar-bias{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#aeaeb2}
+    .topbar-bias{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-4)}
     .topbar-right{display:flex;align-items:center;gap:12px;font-size:11px;color:#c7c7cc}
 
-    .content{padding:20px;display:flex;flex-direction:column;gap:20px;max-width:1400px}
+    .content{padding:24px;display:flex;flex-direction:column;gap:20px;max-width:1400px}
 
-    /* Cards */
-    .card{background:#fff;border:1px solid #e5e5e7;border-radius:20px;padding:20px}
-    .card-header{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:12px}
+    /* ─── CHART HERO (ported from elxindex.com) ───────── */
+    .chart-hero{
+      background:var(--surface-s);border:1px solid var(--border);
+      border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:40px 48px 32px;position:relative;overflow:hidden;
+    }
+    .chart-hero::before{content:'';position:absolute;top:0;left:48px;right:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04) 30%,rgba(0,0,0,.04) 70%,transparent)}
+
+    .chart-eyebrow{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:12px}
+    .chart-hero-row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:2px}
+    .chart-elx-value{font-size:5.5rem;font-weight:700;letter-spacing:-.065em;line-height:.85;color:var(--text);font-variant-numeric:tabular-nums}
+    .chart-elx-sign{font-weight:400;opacity:.35}
+    .chart-delta{font-size:1rem;font-weight:600;padding:4px 0 8px;align-self:flex-end;margin-bottom:8px}
+    .delta-up{color:var(--green)}.delta-down{color:var(--red)}.delta-flat{color:var(--orange)}
+
+    .chart-regime-row{display:flex;align-items:center;gap:14px;margin-top:6px}
+    .chart-regime-label{font-size:1.4rem;font-weight:600;letter-spacing:-.02em}
+    .chart-bias-badge{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 13px;border-radius:100px}
+    .bias-green{color:var(--green);background:var(--green-dim)}
+    .bias-orange{color:var(--orange);background:var(--orange-dim)}
+    .bias-red{color:var(--red);background:var(--red-dim)}
+
+    /* Regime scale bar */
+    .chart-regime-map{margin-top:18px;margin-bottom:6px}
+    .chart-regime-scale{position:relative;display:flex;height:8px;border-radius:4px;overflow:visible}
+    .chart-rz{height:100%;transition:opacity .3s}
+    .rz-1{flex:2;background:linear-gradient(90deg,#ff453a,#ff6961);border-radius:4px 0 0 4px}
+    .rz-2{flex:1;background:linear-gradient(90deg,#ff6961,#ff9f0a)}
+    .rz-3{flex:2;background:linear-gradient(90deg,#ff9f0a,#ffd60a,#30d158)}
+    .rz-4{flex:1;background:linear-gradient(90deg,#30d158,#34c759)}
+    .rz-5{flex:2;background:linear-gradient(90deg,#34c759,#00c7be);border-radius:0 4px 4px 0}
+    .chart-regime-pointer{
+      position:absolute;top:-5px;width:4px;height:18px;
+      background:#1d1d1f;border-radius:2px;
+      box-shadow:0 0 6px rgba(0,0,0,.2);
+      transition:left .8s var(--ease);z-index:2;
+    }
+    .chart-regime-pointer::after{
+      content:'';position:absolute;top:-3px;left:-3px;width:10px;height:10px;
+      border-radius:50%;background:#1d1d1f;
+      box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 10px rgba(0,0,0,.12);
+    }
+    .chart-regime-labels{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px}
+    .chart-regime-labels span{font-size:.52rem;font-weight:500;color:var(--text-4);font-variant-numeric:tabular-nums}
+
+    .chart-interpretation{font-size:.84rem;line-height:1.6;color:var(--text-2);max-width:600px;margin-top:14px;margin-bottom:16px}
+
+    /* Asset bias chips */
+    .chart-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px}
+    .chart-chip{font-size:.68rem;font-weight:600;padding:6px 14px;border-radius:100px;background:rgba(0,0,0,.03);color:var(--text-2);display:inline-flex;align-items:center;gap:5px}
+    .chart-chip .up{color:var(--green)}.chart-chip .down{color:var(--red)}
+
+    /* Chart controls */
+    .chart-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .range-bar{display:flex;gap:4px}
+    .range-btn{
+      font-size:.66rem;font-weight:600;letter-spacing:.06em;
+      padding:6px 16px;border-radius:100px;border:none;cursor:pointer;
+      background:transparent;color:var(--text-3);transition:all .2s;
+    }
+    .range-btn:hover{background:rgba(0,0,0,.04)}
+    .range-btn.active{background:var(--text);color:#fff}
+
+    /* Chart container */
+    .chart-container{width:100%;min-height:380px;position:relative}
+    .chart-container svg{width:100%;height:auto;display:block}
+
+    /* Crosshair tooltip */
+    .chart-tooltip{
+      position:absolute;pointer-events:none;opacity:0;
+      transition:opacity .15s;z-index:10;
+    }
+    .chart-tooltip.visible{opacity:1}
+    .tooltip-line{position:absolute;top:0;width:1px;background:rgba(0,0,0,.08);pointer-events:none}
+    .tooltip-dot{
+      position:absolute;width:8px;height:8px;border-radius:50%;
+      border:2px solid #fff;box-shadow:0 0 6px rgba(0,0,0,.15);
+      transform:translate(-50%,-50%);pointer-events:none;
+    }
+    .tooltip-box{
+      position:absolute;transform:translateX(-50%);
+      background:rgba(255,255,255,.95);backdrop-filter:blur(12px);
+      border:1px solid rgba(0,0,0,.06);border-radius:10px;
+      padding:8px 14px;box-shadow:0 4px 16px rgba(0,0,0,.08);
+      white-space:nowrap;
+    }
+    .tooltip-date{font-size:.62rem;color:var(--text-3);margin-bottom:2px}
+    .tooltip-val{font-size:.9rem;font-weight:700}
+
+    /* Correlation strip */
+    .chart-corr{display:flex;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+    .corr-title{font-size:.58rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4);margin-right:8px;align-self:center}
+    .corr-item{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:500}
+    .corr-label{color:var(--text-3)}.corr-val{font-weight:600;font-variant-numeric:tabular-nums}
+    .corr-pos .corr-val{color:var(--green)}.corr-neg .corr-val{color:var(--red)}.corr-neu .corr-val{color:var(--text-3)}
+
+    /* ─── CARDS ───────────────────────────────────────── */
+    .card{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+    .card-header{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:12px}
     .section-title{font-size:18px;font-weight:600;margin-bottom:4px}
-    .section-desc{font-size:13px;color:#6e6e73;margin-bottom:16px}
+    .section-desc{font-size:13px;color:var(--text-2);margin-bottom:16px}
 
     /* Decision Block */
-    .decision{border-radius:20px;padding:20px;position:relative;overflow:hidden}
+    .decision{border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
     .decision.red{background:#fef2f2;border:1px solid #fecaca}
     .decision.orange{background:#fff7ed;border:1px solid #fed7aa}
     .decision.amber{background:#fffbeb;border:1px solid #fde68a}
@@ -60,39 +169,31 @@
     .decision-action.orange{background:#f97316;color:#fff}
     .decision-action.amber{background:#d4a017;color:#fff}
     .decision-action.green{background:#22c55e;color:#fff}
-    .decision-label{font-size:15px;font-weight:600;color:#1d1d1f}
-    .decision-sublabel{font-size:13px;color:#6e6e73;margin-bottom:12px}
+    .decision-label{font-size:15px;font-weight:600;color:var(--text)}
+    .decision-sublabel{font-size:13px;color:var(--text-2);margin-bottom:12px}
     .decision-conviction{position:absolute;top:16px;right:20px;text-align:center}
     .decision-conviction-value{font-size:28px;font-weight:700}
-    .decision-conviction-label{font-size:10px;color:#aeaeb2;text-transform:uppercase;letter-spacing:0.1em}
+    .decision-conviction-label{font-size:10px;color:var(--text-4);text-transform:uppercase;letter-spacing:.1em}
     .decision-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border-radius:14px;overflow:hidden;margin-top:8px}
-    .decision-strip-item{background:#f5f5f7;padding:10px 12px}
-    .decision-strip-label{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2;margin-bottom:4px}
+    .decision-strip-item{background:rgba(0,0,0,.02);padding:10px 12px}
+    .decision-strip-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text-4);margin-bottom:4px}
     .decision-strip-value{font-size:14px;font-weight:600}
 
     /* Regime Hero */
     .regime-hero{display:flex;gap:20px;flex-wrap:wrap}
     .regime-left{flex:1;min-width:300px}
-    .regime-score{font-size:48px;font-weight:700;letter-spacing:-1px;line-height:1}
-    .regime-trend{font-size:13px;margin-left:8px}
-    .regime-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:10px;font-size:13px;font-weight:600;margin-top:8px;margin-right:8px}
-    .regime-tag.green{background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.2);color:#34c759}
-    .regime-tag.amber{background:rgba(184,134,11,0.08);border:1px solid rgba(184,134,11,0.2);color:#b8860b}
-    .regime-tag.red{background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2);color:#ff3b30}
-    .regime-bias{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2}
-    .regime-brief{font-size:13px;color:#6e6e73;line-height:1.6;margin-top:12px;max-width:600px}
     .regime-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:280px;flex-shrink:0}
-    .metric-box{background:#f8f9fa;border:1px solid #e5e5e7;border-radius:14px;padding:10px 12px}
-    .metric-box-label{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:4px}
+    .metric-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:10px 12px}
+    .metric-box-label{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:4px}
     .metric-box-value{font-size:18px;font-weight:600}
     .metric-box-value.small{font-size:13px}
 
     /* Scores */
     .scores-grid{display:flex;flex-direction:column;gap:10px}
     .score-row{display:flex;align-items:center;gap:12px}
-    .score-label{width:120px;font-size:12px;color:#6e6e73;flex-shrink:0}
-    .score-bar-bg{flex:1;height:6px;background:#f0f0f2;border-radius:3px;overflow:hidden}
-    .score-bar-fill{height:100%;border-radius:3px;transition:width 0.5s}
+    .score-label{width:120px;font-size:12px;color:var(--text-2);flex-shrink:0}
+    .score-bar-bg{flex:1;height:6px;background:rgba(0,0,0,.03);border-radius:3px;overflow:hidden}
+    .score-bar-fill{height:100%;border-radius:3px;transition:width .5s}
     .score-value{width:30px;text-align:right;font-size:12px;font-weight:600}
 
     /* Grid layouts */
@@ -100,99 +201,92 @@
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-    .grid-wide{display:grid;grid-template-columns:1.35fr 0.65fr;gap:16px}
+    .grid-wide{display:grid;grid-template-columns:1.35fr .65fr;gap:16px}
 
     /* Driver cards */
-    .driver-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
-    .driver-name{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:8px}
+    .driver-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
+    .driver-name{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--text-4);margin-bottom:8px}
     .driver-score{font-size:24px;font-weight:700}
-    .driver-weight{font-size:11px;color:#aeaeb2;margin-top:4px}
-    .driver-bar{height:4px;background:#f0f0f2;border-radius:2px;margin-top:8px;overflow:hidden}
+    .driver-weight{font-size:11px;color:var(--text-4);margin-top:4px}
+    .driver-bar{height:4px;background:rgba(0,0,0,.03);border-radius:2px;margin-top:8px;overflow:hidden}
     .driver-bar-fill{height:100%;border-radius:2px}
 
     /* Asset cards */
-    .asset-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
+    .asset-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
     .asset-header{display:flex;justify-content:space-between;margin-bottom:8px}
-    .asset-name{font-weight:500}
-    .asset-ticker{font-size:11px;color:#aeaeb2}
+    .asset-name{font-weight:500}.asset-ticker{font-size:11px;color:var(--text-4)}
     .asset-price{font-size:18px;font-weight:600;margin-bottom:8px}
     .asset-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0}
-    .asset-row-label{color:#aeaeb2}
-    .asset-row-value{color:#6e6e73}
+    .asset-row-label{color:var(--text-4)}.asset-row-value{color:var(--text-2)}
 
     /* Hedge */
     .hedge-alloc{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-    .hedge-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:#f8f9fa}
+    .hedge-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--bg)}
     .hedge-asset{width:80px;font-size:12px;font-weight:500}
     .hedge-delta{font-size:14px;font-weight:700;width:60px;text-align:right}
-    .hedge-delta.up{color:#34c759}
-    .hedge-delta.down{color:#ff3b30}
-    .hedge-delta.neutral{color:#aeaeb2}
+    .hedge-delta.up{color:#34c759}.hedge-delta.down{color:#ff3b30}.hedge-delta.neutral{color:var(--text-4)}
 
     /* Scenarios */
-    .scenario-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
+    .scenario-card{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--surface-s)}
     .scenario-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .scenario-horizon{font-size:11px;font-weight:600;color:#6e6e73}
+    .scenario-horizon{font-size:11px;font-weight:600;color:var(--text-2)}
     .scenario-action-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
-    .scenario-action-tag.red{background:#fef2f2;color:#ef4444}
-    .scenario-action-tag.orange{background:#fff7ed;color:#f97316}
-    .scenario-action-tag.amber{background:#fffbeb;color:#b8860b}
-    .scenario-action-tag.green{background:#f0fdf4;color:#22c55e}
-    .scenario-action-tag.gray{background:#f5f5f7;color:#6e6e73}
+    .scenario-action-tag.red{background:rgba(255,69,58,.06);color:#ef4444}
+    .scenario-action-tag.orange{background:rgba(249,115,22,.06);color:#f97316}
+    .scenario-action-tag.amber{background:rgba(184,134,11,.06);color:#b8860b}
+    .scenario-action-tag.green{background:rgba(52,199,89,.06);color:#22c55e}
+    .scenario-action-tag.gray{background:rgba(0,0,0,.03);color:var(--text-2)}
     .scenario-title{font-size:14px;font-weight:600;margin-bottom:4px}
-    .scenario-prob{font-size:12px;color:#aeaeb2;margin-bottom:8px}
-    .scenario-desc{font-size:12px;color:#6e6e73;line-height:1.5;margin-bottom:10px}
+    .scenario-prob{font-size:12px;color:var(--text-4);margin-bottom:8px}
+    .scenario-desc{font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:10px}
     .scenario-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
-    .scenario-tag{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid #e5e5e7}
-    .scenario-tag.fav{color:#34c759;border-color:rgba(52,199,89,0.2);background:rgba(52,199,89,0.05)}
-    .scenario-tag.press{color:#ff3b30;border-color:rgba(255,59,48,0.2);background:rgba(255,59,48,0.05)}
-    .scenario-actions{border-top:1px solid #e5e5e7;padding-top:8px;margin-top:8px}
-    .scenario-actions-title{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2;margin-bottom:6px}
-    .scenario-action-item{font-size:12px;color:#1d1d1f;padding:2px 0}
+    .scenario-tag{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid var(--border)}
+    .scenario-tag.fav{color:#34c759;border-color:rgba(52,199,89,.2);background:rgba(52,199,89,.04)}
+    .scenario-tag.press{color:#ff3b30;border-color:rgba(255,59,48,.2);background:rgba(255,59,48,.04)}
+    .scenario-actions{border-top:1px solid var(--border);padding-top:8px;margin-top:8px}
+    .scenario-actions-title{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--text-4);margin-bottom:6px}
+    .scenario-action-item{font-size:12px;color:var(--text);padding:2px 0}
 
     /* Alerts */
-    .alert-item{border:1px solid #e5e5e7;border-radius:14px;padding:12px;margin-bottom:8px}
+    .alert-item{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:8px}
     .alert-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
     .alert-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
     .alert-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-    .alert-dot.high{background:#ff3b30}
-    .alert-dot.medium{background:#b8860b}
-    .alert-dot.low{background:#aeaeb2}
+    .alert-dot.high{background:#ff3b30}.alert-dot.medium{background:#b8860b}.alert-dot.low{background:var(--text-4)}
     .alert-severity{font-size:9px;padding:2px 6px;border-radius:4px}
-    .alert-severity.high{background:rgba(255,59,48,0.08);color:#ff3b30;border:1px solid rgba(255,59,48,0.15)}
-    .alert-severity.medium{background:rgba(184,134,11,0.08);color:#b8860b;border:1px solid rgba(184,134,11,0.15)}
-    .alert-severity.low{background:#f5f5f7;color:#6e6e73;border:1px solid #e5e5e7}
-    .alert-desc{font-size:11px;color:#6e6e73;margin-bottom:6px}
-    .alert-action{font-size:11px;font-weight:500;border-left:2px solid #e5e5e7;padding-left:8px}
-
-    /* Warnings */
-    .warning{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:500;margin-bottom:8px}
-    .warning.high{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
-    .warning.medium{background:#fffbeb;border:1px solid #fde68a;color:#b8860b}
+    .alert-severity.high{background:rgba(255,59,48,.06);color:#ff3b30;border:1px solid rgba(255,59,48,.12)}
+    .alert-severity.medium{background:rgba(184,134,11,.06);color:#b8860b;border:1px solid rgba(184,134,11,.12)}
+    .alert-severity.low{background:rgba(0,0,0,.03);color:var(--text-2);border:1px solid var(--border)}
+    .alert-desc{font-size:11px;color:var(--text-2);margin-bottom:6px}
+    .alert-action{font-size:11px;color:var(--text);font-weight:500}
 
     /* Brief */
-    .brief-card{background:#f8f9fa;border:1px solid #e5e5e7;border-radius:20px;padding:20px}
-    .brief-text{font-size:13px;line-height:1.7;color:#1d1d1f}
+    .brief-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+    .brief-text{font-size:13px;line-height:1.7;color:var(--text)}
 
-    /* Responsive */
+    .color-green{color:#34c759}.color-red{color:#ff3b30}.color-amber{color:#b8860b}.color-gray{color:var(--text-2)}
+
+    /* ─── RESPONSIVE ──────────────────────────────────── */
     @media(max-width:1024px){
       .grid-4{grid-template-columns:repeat(2,1fr)}
       .grid-5{grid-template-columns:repeat(2,1fr)}
       .grid-wide{grid-template-columns:1fr}
       .regime-hero{flex-direction:column}
       .regime-metrics{width:100%}
+      .chart-hero{padding:28px 24px 20px}
+      .chart-elx-value{font-size:4rem}
     }
     @media(max-width:768px){
       .sidebar{display:none}
       .main{margin-left:0}
       .grid-2,.grid-3{grid-template-columns:1fr}
       .decision-strip{grid-template-columns:repeat(2,1fr)}
+      .chart-hero{padding:20px 16px 16px}
+      .chart-elx-value{font-size:3rem}
+      .chart-hero-row{gap:12px}
+      .chart-regime-label{font-size:1.1rem}
+      .chart-controls{flex-direction:column;gap:8px;align-items:flex-start}
     }
-
-    .color-green{color:#34c759}
-    .color-red{color:#ff3b30}
-    .color-amber{color:#b8860b}
-    .color-gray{color:#6e6e73}
   </style>
 </head>
 <body>
@@ -200,12 +294,13 @@
     <!-- Sidebar -->
     <nav class="sidebar">
       <div class="sidebar-brand">ELX Index <span class="pro">PRO</span></div>
-      <div class="sidebar-sub"><a href="https://elxindex.com" target="_blank">by EarthOne</a></div>
+      <div class="sidebar-sub"><a href="/">by EarthOne</a></div>
       <a href="/dashboard" class="nav-link active">Dashboard</a>
-      <a href="/" class="nav-link">Free Signal</a>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/signal" class="nav-link">Free Signal</a>
       <a href="/analytics" class="nav-link">Analytics</a>
       <div class="sidebar-free">
-        <a href="https://elxindex.com" target="_blank">Free Signal → elxindex.com</a>
+        <a href="/">ELX Index &mdash; elxindex.com</a>
       </div>
     </nav>
 
@@ -215,303 +310,639 @@
       <div class="topbar">
         <div class="topbar-left">
           <span class="topbar-elx-label">ELX</span>
-          <span class="topbar-elx-value" id="topbar-elx">—</span>
+          <span class="topbar-elx-value" id="topbar-elx">&mdash;</span>
           <div class="topbar-sep"></div>
-          <span class="topbar-regime" id="topbar-regime">—</span>
+          <span class="topbar-regime" id="topbar-regime">&mdash;</span>
           <div class="topbar-sep"></div>
-          <span class="topbar-bias" id="topbar-bias">—</span>
+          <span class="topbar-bias" id="topbar-bias">&mdash;</span>
         </div>
         <div class="topbar-right">
-          <span id="topbar-conviction">—</span>
-          <span id="topbar-time">—</span>
+          <span id="topbar-conviction">&mdash;</span>
+          <span id="topbar-time">&mdash;</span>
         </div>
       </div>
 
       <!-- Content -->
       <div class="content" id="dashboard-content">
-        <div style="text-align:center;padding:60px;color:#aeaeb2;font-size:13px">Loading ELX Index Pro…</div>
+        <!-- ═══ CHART HERO ═══ -->
+        <div class="chart-hero" id="chart-hero">
+          <div class="chart-eyebrow">ELX &mdash; Earth Liquidity Index</div>
+          <div class="chart-hero-row">
+            <div class="chart-elx-value" id="elx-value">&mdash;</div>
+            <div class="chart-delta delta-flat" id="elx-delta"></div>
+          </div>
+          <div class="chart-regime-row">
+            <span class="chart-regime-label" id="regime-label">Loading</span>
+            <span class="chart-bias-badge bias-orange" id="bias-badge">&mdash;</span>
+          </div>
+          <div class="chart-regime-map">
+            <div class="chart-regime-scale">
+              <div class="chart-rz rz-1"></div><div class="chart-rz rz-2"></div><div class="chart-rz rz-3"></div><div class="chart-rz rz-4"></div><div class="chart-rz rz-5"></div>
+              <div class="chart-regime-pointer" id="regime-pointer"></div>
+            </div>
+            <div class="chart-regime-labels">
+              <span>-100</span><span>-40</span><span>-20</span><span>+20</span><span>+40</span><span>+100</span>
+            </div>
+          </div>
+          <p class="chart-interpretation" id="interpretation">Calculating macro conditions&hellip;</p>
+          <div class="chart-chips" id="asset-chips"></div>
+
+          <div class="chart-controls">
+            <div class="range-bar" id="range-bar">
+              <button class="range-btn active" data-range="1Y">1Y</button>
+              <button class="range-btn" data-range="5Y">5Y</button>
+              <button class="range-btn" data-range="10Y">10Y</button>
+              <button class="range-btn" data-range="MAX">MAX</button>
+            </div>
+          </div>
+          <div class="chart-container" id="chart"></div>
+          <div class="chart-corr" id="corr-strip"></div>
+        </div>
+
+        <!-- ═══ REST OF DASHBOARD (loaded dynamically) ═══ -->
+        <div id="dashboard-dynamic">
+          <div style="text-align:center;padding:40px;color:var(--text-4);font-size:13px">Loading decision engine&hellip;</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // Fetch all data and render dashboard
-    async function loadDashboard() {
-      try {
-        const [elxRes, decisionRes, hedgeRes, scenariosRes, marketsRes, alertsRes] = await Promise.all([
-          fetch('/api/elx').then(r => r.json()),
-          fetch('/api/dashboard/decision').then(r => r.json()),
-          fetch('/api/dashboard/hedge').then(r => r.json()),
-          fetch('/api/dashboard/scenarios').then(r => r.json()),
-          fetch('/api/elx/markets').then(r => r.json()),
-          fetch('/api/dashboard/alerts').then(r => r.json()),
-        ]);
+<script>
+(function(){
+  "use strict";
 
-        renderTopbar(elxRes, decisionRes);
-        renderDashboard(elxRes, decisionRes, hedgeRes, scenariosRes, marketsRes, alertsRes);
-      } catch (e) {
-        console.error('Dashboard load error:', e);
-        document.getElementById('dashboard-content').innerHTML =
-          '<div style="text-align:center;padding:60px;color:#ff3b30;font-size:13px">Error loading dashboard. Refresh to retry.</div>';
+  // ─── DOM refs ──────────────────────────────────────────
+  const elxValueEl = document.getElementById("elx-value");
+  const elxDeltaEl = document.getElementById("elx-delta");
+  const regimeLabel = document.getElementById("regime-label");
+  const biasBadge = document.getElementById("bias-badge");
+  const interpEl = document.getElementById("interpretation");
+  const chipsEl = document.getElementById("asset-chips");
+  const chartWrap = document.getElementById("chart");
+  const corrStrip = document.getElementById("corr-strip");
+  const rangeBar = document.getElementById("range-bar");
+  const regimePointer = document.getElementById("regime-pointer");
+
+  let currentRange = "1Y";
+  let chartSeries = null; // store for crosshair
+  let chartPts = null;
+  let chartDims = null;
+  const RANGE_DAYS = { "1Y": 365, "5Y": 1825, "10Y": 3650, "MAX": 7300 };
+
+  // ─── Animated counter ──────────────────────────────────
+  function animateValue(el, target){
+    const dur=1800, start=performance.now();
+    const isNeg=target<0, abs=Math.abs(target);
+    function tick(now){
+      const t=Math.min((now-start)/dur,1);
+      const ease=1-Math.pow(1-t,4);
+      const v=Math.round(abs*ease);
+      const sign=isNeg?"\u2212":"+";
+      el.innerHTML=`<span class="chart-elx-sign">${sign}</span>${v}`;
+      if(t<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // ─── Regime pointer ────────────────────────────────────
+  function updateRegimeMap(value){
+    if(!regimePointer) return;
+    const clamped=Math.max(-100,Math.min(100,value));
+    const pct=((clamped+100)/200)*100;
+    regimePointer.style.left=`calc(${pct}% - 2px)`;
+  }
+
+  // ─── Fetch ELX ─────────────────────────────────────────
+  async function fetchELX(){
+    try{
+      const res=await fetch("/api/elx");
+      const d=await res.json();
+
+      animateValue(elxValueEl, d.value);
+      updateRegimeMap(d.value);
+
+      if(d.delta!==undefined){
+        const ds=d.delta>0?"+":"";
+        const dc=d.delta>0?"delta-up":d.delta<0?"delta-down":"delta-flat";
+        elxDeltaEl.textContent=`${ds}${d.delta} today`;
+        elxDeltaEl.className="chart-delta "+dc;
       }
+
+      regimeLabel.textContent=d.regime;
+      biasBadge.textContent=d.bias;
+      biasBadge.className="chart-bias-badge";
+      if(d.bias.includes("Risk-On")) biasBadge.classList.add("bias-green");
+      else if(d.bias.includes("Risk-Off")) biasBadge.classList.add("bias-red");
+      else biasBadge.classList.add("bias-orange");
+
+      interpEl.textContent=d.interpretation;
+
+      if(d.asset_bias && chipsEl){
+        chipsEl.innerHTML=d.asset_bias.map(a=>{
+          const arrow=a.direction==="up"?"\u2191":"\u2193";
+          const cls=a.direction==="up"?"up":"down";
+          return `<span class="chart-chip">${a.asset} <span class="${cls}">${arrow}</span> ${a.call||""}</span>`;
+        }).join("");
+      }
+
+      // Update topbar
+      document.getElementById("topbar-elx").textContent=d.value;
+      const tr=document.getElementById("topbar-regime");
+      tr.textContent=d.regime;
+      tr.style.color=d.regime==="Risk-On"?"#34c759":d.regime==="Risk-Off"?"#ff3b30":"#b8860b";
+      document.getElementById("topbar-bias").textContent=d.bias;
+      document.getElementById("topbar-time").textContent=new Date().toLocaleTimeString();
+
+      return d;
+    }catch(e){console.error(e);return null;}
+  }
+
+  // ─── Smoothing (5-period MA) ───────────────────────────
+  function smoothMA(values,window){
+    const half=Math.floor(window/2);
+    return values.map((_,i)=>{
+      let sum=0,count=0;
+      for(let j=i-half;j<=i+half;j++){
+        if(j>=0&&j<values.length){sum+=values[j];count++;}
+      }
+      return sum/count;
+    });
+  }
+
+  // ─── Catmull-Rom spline ────────────────────────────────
+  function catmullRomPath(points,tension){
+    tension=tension||0.20;
+    let d=`M${points[0].x.toFixed(2)},${points[0].y.toFixed(2)}`;
+    for(let i=0;i<points.length-1;i++){
+      const p0=points[Math.max(i-1,0)];
+      const p1=points[i];
+      const p2=points[i+1];
+      const p3=points[Math.min(i+2,points.length-1)];
+      d+=` C${(p1.x+(p2.x-p0.x)*tension).toFixed(2)},${(p1.y+(p2.y-p0.y)*tension).toFixed(2)} ${(p2.x-(p3.x-p1.x)*tension).toFixed(2)},${(p2.y-(p3.y-p1.y)*tension).toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+    }
+    return d;
+  }
+
+  // ─── Premium SVG Chart (exact port from elxindex.com) ──
+  function drawChart(series){
+    if(!series||series.length<2) return;
+    chartSeries=series;
+
+    const W=1060, H=400;
+    const P={t:28,r:16,b:40,l:44};
+    const pW=W-P.l-P.r, pH=H-P.t-P.b;
+
+    const rawVals=series.map(p=>p.value);
+    const smoothed=smoothMA(rawVals,5);
+
+    const minV=Math.min(...smoothed)-6;
+    const maxV=Math.max(...smoothed)+6;
+    const rV=maxV-minV||1;
+
+    const pts=smoothed.map((v,i)=>({
+      x:P.l+(i/(series.length-1))*pW,
+      y:P.t+pH-((v-minV)/rV)*pH,
+      v:v,
+    }));
+    chartPts=pts;
+    chartDims={W,H,P,pW,pH,minV,maxV,rV};
+
+    // Downsample for smoothness
+    const step=series.length>1000?5:series.length>300?3:2;
+    const sampled=[];
+    for(let i=0;i<pts.length;i+=step) sampled.push(pts[i]);
+    if(sampled[sampled.length-1]!==pts[pts.length-1]) sampled.push(pts[pts.length-1]);
+
+    const linePath=catmullRomPath(sampled);
+    const areaPath=linePath
+      +` L${sampled[sampled.length-1].x.toFixed(2)},${(P.t+pH).toFixed(2)}`
+      +` L${sampled[0].x.toFixed(2)},${(P.t+pH).toFixed(2)} Z`;
+
+    const last=pts[pts.length-1];
+    const accent=last.v>=20?"#30d158":last.v>=-20?"#ff9f0a":"#ff453a";
+    const rgb=last.v>=20?"48,209,88":last.v>=-20?"255,159,10":"255,69,58";
+
+    // Grid
+    const steps=5;
+    let grid="",yL="";
+    for(let i=0;i<=steps;i++){
+      const v=minV+(rV/steps)*i;
+      const y=P.t+pH-(i/steps)*pH;
+      grid+=`<line x1="${P.l}" y1="${y.toFixed(1)}" x2="${W-P.r}" y2="${y.toFixed(1)}" stroke="rgba(0,0,0,.03)" stroke-width=".6"/>`;
+      yL+=`<text x="${P.l-10}" y="${(y+3).toFixed(1)}" text-anchor="end" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${Math.round(v)}</text>`;
     }
 
-    function renderTopbar(elx, decision) {
-      document.getElementById('topbar-elx').textContent = elx.value;
-      const regimeEl = document.getElementById('topbar-regime');
-      regimeEl.textContent = elx.regime;
-      regimeEl.style.color = regimeColor(elx.regime);
-      document.getElementById('topbar-bias').textContent = elx.bias;
-      document.getElementById('topbar-conviction').textContent = `Conviction ${decision.conviction}%`;
-      document.getElementById('topbar-time').textContent = new Date().toLocaleTimeString();
+    // X labels
+    let xL="";
+    const labelCount=7;
+    const labelStep=Math.max(1,Math.floor(series.length/labelCount));
+    for(let i=0;i<series.length;i+=labelStep){
+      const p=pts[i];
+      if(!p) continue;
+      const dt=new Date(series[i].date+"T00:00:00");
+      let label;
+      if(series.length>1000) label=dt.getFullYear().toString();
+      else label=dt.toLocaleDateString("en-US",{month:"short",year:"2-digit"});
+      xL+=`<text x="${p.x.toFixed(1)}" y="${(H-12).toFixed(1)}" text-anchor="middle" fill="#c7c7cc" font-size="10" font-weight="500" font-family="Inter,-apple-system,sans-serif">${label}</text>`;
     }
 
-    function regimeColor(regime) {
-      if (regime === 'Risk-On') return '#34c759';
-      if (regime === 'Risk-Off') return '#ff3b30';
-      return '#b8860b';
+    // Zero line
+    let zeroLine="";
+    if(minV<0&&maxV>0){
+      const zeroY=P.t+pH-((0-minV)/rV)*pH;
+      zeroLine=`<line x1="${P.l}" y1="${zeroY.toFixed(1)}" x2="${W-P.r}" y2="${zeroY.toFixed(1)}" stroke="rgba(0,0,0,.08)" stroke-width="1" stroke-dasharray="4,4"/>`;
     }
 
-    function regimeClass(regime) {
-      if (regime === 'Risk-On') return 'green';
-      if (regime === 'Risk-Off') return 'red';
-      return 'amber';
+    const svg=`
+    <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" id="elx-svg">
+      <defs>
+        <linearGradient id="aG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(${rgb},.25)"/>
+          <stop offset="30%" stop-color="rgba(${rgb},.10)"/>
+          <stop offset="100%" stop-color="rgba(${rgb},0)"/>
+        </linearGradient>
+        <filter id="lGlow" x="-8%" y="-8%" width="116%" height="116%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+          <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .4 0"/>
+          <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="pGlow" x="-200%" y="-200%" width="500%" height="500%">
+          <feGaussianBlur stdDeviation="10" result="b"/>
+          <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .6 0"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="haloG" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="${accent}" stop-opacity=".30"/>
+          <stop offset="60%" stop-color="${accent}" stop-opacity=".06"/>
+          <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
+        </radialGradient>
+        <clipPath id="pClip"><rect x="${P.l}" y="${P.t}" width="${pW}" height="${pH}"/></clipPath>
+      </defs>
+
+      ${grid}${yL}${xL}${zeroLine}
+
+      <path d="${areaPath}" fill="url(#aG)" clip-path="url(#pClip)"/>
+
+      <path id="chart-line" d="${linePath}" fill="none"
+        stroke="${accent}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        filter="url(#lGlow)"
+        style="stroke-dasharray:6000;stroke-dashoffset:6000"/>
+
+      <!-- Crosshair overlay (invisible rect for mouse events) -->
+      <rect id="chart-hover-area" x="${P.l}" y="${P.t}" width="${pW}" height="${pH}" fill="transparent" style="cursor:crosshair"/>
+
+      <!-- Crosshair elements (hidden by default) -->
+      <line id="xhair-line" x1="0" y1="${P.t}" x2="0" y2="${P.t+pH}" stroke="rgba(0,0,0,.08)" stroke-width="1" stroke-dasharray="3,3" opacity="0"/>
+      <circle id="xhair-dot" cx="0" cy="0" r="4" fill="${accent}" stroke="#fff" stroke-width="2" opacity="0"/>
+
+      <g class="chart-pulse">
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="28" fill="url(#haloG)"/>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="5"
+          fill="none" stroke="${accent}" stroke-width="1" opacity=".3">
+          <animate attributeName="r" values="6;28" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".3;0" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="5"
+          fill="none" stroke="${accent}" stroke-width=".8" opacity=".2">
+          <animate attributeName="r" values="6;22" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".2;0" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="6"
+          fill="${accent}" filter="url(#pGlow)" opacity=".8"/>
+        <circle cx="${last.x.toFixed(1)}" cy="${last.y.toFixed(1)}" r="2.2"
+          fill="#fff"/>
+        <line x1="${last.x.toFixed(1)}" y1="${(last.y+14).toFixed(1)}"
+              x2="${last.x.toFixed(1)}" y2="${(P.t+pH).toFixed(1)}"
+          stroke="${accent}" stroke-width=".5" stroke-dasharray="2,5" opacity=".1"/>
+      </g>
+    </svg>`;
+
+    chartWrap.innerHTML=svg;
+
+    // Animate line draw
+    const line=document.getElementById("chart-line");
+    if(line){
+      requestAnimationFrame(()=>{
+        line.style.transition="stroke-dashoffset 2s cubic-bezier(.22,1,.36,1)";
+        line.style.strokeDashoffset="0";
+      });
     }
 
-    function actionTagClass(action) {
-      if (action === 'HEDGE NOW') return 'red';
-      if (action === 'REDUCE RISK') return 'orange';
-      if (action === 'ADD RISK') return 'green';
-      if (action === 'SELECTIVE') return 'amber';
-      return 'gray';
+    // Setup crosshair interaction
+    setupCrosshair(accent);
+  }
+
+  // ─── Crosshair interaction ─────────────────────────────
+  function setupCrosshair(accent){
+    const hoverArea=document.getElementById("chart-hover-area");
+    const xhairLine=document.getElementById("xhair-line");
+    const xhairDot=document.getElementById("xhair-dot");
+    if(!hoverArea||!chartPts||!chartSeries) return;
+
+    // Create tooltip div
+    let tooltip=document.getElementById("chart-tooltip");
+    if(!tooltip){
+      tooltip=document.createElement("div");
+      tooltip.id="chart-tooltip";
+      tooltip.className="chart-tooltip";
+      tooltip.innerHTML='<div class="tooltip-box"><div class="tooltip-date" id="tt-date"></div><div class="tooltip-val" id="tt-val"></div></div>';
+      chartWrap.parentElement.appendChild(tooltip);
     }
 
-    function renderDashboard(elx, decision, hedge, scenarios, markets, alerts) {
-      const drivers = elx.drivers || [];
-      const rc = regimeClass(elx.regime);
-      const ac = decision.actionColor;
+    const svgEl=document.getElementById("elx-svg");
 
-      // Compute scores from drivers
-      const liqScore = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Global Liquidity')?.score || 0) / 2));
-      const macroScore = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Credit Conditions')?.score || 0) / 2));
-      const stressScore = decision.stressScore;
-      const crossAsset = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Market Beta')?.score || 0) / 2));
-      const hedgeNeed = decision.hedgeNeed;
+    function getMouseSVGX(e){
+      const rect=svgEl.getBoundingClientRect();
+      const scaleX=chartDims.W/rect.width;
+      return (e.clientX-rect.left)*scaleX;
+    }
 
-      let html = '';
+    hoverArea.addEventListener("mousemove",function(e){
+      const svgX=getMouseSVGX(e);
+      // Find closest point
+      let closest=0, minDist=Infinity;
+      for(let i=0;i<chartPts.length;i++){
+        const dist=Math.abs(chartPts[i].x-svgX);
+        if(dist<minDist){minDist=dist;closest=i;}
+      }
+      const pt=chartPts[closest];
+      const s=chartSeries[closest];
 
-      // ── DECISION BLOCK ──
-      html += `
-        <div class="decision ${ac}">
-          <div class="decision-top">
-            <span class="decision-action ${ac}">⚡ ${decision.action}</span>
-            <span class="decision-label">${decision.actionLabel}</span>
-          </div>
-          <div class="decision-sublabel">${elx.bias} regime + hedge need ${decision.hedgeNeed} — ${decision.action === 'HEDGE NOW' ? 'deploy defensive positions immediately' : decision.action === 'REDUCE RISK' ? 'reduce exposure and add hedges' : decision.action === 'ADD RISK' ? 'liquidity supports broader allocation' : 'wait for clearer signal'}.</div>
-          <div class="decision-conviction">
-            <div class="decision-conviction-value">${decision.conviction}</div>
-            <div class="decision-conviction-label">conf</div>
-          </div>
-          <div class="decision-strip">
-            <div class="decision-strip-item">
-              <div class="decision-strip-label">Regime</div>
-              <div class="decision-strip-value" style="color:${regimeColor(elx.regime)}">${elx.regime}</div>
-            </div>
-            <div class="decision-strip-item">
-              <div class="decision-strip-label">ELX</div>
-              <div class="decision-strip-value">${elx.value}</div>
-            </div>
-            <div class="decision-strip-item">
-              <div class="decision-strip-label">Liquidity</div>
-              <div class="decision-strip-value">${decision.liquidityDirection}</div>
-            </div>
-            <div class="decision-strip-item">
-              <div class="decision-strip-label">Risk Level</div>
-              <div class="decision-strip-value">${decision.stressScore > 70 ? 'Critical' : decision.stressScore > 40 ? 'Elevated' : 'Low'}</div>
-            </div>
-          </div>
-        </div>`;
+      xhairLine.setAttribute("x1",pt.x.toFixed(1));
+      xhairLine.setAttribute("x2",pt.x.toFixed(1));
+      xhairLine.setAttribute("opacity","1");
 
-      // ── REGIME HERO ──
-      const trend7d = (elx.value * 0.2).toFixed(1);
-      const trend30d = (elx.value * 0.37).toFixed(1);
-      html += `
+      xhairDot.setAttribute("cx",pt.x.toFixed(1));
+      xhairDot.setAttribute("cy",pt.y.toFixed(1));
+      xhairDot.setAttribute("opacity","1");
+
+      // Position tooltip
+      const rect=svgEl.getBoundingClientRect();
+      const pxX=(pt.x/chartDims.W)*rect.width;
+      const pxY=(pt.y/chartDims.H)*rect.height;
+
+      tooltip.style.left=pxX+"px";
+      tooltip.style.top=(pxY-52)+"px";
+      tooltip.classList.add("visible");
+
+      const dt=new Date(s.date+"T00:00:00");
+      document.getElementById("tt-date").textContent=dt.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+      document.getElementById("tt-val").textContent=(pt.v>=0?"+":"")+Math.round(pt.v);
+      document.getElementById("tt-val").style.color=accent;
+    });
+
+    hoverArea.addEventListener("mouseleave",function(){
+      xhairLine.setAttribute("opacity","0");
+      xhairDot.setAttribute("opacity","0");
+      tooltip.classList.remove("visible");
+    });
+  }
+
+  // ─── Fetch history ─────────────────────────────────────
+  async function fetchHistory(days){
+    days=days||RANGE_DAYS[currentRange]||365;
+    try{
+      const res=await fetch(`/api/elx/history?days=${days}`);
+      const data=await res.json();
+      if(data.dates&&data.values){
+        const series=data.dates.map((d,i)=>({date:d,value:data.values[i]}));
+        drawChart(series);
+      }
+    }catch(e){console.error(e);}
+  }
+
+  // ─── Range selector ────────────────────────────────────
+  function initRangeBar(){
+    if(!rangeBar) return;
+    const buttons=rangeBar.querySelectorAll(".range-btn");
+    buttons.forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        buttons.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        currentRange=btn.dataset.range;
+        fetchHistory(RANGE_DAYS[currentRange]);
+      });
+    });
+  }
+
+  // ─── Fetch Markets + Correlation ───────────────────────
+  async function fetchMarkets(){
+    try{
+      const res=await fetch("/api/elx/markets");
+      const data=await res.json();
+      if(Array.isArray(data)){
+        renderCorrStrip(data);
+      }
+    }catch(e){console.error(e);}
+  }
+
+  function renderCorrStrip(markets){
+    if(!corrStrip) return;
+    const labelMap={"S&P 500":"SPX","Gold":"Gold","Bitcoin":"BTC","US Dollar":"DXY"};
+    let html='<span class="corr-title">ELX Correlation (90d)</span>';
+    markets.forEach(m=>{
+      const label=labelMap[m.name]||m.name;
+      const sign=m.correlation>0?"+":"";
+      const cls=m.correlation>0.15?"corr-pos":m.correlation<-0.15?"corr-neg":"corr-neu";
+      html+=`<span class="corr-item ${cls}"><span class="corr-label">${label}</span> <span class="corr-val">${sign}${m.correlation.toFixed(2)}</span></span>`;
+    });
+    corrStrip.innerHTML=html;
+  }
+
+  // ─── Load Decision Engine (rest of dashboard) ──────────
+  async function loadDashboard(){
+    try{
+      const [decisionRes,hedgeRes,scenariosRes,marketsRes,alertsRes,elxRes]=await Promise.all([
+        fetch('/api/dashboard/decision').then(r=>r.json()),
+        fetch('/api/dashboard/hedge').then(r=>r.json()),
+        fetch('/api/dashboard/scenarios').then(r=>r.json()),
+        fetch('/api/elx/markets').then(r=>r.json()),
+        fetch('/api/dashboard/alerts').then(r=>r.json()),
+        fetch('/api/elx').then(r=>r.json()),
+      ]);
+
+      document.getElementById("topbar-conviction").textContent=`Conviction ${decisionRes.conviction}%`;
+      renderDashboard(elxRes,decisionRes,hedgeRes,scenariosRes,marketsRes,alertsRes);
+    }catch(e){
+      console.error('Dashboard load error:',e);
+      document.getElementById('dashboard-dynamic').innerHTML='<div style="text-align:center;padding:40px;color:#ff3b30;font-size:13px">Error loading dashboard. Refresh to retry.</div>';
+    }
+  }
+
+  function regimeColor(regime){
+    if(regime==='Risk-On') return '#34c759';
+    if(regime==='Risk-Off') return '#ff3b30';
+    return '#b8860b';
+  }
+  function regimeClass(regime){
+    if(regime==='Risk-On') return 'green';
+    if(regime==='Risk-Off') return 'red';
+    return 'amber';
+  }
+  function actionTagClass(action){
+    if(action==='HEDGE NOW') return 'red';
+    if(action==='REDUCE RISK') return 'orange';
+    if(action==='ADD RISK') return 'green';
+    if(action==='SELECTIVE') return 'amber';
+    return 'gray';
+  }
+  function renderScoreBar(label,value){
+    const color=value>70?'#ff3b30':value>40?'#b8860b':'#34c759';
+    return `<div class="score-row"><span class="score-label">${label}</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:${value}%;background:${color}"></div></div><span class="score-value">${Math.round(value)}</span></div>`;
+  }
+
+  function renderDashboard(elx,decision,hedge,scenarios,markets,alerts){
+    const drivers=elx.drivers||[];
+    const rc=regimeClass(elx.regime);
+    const ac=decision.actionColor;
+
+    const liqScore=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Global Liquidity')?.score||0)/2));
+    const macroScore=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Credit Conditions')?.score||0)/2));
+    const stressScore=decision.stressScore;
+    const crossAsset=Math.max(0,Math.min(100,50+(drivers.find(d=>d.name==='Market Beta')?.score||0)/2));
+    const hedgeNeed=decision.hedgeNeed;
+
+    let html='';
+
+    // DECISION BLOCK
+    html+=`
+      <div class="decision ${ac}">
+        <div class="decision-top">
+          <span class="decision-action ${ac}">\u26A1 ${decision.action}</span>
+          <span class="decision-label">${decision.actionLabel}</span>
+        </div>
+        <div class="decision-sublabel">${elx.bias} regime + hedge need ${decision.hedgeNeed} \u2014 ${decision.action==='HEDGE NOW'?'deploy defensive positions immediately':decision.action==='REDUCE RISK'?'reduce exposure and add hedges':decision.action==='ADD RISK'?'liquidity supports broader allocation':'wait for clearer signal'}.</div>
+        <div class="decision-conviction">
+          <div class="decision-conviction-value">${decision.conviction}</div>
+          <div class="decision-conviction-label">conf</div>
+        </div>
+        <div class="decision-strip">
+          <div class="decision-strip-item"><div class="decision-strip-label">Regime</div><div class="decision-strip-value" style="color:${regimeColor(elx.regime)}">${elx.regime}</div></div>
+          <div class="decision-strip-item"><div class="decision-strip-label">ELX</div><div class="decision-strip-value">${elx.value}</div></div>
+          <div class="decision-strip-item"><div class="decision-strip-label">Liquidity</div><div class="decision-strip-value">${decision.liquidityDirection}</div></div>
+          <div class="decision-strip-item"><div class="decision-strip-label">Risk Level</div><div class="decision-strip-value">${decision.stressScore>70?'Critical':decision.stressScore>40?'Elevated':'Low'}</div></div>
+        </div>
+      </div>`;
+
+    // ELX DECISION LAYER + CORE SCORES
+    html+=`
+      <div class="grid-wide">
+        <div class="brief-card">
+          <div class="card-header">ELX Decision Layer</div>
+          <div class="brief-text">Regime ${elx.regime}. ELX ${elx.value}. Dominant risk: ${elx.bias}. ${elx.interpretation} Liquidity score: ${drivers.find(d=>d.name==='Global Liquidity')?.score||'N/A'}. Credit: ${drivers.find(d=>d.name==='Credit Conditions')?.score||'N/A'}. Real Yields: ${drivers.find(d=>d.name==='Real Yields')?.score||'N/A'}.</div>
+        </div>
         <div class="card">
-          <div class="regime-hero">
-            <div class="regime-left">
-              <div class="card-header">ELX — Earth Liquidity Index</div>
-              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-                <span class="regime-score">${elx.value}</span>
-                <span class="regime-trend" style="color:${elx.value >= 0 ? '#34c759' : '#ff3b30'}">↓ ${trend7d}</span>
-              </div>
-              <span class="regime-tag ${rc}">${elx.regime}</span>
-              <span class="regime-bias">${elx.bias}</span>
-              <div class="regime-brief">${elx.interpretation}</div>
-            </div>
-            <div class="regime-metrics">
-              <div class="metric-box">
-                <div class="metric-box-label">30d Trend</div>
-                <div class="metric-box-value" style="color:${parseFloat(trend30d) >= 0 ? '#34c759' : '#ff3b30'}">${trend30d}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-box-label">Conviction</div>
-                <div class="metric-box-value">${decision.conviction}%</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-box-label">Dominant Risk</div>
-                <div class="metric-box-value small">${elx.bias}</div>
-              </div>
-              <div class="metric-box">
-                <div class="metric-box-label">Hedge Action</div>
-                <div class="metric-box-value small">${hedge.suggestion.split('.')[0]}</div>
-              </div>
-            </div>
+          <div class="card-header">Core Scores</div>
+          <div class="scores-grid">
+            ${renderScoreBar('Liquidity Score',liqScore)}
+            ${renderScoreBar('Macro Score',macroScore)}
+            ${renderScoreBar('Stress Score',stressScore)}
+            ${renderScoreBar('Cross Asset',crossAsset)}
+            ${renderScoreBar('Hedge Need',hedgeNeed)}
           </div>
-        </div>`;
+        </div>
+      </div>`;
 
-      // ── ELX DECISION LAYER + CORE SCORES ──
-      html += `
-        <div class="grid-wide">
-          <div class="brief-card">
-            <div class="card-header">ELX Decision Layer</div>
-            <div class="brief-text">Regime ${elx.regime}. ELX ${elx.value}. Dominant risk: ${elx.bias}. ${elx.interpretation} Liquidity score: ${drivers.find(d => d.name === 'Global Liquidity')?.score || 'N/A'}. Credit: ${drivers.find(d => d.name === 'Credit Conditions')?.score || 'N/A'}. Real Yields: ${drivers.find(d => d.name === 'Real Yields')?.score || 'N/A'}.</div>
-          </div>
-          <div class="card">
-            <div class="card-header">Core Scores</div>
-            <div class="scores-grid">
-              ${renderScoreBar('Liquidity Score', liqScore)}
-              ${renderScoreBar('Macro Score', macroScore)}
-              ${renderScoreBar('Stress Score', stressScore)}
-              ${renderScoreBar('Cross Asset', crossAsset)}
-              ${renderScoreBar('Hedge Need', hedgeNeed)}
+    // MACRO DRIVERS
+    html+=`
+      <div>
+        <div class="section-title">Macro Drivers</div>
+        <div class="section-desc">Dominant macro inputs driving the ELX composite score.</div>
+        <div class="grid-5">
+          ${drivers.map(d=>`
+            <div class="driver-card">
+              <div class="driver-name">${d.name}</div>
+              <div class="driver-score" style="color:${d.score>=0?'#34c759':'#ff3b30'}">${d.score>=0?'+':''}${d.score}</div>
+              <div class="driver-weight">${d.weight}</div>
+              <div class="driver-bar"><div class="driver-bar-fill" style="width:${Math.abs(d.score)/2+50}%;background:${d.score>=0?'#34c759':'#ff3b30'}"></div></div>
             </div>
-          </div>
-        </div>`;
+          `).join('')}
+        </div>
+      </div>`;
 
-      // ── MACRO DRIVERS ──
-      html += `
-        <div>
-          <div class="section-title">Macro Drivers</div>
-          <div class="section-desc">Dominant macro inputs driving the ELX composite score.</div>
-          <div class="grid-5">
-            ${drivers.map(d => `
-              <div class="driver-card">
-                <div class="driver-name">${d.name}</div>
-                <div class="driver-score" style="color:${d.score >= 0 ? '#34c759' : '#ff3b30'}">${d.score >= 0 ? '+' : ''}${d.score}</div>
-                <div class="driver-weight">${d.weight}</div>
-                <div class="driver-bar">
-                  <div class="driver-bar-fill" style="width:${Math.abs(d.score) / 2 + 50}%;background:${d.score >= 0 ? '#34c759' : '#ff3b30'}"></div>
-                </div>
+    // ELX VS MARKETS
+    html+=`
+      <div>
+        <div class="section-title">ELX vs Markets</div>
+        <div class="grid-4">
+          ${markets.map(m=>`
+            <div class="asset-card">
+              <div class="asset-header"><span class="asset-name">${m.name}</span><span class="asset-ticker">${m.ticker.replace('.us','').toUpperCase()}</span></div>
+              <div class="asset-price">${typeof m.price==='number'?(m.price>1000?'$'+m.price.toLocaleString():m.price.toFixed(1)):m.price}</div>
+              <div class="asset-row"><span class="asset-row-label">30d Change</span><span class="asset-row-value" style="color:${m.change_30d>0?'#34c759':'#ff3b30'}">${m.change_30d>0?'+':''}${m.change_30d}%</span></div>
+              <div class="asset-row"><span class="asset-row-label">ELX Corr</span><span class="asset-row-value" style="color:${m.correlation>0.3?'#34c759':m.correlation<-0.3?'#ff3b30':'#6e6e73'}">${m.correlation>0?'+':''}${m.correlation.toFixed(2)}</span></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+
+    // SCENARIO ENGINE
+    html+=`
+      <div>
+        <div class="section-title">Scenario Engine</div>
+        <div class="section-desc">AI-generated. Probabilistic view across 3 horizons.</div>
+        <div class="grid-3">
+          ${scenarios.map(s=>`
+            <div class="scenario-card">
+              <div class="scenario-header"><span class="scenario-horizon">${s.horizon}</span><span class="scenario-action-tag ${actionTagClass(s.action)}">${s.action}</span></div>
+              <div class="scenario-title">${s.title}</div>
+              <div class="scenario-prob">${s.probability}%</div>
+              <div class="scenario-desc">${s.description}</div>
+              <div class="scenario-tags">${s.favored.map(f=>`<span class="scenario-tag fav">${f}</span>`).join('')}${s.pressured.map(p=>`<span class="scenario-tag press">${p}</span>`).join('')}</div>
+              <div class="scenario-actions"><div class="scenario-actions-title">Action</div>${s.actions.map(a=>`<div class="scenario-action-item">\u2192 ${a}</div>`).join('')}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+
+    // HEDGE ENGINE + ALERTS
+    html+=`
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title">Hedge Engine</div>
+          <div class="section-desc">Rule-based \u00B7 ELX + regime + scores \u00B7 ${hedge.horizon} horizon</div>
+          <div style="display:flex;gap:16px;margin-bottom:12px">
+            <div><span style="font-size:11px;color:var(--text-4)">Confidence</span><br/><strong>${hedge.confidence}%</strong></div>
+            <div><span style="font-size:11px;color:var(--text-4)">Dominant Risk</span><br/><strong>${hedge.dominantRisk}</strong></div>
+          </div>
+          <div style="font-size:13px;color:var(--text-2);margin-bottom:12px"><strong>Suggested:</strong> ${hedge.suggestion}</div>
+          <div class="hedge-alloc">
+            ${hedge.allocation.map(a=>`
+              <div class="hedge-row">
+                <span class="hedge-asset">${a.direction==='up'?'\u2191':a.direction==='down'?'\u2193':'\u2192'} ${a.asset}</span>
+                <span class="hedge-delta ${a.direction}">${a.delta>0?'+':''}${a.delta}%</span>
               </div>
             `).join('')}
           </div>
-        </div>`;
-
-      // ── ELX VS MARKETS ──
-      html += `
-        <div>
-          <div class="section-title">ELX vs Markets</div>
-          <div class="grid-4">
-            ${markets.map(m => `
-              <div class="asset-card">
-                <div class="asset-header">
-                  <span class="asset-name">${m.name}</span>
-                  <span class="asset-ticker">${m.ticker.replace('.us','').toUpperCase()}</span>
-                </div>
-                <div class="asset-price">${typeof m.price === 'number' ? (m.price > 1000 ? '$' + m.price.toLocaleString() : m.price.toFixed(1)) : m.price}</div>
-                <div class="asset-row"><span class="asset-row-label">30d Change</span><span class="asset-row-value" style="color:${m.change_30d >= 0 ? '#34c759' : '#ff3b30'}">${m.change_30d >= 0 ? '+' : ''}${m.change_30d.toFixed(1)}%</span></div>
-                <div class="asset-row"><span class="asset-row-label">ELX Corr</span><span class="asset-row-value" style="color:${m.correlation > 0.3 ? '#34c759' : m.correlation < -0.3 ? '#ff3b30' : '#6e6e73'}">${m.correlation > 0 ? '+' : ''}${m.correlation.toFixed(2)}</span></div>
+          <div style="margin-top:12px;font-size:11px;color:var(--text-4)">${hedge.invalidation}</div>
+        </div>
+        <div class="card">
+          <div class="section-title">ELX Alerts</div>
+          <div class="section-desc">Rule-based. Updated with each ELX computation.</div>
+          ${alerts.length===0?'<div style="text-align:center;padding:20px;color:var(--text-4);font-size:12px">No active alerts.</div>':
+            alerts.map(a=>`
+              <div class="alert-item">
+                <div class="alert-header"><div class="alert-title"><span class="alert-dot ${a.severity}"></span>${a.title}</div><span class="alert-severity ${a.severity}">${a.severity}</span></div>
+                <div class="alert-desc">${a.description}</div>
+                <div class="alert-action">${a.action}</div>
               </div>
             `).join('')}
-          </div>
-        </div>`;
+        </div>
+      </div>`;
 
-      // ── SCENARIO ENGINE ──
-      html += `
-        <div>
-          <div class="section-title">Scenario Engine</div>
-          <div class="section-desc">AI-generated. Probabilistic view across 3 horizons.</div>
-          <div class="grid-3">
-            ${scenarios.map(s => `
-              <div class="scenario-card">
-                <div class="scenario-header">
-                  <span class="scenario-horizon">${s.horizon}</span>
-                  <span class="scenario-action-tag ${actionTagClass(s.action)}">${s.action}</span>
-                </div>
-                <div class="scenario-title">${s.title}</div>
-                <div class="scenario-prob">${s.probability}%</div>
-                <div class="scenario-desc">${s.description}</div>
-                <div class="scenario-tags">
-                  ${s.favored.map(f => `<span class="scenario-tag fav">${f}</span>`).join('')}
-                  ${s.pressured.map(p => `<span class="scenario-tag press">${p}</span>`).join('')}
-                </div>
-                <div class="scenario-actions">
-                  <div class="scenario-actions-title">Action</div>
-                  ${s.actions.map(a => `<div class="scenario-action-item">→ ${a}</div>`).join('')}
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>`;
+    document.getElementById('dashboard-dynamic').innerHTML=html;
+  }
 
-      // ── HEDGE ENGINE ──
-      html += `
-        <div class="grid-2">
-          <div class="card">
-            <div class="section-title">Hedge Engine</div>
-            <div class="section-desc">Rule-based · ELX + regime + scores · ${hedge.horizon} horizon</div>
-            <div style="display:flex;gap:16px;margin-bottom:12px">
-              <div><span style="font-size:11px;color:#aeaeb2">Confidence</span><br/><strong>${hedge.confidence}%</strong></div>
-              <div><span style="font-size:11px;color:#aeaeb2">Dominant Risk</span><br/><strong>${hedge.dominantRisk}</strong></div>
-            </div>
-            <div style="font-size:13px;color:#6e6e73;margin-bottom:12px"><strong>Suggested:</strong> ${hedge.suggestion}</div>
-            <div class="hedge-alloc">
-              ${hedge.allocation.map(a => `
-                <div class="hedge-row">
-                  <span class="hedge-asset">${a.direction === 'up' ? '↑' : a.direction === 'down' ? '↓' : '→'} ${a.asset}</span>
-                  <span class="hedge-delta ${a.direction}">${a.delta > 0 ? '+' : ''}${a.delta}%</span>
-                </div>
-              `).join('')}
-            </div>
-            <div style="margin-top:12px;font-size:11px;color:#aeaeb2">${hedge.invalidation}</div>
-          </div>
+  // ─── Init ──────────────────────────────────────────────
+  fetchELX();
+  fetchHistory();
+  fetchMarkets();
+  initRangeBar();
+  loadDashboard();
 
-          <!-- ALERTS -->
-          <div class="card">
-            <div class="section-title">ELX Alerts</div>
-            <div class="section-desc">Rule-based. Updated with each ELX computation.</div>
-            ${alerts.length === 0 ? '<div style="text-align:center;padding:20px;color:#aeaeb2;font-size:12px">No active alerts — conditions within normal parameters.</div>' :
-              alerts.map(a => `
-                <div class="alert-item">
-                  <div class="alert-header">
-                    <div class="alert-title"><span class="alert-dot ${a.severity}"></span>${a.title}</div>
-                    <span class="alert-severity ${a.severity}">${a.severity}</span>
-                  </div>
-                  <div class="alert-desc">${a.description}</div>
-                  <div class="alert-action">${a.action}</div>
-                </div>
-              `).join('')}
-          </div>
-        </div>`;
-
-      // ── PORTFOLIO WARNINGS ──
-      const warnings = alerts.filter(a => a.type === 'warning');
-
-      document.getElementById('dashboard-content').innerHTML = html;
-    }
-
-    function renderScoreBar(label, value) {
-      const color = value > 70 ? '#ff3b30' : value > 40 ? '#b8860b' : '#34c759';
-      return `
-        <div class="score-row">
-          <span class="score-label">${label}</span>
-          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${value}%;background:${color}"></div></div>
-          <span class="score-value">${Math.round(value)}</span>
-        </div>`;
-    }
-
-    // Load on page ready
-    loadDashboard();
-  </script>
+  // Refresh every 2 minutes
+  setInterval(()=>{fetchELX();loadDashboard();},120000);
+})();
+</script>
 </body>
 </html>
