@@ -76,11 +76,23 @@ def _generate_daily():
 
 
 # ---------------------------------------------------------------------------
-# Homepage
+# Homepage — SaaS Landing Page
 # ---------------------------------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
 def homepage(request: Request):
     track_event("page_view", path="/", ip=request.client.host if request.client else "")
+    return HTMLResponse(
+        content=(BASE / "templates" / "landing.html").read_text(),
+        status_code=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Free Signal Page (old homepage)
+# ---------------------------------------------------------------------------
+@app.get("/signal", response_class=HTMLResponse)
+def signal_page(request: Request):
+    track_event("page_view", path="/signal", ip=request.client.host if request.client else "")
     return HTMLResponse(
         content=(BASE / "templates" / "index.html").read_text(),
         status_code=200,
