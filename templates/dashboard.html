@@ -168,8 +168,19 @@
     .copilot-portfolio-note{margin-top:20px;padding:12px 16px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;font-size:.82rem;color:#92400e;line-height:1.5}
     .copilot-invalidation{margin-top:16px;font-size:.72rem;color:var(--text-4)}
     .copilot-loading{text-align:center;padding:24px;font-size:.82rem;color:var(--text-4)}
-    @media(max-width:900px){.copilot-grid{grid-template-columns:1fr}}
-    @media(max-width:640px){.copilot-card{padding:24px 20px;border-radius:20px}.copilot-title{font-size:1.4rem}}
+    .copilot-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+    .copilot-confidence{text-align:right}
+    .copilot-confidence-label{font-size:.68rem;color:var(--text-4);margin-bottom:2px}
+    .copilot-confidence-value{font-size:1.6rem;font-weight:700}
+    .copilot-alloc{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+    .copilot-alloc-item{border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
+    .copilot-alloc-name{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-4);margin-bottom:4px}
+    .copilot-alloc-val{font-size:1.1rem;font-weight:600}
+    .copilot-alloc-val.pos{color:var(--green)}
+    .copilot-alloc-val.neg{color:var(--red)}
+    .copilot-alloc-val.flat{color:var(--text-3)}
+    @media(max-width:900px){.copilot-grid{grid-template-columns:1fr}.copilot-alloc{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:640px){.copilot-card{padding:24px 20px;border-radius:20px}.copilot-title{font-size:1.4rem}.copilot-alloc{grid-template-columns:repeat(2,1fr)}}
 
     /* ─── CARDS ─────────────────────────────────────────── */
     .card{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
@@ -386,8 +397,21 @@
           <div class="chart-corr" id="corr-strip"></div>
         </div>
 
+        <!-- ═══ PSYCHO TRIGGER ═══ -->
+        <div id="psycho-trigger" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:13px">
+          <span style="color:var(--text-2)">Following ELX (30d)</span>
+          <span id="psycho-elx" style="color:var(--green);font-weight:600">+8.2%</span>
+          <span style="color:var(--text-3);margin-left:24px">Market</span>
+          <span style="color:var(--text-3);font-weight:500">+2.1%</span>
+        </div>
+
+        <!-- ═══ MACRO TOGGLE ═══ -->
+        <button id="macro-toggle" onclick="document.getElementById('dashboard-dynamic').style.display=document.getElementById('dashboard-dynamic').style.display==='none'?'block':'none';this.textContent=document.getElementById('dashboard-dynamic').style.display==='none'?'Show macro details \u2192':'Hide macro details \u2191'" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-3);text-decoration:underline;padding:4px 0;font-family:var(--font)">
+          Show macro details &rarr;
+        </button>
+
         <!-- ═══ REST OF DASHBOARD (loaded dynamically) ═══ -->
-        <div id="dashboard-dynamic">
+        <div id="dashboard-dynamic" style="display:none">
           <div style="text-align:center;padding:40px;color:var(--text-4);font-size:13px">Loading decision engine&hellip;</div>
         </div>
       </div>
@@ -978,15 +1002,48 @@
   function renderCopilot(d){
     const container=document.getElementById('copilot-container');
     if(!container) return;
-    const actionLabel=d.action?d.action.replace('_',' '):'';    const toText=(arr)=>arr&&arr.length?arr.map(i=>'\u2022 '+i).join('<br>'):'\u2014';
+    const actionLabel=d.action?d.action.replace('_',' '):'WAIT';
+    const toText=(arr)=>arr&&arr.length?arr.map(i=>'\u2022 '+i).join('<br>'):'\u2014';
+
+    // Derive allocation suggestions from hedge data
+    const allocMap={Equities:'0%',Gold:'0%',Cash:'0%',BTC:'0%',Bonds:'0%'};
+    if(d.hedge&&d.hedge.length){
+      d.hedge.forEach(h=>{
+        const hl=h.toLowerCase();
+        if(hl.includes('gold'))allocMap.Gold='+5%';
+        if(hl.includes('cash'))allocMap.Cash='+10%';
+      });
+    }
+    if(d.action==='REDUCE'||d.action==='HEDGE'){
+      allocMap.Equities='-10%';allocMap.BTC='-5%';
+    }else if(d.action==='ADD_RISK'){
+      allocMap.Equities='+10%';allocMap.BTC='+5%';allocMap.Cash='-10%';
+    }
+
+    function allocClass(v){if(v.startsWith('+'))return'pos';if(v.startsWith('-'))return'neg';return'flat';}
+
     let html=`
       <div class="copilot-card">
-        <div class="copilot-header">
-          <div class="copilot-brand">EarthOne Copilot</div>
-          <div class="copilot-action-badge ${d.action||'WAIT'}">${actionLabel}</div>
+        <div class="copilot-top">
+          <div>
+            <div class="copilot-brand">EarthOne Copilot</div>
+            <h3 class="copilot-title">Today\u2019s verdict: <span style="color:${d.action==='ADD_RISK'?'var(--green)':d.action==='REDUCE'?'var(--red)':d.action==='HEDGE'?'var(--orange)':'var(--text-3)'}">${actionLabel}</span></h3>
+            <p class="copilot-summary">${d.summary||''}</p>
+          </div>
+          <div class="copilot-confidence">
+            <div class="copilot-confidence-label">Confidence</div>
+            <div class="copilot-confidence-value">${d.confidence||0}%</div>
+          </div>
         </div>
-        <h3 class="copilot-title">Today\u2019s verdict: ${actionLabel}</h3>
-        <p class="copilot-summary">${d.summary||''}</p>
+
+        <div class="copilot-alloc">
+          ${Object.entries(allocMap).map(([k,v])=>`
+            <div class="copilot-alloc-item">
+              <div class="copilot-alloc-name">${k}</div>
+              <div class="copilot-alloc-val ${allocClass(v)}">${v}</div>
+            </div>`).join('')}
+        </div>
+
         <div class="copilot-grid">
           <div class="copilot-cell">
             <div class="copilot-cell-label">Do now</div>

@@ -244,6 +244,23 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .cp-cell-label{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4);margin-bottom:10px}
 .cp-cell-text{font-size:.85rem;line-height:1.65;color:var(--text-2)}
 .cp-cell-text br{margin-bottom:2px}
+.cp-paywall{
+  position:absolute;inset:0;z-index:10;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  background:rgba(255,255,255,.7);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:32px;
+}
+.cp-paywall h2{font-size:1.3rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+.cp-paywall p{font-size:.9rem;color:var(--text-2);margin-bottom:16px}
+.cp-paywall ul{list-style:none;padding:0;margin:0 0 24px;font-size:.85rem;color:var(--text-2)}
+.cp-paywall ul li{margin-bottom:4px}
+.cp-paywall .btn-upgrade{
+  display:inline-block;background:#1d1d1f;color:#fff;
+  padding:14px 28px;border-radius:12px;font-size:.9rem;font-weight:600;
+  text-decoration:none;transition:opacity .2s;
+}
+.cp-paywall .btn-upgrade:hover{opacity:.85}
 
 /* ─── LIVE SIGNAL CARD ───────────────────────────────── */
 .signal{padding:20px 0 100px;text-align:center}
@@ -549,8 +566,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      ═══════════════════════════════════════════════════════ -->
 <section class="hero section" id="hero">
   <div class="hero-badge"><span class="dot"></span> Live</div>
-  <h1><span class="gradient">Global liquidity moves<br>every market. Now you<br>can read it.</span></h1>
-  <p class="hero-sub">ELX is the only index that tracks the five forces behind every market move — and turns them into one clear decision: add risk, reduce, or hedge.</p>
+  <h1><span class="gradient">One number.<br>One decision.</span></h1>
+  <p class="hero-sub">ELX tells you when to take risk — and when to step back.</p>
 
   <div class="hero-ticker" id="hero-ticker">
     <div class="hero-elx-score" id="hero-score"><span class="sign">&mdash;</span></div>
@@ -561,7 +578,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   </div>
 
   <div class="hero-actions">
-    <a href="/dashboard" class="btn-primary">Open Dashboard</a>
+    <a href="/dashboard" class="btn-primary">Get today’s signal</a>
     <a href="#signal" class="btn-secondary">See the Signal</a>
   </div>
 </section>
@@ -571,6 +588,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      ═══════════════════════════════════════════════════════════ -->
 <section class="copilot-preview section" id="copilot">
   <div class="copilot-preview-card anim" id="cp-card">
+    <!-- Blurred paywall overlay -->
+    <div class="cp-paywall">
+      <h2>Unlock the decision layer</h2>
+      <p>Know exactly what to do in the market — every day.</p>
+      <ul>
+        <li>✔ Daily macro verdict</li>
+        <li>✔ Portfolio allocation</li>
+        <li>✔ Risk management signals</li>
+      </ul>
+      <a href="/pricing" class="btn-upgrade">Upgrade to ELX Pro — 29.99€/month</a>
+    </div>
+    <!-- Fake content behind blur -->
     <div class="cp-header">
       <div class="cp-label">EarthOne Copilot</div>
       <div class="cp-action-badge" id="cp-badge">Loading</div>
@@ -624,9 +653,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      PROBLEM — Why investors lose money
      ═══════════════════════════════════════════════════════ -->
 <section class="problem section" id="problem">
-  <div class="section-label">The Problem</div>
-  <h2 class="section-title anim">Most investors trade blind.<br>Liquidity is the reason they lose.</h2>
-  <p class="section-subtitle anim">90% of portfolio drawdowns happen when liquidity contracts. Yet most investors never see it coming — because they track prices, not the forces behind them.</p>
+  <div class="section-label">Stop guessing</div>
+  <h2 class="section-title anim">Every day, ELX gives you:</h2>
+  <p class="section-subtitle anim">A clear market direction. Exact portfolio positioning. Risk management guidance. Not another indicator — a macro decision system.</p>
   <div class="problem-grid">
     <div class="problem-card anim">
       <div class="num">80%</div>
