@@ -21,6 +21,10 @@ from engine.daily_image import generate_daily_image, save_daily_image
 from engine.social_post import generate_post, generate_daily_report
 from engine.regime_alerts import detect_regime_changes, get_current_alert, get_regime_map
 from engine.decision_engine import compute_decision, compute_hedge, compute_scenarios, compute_portfolio_warnings
+from engine.stripe_billing import (
+    create_checkout_session, handle_webhook, verify_pro_token,
+    verify_session, get_pro_subscribers
+)
 
 app = FastAPI(title="EarthOne", version="4.0")
 
@@ -96,11 +100,56 @@ def analytics_page(request: Request):
 
 
 # ---------------------------------------------------------------------------
-# Dashboard — ELX Index Pro (premium layer)
+# Pricing Page
+# ---------------------------------------------------------------------------
+@app.get("/pricing", response_class=HTMLResponse)
+def pricing_page(request: Request):
+    track_event("page_view", path="/pricing", ip=request.client.host if request.client else "")
+    return HTMLResponse(
+        content=(BASE / "templates" / "pricing.html").read_text(),
+        status_code=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Success Page (after Stripe checkout)
+# ---------------------------------------------------------------------------
+@app.get("/success", response_class=HTMLResponse)
+def success_page(request: Request, session_id: str = ""):
+    track_event("page_view", path="/success", ip=request.client.host if request.client else "")
+    # Verify session and get pro token
+    if session_id:
+        result = verify_session(session_id)
+        if result.get("valid") and result.get("token"):
+            # Return success page with token cookie
+            content = (BASE / "templates" / "success.html").read_text()
+            response = HTMLResponse(content=content, status_code=200)
+            response.set_cookie(
+                key="elx_pro_token",
+                value=result["token"],
+                max_age=365 * 24 * 3600,  # 1 year
+                httponly=True,
+                secure=True,
+                samesite="lax",
+            )
+            return response
+    return HTMLResponse(
+        content=(BASE / "templates" / "success.html").read_text(),
+        status_code=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Dashboard — ELX Index Pro (premium layer with paywall)
 # ---------------------------------------------------------------------------
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard_page(request: Request):
     track_event("page_view", path="/dashboard", ip=request.client.host if request.client else "")
+    # Check for pro access via cookie
+    pro_token = request.cookies.get("elx_pro_token", "")
+    is_pro = verify_pro_token(pro_token)
+    # For now, serve dashboard to all (paywall can be enforced later)
+    # To enforce: if not is_pro: return RedirectResponse("/pricing")
     return HTMLResponse(
         content=(BASE / "templates" / "dashboard.html").read_text(),
         status_code=200,
@@ -406,6 +455,43 @@ def api_analytics():
 def api_subscribers():
     """Get all email subscribers."""
     subs = get_subscribers()
+    return JSONResponse(content={"count": len(subs), "subscribers": subs})
+
+
+# ---------------------------------------------------------------------------
+# Stripe — Checkout + Webhook
+# ---------------------------------------------------------------------------
+@app.post("/api/stripe/checkout")
+def api_stripe_checkout(request: Request):
+    """Create a Stripe Checkout session for ELX Index Pro."""
+    track_event("checkout_start", path="/api/stripe/checkout", ip=request.client.host if request.client else "")
+    result = create_checkout_session()
+    return JSONResponse(content=result)
+
+
+@app.post("/api/stripe/webhook")
+async def api_stripe_webhook(request: Request):
+    """Handle Stripe webhook events."""
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature", "")
+    result = handle_webhook(payload, sig_header)
+    if "error" in result:
+        return JSONResponse(content=result, status_code=400)
+    return JSONResponse(content=result)
+
+
+@app.get("/api/stripe/verify")
+def api_stripe_verify(request: Request):
+    """Check if current user has pro access."""
+    pro_token = request.cookies.get("elx_pro_token", "")
+    is_pro = verify_pro_token(pro_token)
+    return JSONResponse(content={"pro": is_pro})
+
+
+@app.get("/api/pro/subscribers")
+def api_pro_subscribers():
+    """Get all pro subscribers (admin)."""
+    subs = get_pro_subscribers()
     return JSONResponse(content={"count": len(subs), "subscribers": subs})
 
 
