@@ -67,7 +67,7 @@
         "name": "What does ELX Index Pro include?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ELX Index Pro is the premium decision layer: it includes the Decision Engine (ADD RISK / REDUCE RISK / HEDGE NOW), exact hedge allocations, a 3-horizon Scenario Engine, portfolio warnings, and core macro scores."
+          "text": "ELX Index Pro is the premium decision layer: it includes the Decision Engine, EarthOne Copilot AI verdict, exact hedge allocations, a 3-horizon Scenario Engine, portfolio warnings, and core macro scores."
         }
       }
     ]
@@ -139,11 +139,21 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 
 /* ─── SECTION LAYOUT ──────────────────────────────────── */
 .section{max-width:1200px;margin:0 auto;padding:0 40px}
+.section-label{
+  font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-4);text-align:center;margin-bottom:16px;
+}
+.section-title{
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.035em;
+  text-align:center;max-width:700px;margin:0 auto 20px;line-height:1.1;
+}
+.section-subtitle{
+  font-size:clamp(.95rem,1.8vw,1.1rem);line-height:1.65;color:var(--text-2);
+  text-align:center;max-width:560px;margin:0 auto 56px;
+}
 
 /* ─── HERO ────────────────────────────────────────────── */
-.hero{
-  padding-top:140px;padding-bottom:80px;text-align:center;
-}
+.hero{padding-top:140px;padding-bottom:40px;text-align:center}
 .hero-badge{
   display:inline-flex;align-items:center;gap:6px;
   font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
@@ -160,8 +170,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 }
 .hero h1 .gradient{
   background:linear-gradient(135deg,#1d1d1f 0%,#6e6e73 50%,#1d1d1f 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{
   font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.6;color:var(--text-2);
@@ -182,8 +191,28 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 }
 .btn-secondary:hover{border-color:rgba(0,0,0,.15);color:var(--text)}
 
-/* ─── LIVE SIGNAL ─────────────────────────────────────── */
-.signal{padding:0 0 100px;text-align:center}
+/* ─── HERO ELX LIVE TICKER ───────────────────────────── */
+.hero-ticker{
+  display:flex;align-items:center;justify-content:center;gap:24px;
+  margin-bottom:36px;flex-wrap:wrap;
+}
+.hero-elx-score{
+  font-size:3.2rem;font-weight:700;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.hero-elx-score .sign{font-weight:400;opacity:.35}
+.hero-meta{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.hero-regime{font-size:.95rem;font-weight:600;letter-spacing:-.01em}
+.hero-bias-badge{
+  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 12px;border-radius:100px;
+}
+.bias-risk-off{color:var(--orange);background:var(--orange-dim)}
+.bias-risk-on{color:var(--green);background:var(--green-dim)}
+.bias-neutral{color:var(--text-3);background:rgba(0,0,0,.04)}
+
+/* ─── LIVE SIGNAL CARD ───────────────────────────────── */
+.signal{padding:20px 0 100px;text-align:center}
 .signal-card{
   background:var(--surface);border:1px solid rgba(0,0,0,.05);
   border-radius:var(--radius);box-shadow:var(--shadow);
@@ -209,14 +238,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   padding:5px 14px;border-radius:100px;
 }
-.bias-risk-off{color:var(--orange);background:var(--orange-dim)}
-.bias-risk-on{color:var(--green);background:var(--green-dim)}
-.bias-neutral{color:var(--text-3);background:rgba(0,0,0,.04)}
-
-/* Regime bar */
-.signal-bar{
-  display:flex;height:8px;border-radius:4px;overflow:hidden;margin:20px 0 8px;
-}
+.signal-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:20px 0 8px}
 .signal-bar .z1{flex:2;background:linear-gradient(90deg,#ff453a,#ff6961)}
 .signal-bar .z2{flex:1;background:linear-gradient(90deg,#ff6961,#ff9f0a)}
 .signal-bar .z3{flex:2;background:linear-gradient(90deg,#ff9f0a,#ffd60a,#30d158)}
@@ -236,7 +258,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 }
 .signal-labels{display:flex;justify-content:space-between;margin-top:6px}
 .signal-labels span{font-size:.52rem;font-weight:500;color:var(--text-4);font-variant-numeric:tabular-nums}
-
 .signal-interp{
   font-size:.85rem;line-height:1.6;color:var(--text-2);margin-top:20px;max-width:480px;margin-left:auto;margin-right:auto;
 }
@@ -256,32 +277,59 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 }
 .signal-link:hover{border-color:var(--text)}
 
-/* ─── WHY SECTION ─────────────────────────────────────── */
-.why{padding:0 0 100px}
-.section-label{
-  font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-4);text-align:center;margin-bottom:16px;
-}
-.section-title{
-  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.035em;
-  text-align:center;max-width:640px;margin:0 auto 56px;line-height:1.1;
-}
-.why-grid{
+/* ─── PROBLEM SECTION ────────────────────────────────── */
+.problem{padding:0 0 100px}
+.problem-grid{
   display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
 }
-.why-card{
+.problem-card{
   background:var(--surface);border:1px solid rgba(0,0,0,.05);
-  border-radius:var(--radius);padding:36px 28px;
-  box-shadow:var(--shadow);
+  border-radius:var(--radius);padding:36px 28px;box-shadow:var(--shadow);
 }
-.why-card .icon{
-  font-size:1.6rem;margin-bottom:16px;
-  width:48px;height:48px;border-radius:14px;
+.problem-card .num{
+  font-size:2.4rem;font-weight:800;letter-spacing:-.04em;
+  color:var(--red);margin-bottom:12px;line-height:1;
+}
+.problem-card h3{font-size:1.05rem;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
+.problem-card p{font-size:.84rem;line-height:1.65;color:var(--text-2)}
+
+/* ─── SOLUTION SECTION ───────────────────────────────── */
+.solution{padding:0 0 100px}
+.solution-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:880px;margin:0 auto;
+}
+.solution-card{
+  background:var(--surface);border:1px solid rgba(0,0,0,.05);
+  border-radius:var(--radius);padding:44px 36px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.solution-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.solution-card.signal-sol::before{background:linear-gradient(90deg,#ff9f0a,#30d158)}
+.solution-card.copilot-sol::before{background:linear-gradient(90deg,#1d1d1f,#6e6e73)}
+.solution-card .sol-icon{
+  font-size:1.8rem;margin-bottom:20px;
+  width:56px;height:56px;border-radius:16px;
   display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,.03);
 }
-.why-card h3{font-size:1.05rem;font-weight:600;letter-spacing:-.02em;margin-bottom:10px}
-.why-card p{font-size:.84rem;line-height:1.65;color:var(--text-2)}
+.solution-card .sol-label{
+  font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-4);margin-bottom:8px;
+}
+.solution-card h3{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+.solution-card p{font-size:.88rem;line-height:1.7;color:var(--text-2);margin-bottom:20px}
+.solution-card ul{list-style:none;margin:0;padding:0}
+.solution-card ul li{
+  font-size:.82rem;color:var(--text-2);padding:6px 0;
+  display:flex;align-items:center;gap:8px;
+}
+.solution-card ul li::before{
+  content:'\2713';font-size:.7rem;font-weight:700;color:var(--green);
+  width:20px;height:20px;border-radius:50%;background:var(--green-dim);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
 
 /* ─── DASHBOARD PREVIEW ──────────────────────────────── */
 .preview{padding:0 0 100px;text-align:center}
@@ -301,20 +349,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .preview-dot:nth-child(2){background:#febc2e}
 .preview-dot:nth-child(3){background:#28c840}
 .preview-url{
-  flex:1;text-align:center;font-size:.65rem;font-weight:500;color:var(--text-4);
-  letter-spacing:.02em;
+  flex:1;text-align:center;font-size:.65rem;font-weight:500;color:var(--text-4);letter-spacing:.02em;
 }
-.preview-img{
-  width:100%;display:block;
-}
+.preview-img{width:100%;display:block}
 .preview-overlay{
-  position:absolute;bottom:0;left:0;right:0;
-  height:200px;
+  position:absolute;bottom:0;left:0;right:0;height:200px;
   background:linear-gradient(to top,var(--bg) 0%,transparent 100%);
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:32px;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:32px;
 }
-
 .features-grid{
   display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
   max-width:960px;margin:40px auto 0;
@@ -328,7 +370,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .feature-item h4{font-size:.82rem;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
 .feature-item p{font-size:.72rem;color:var(--text-3);line-height:1.5}
 
-/* ─── PRICING TEASER ──────────────────────────────────── */
+/* ─── HOW IT WORKS ───────────────────────────────────── */
+.how{padding:0 0 100px}
+.how-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  max-width:960px;margin:0 auto;
+}
+.how-step{text-align:center;padding:32px 20px}
+.how-step .step-num{
+  font-size:2rem;font-weight:800;letter-spacing:-.03em;
+  color:var(--text-4);margin-bottom:16px;line-height:1;
+}
+.how-step .step-icon{
+  font-size:1.6rem;margin:0 auto 16px;
+  width:52px;height:52px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.03);
+}
+.how-step h4{font-size:.92rem;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+.how-step p{font-size:.78rem;color:var(--text-3);line-height:1.6}
+
+/* ─── PRICING ────────────────────────────────────────── */
 .pricing{padding:0 0 100px;text-align:center}
 .pricing-cards{
   display:grid;grid-template-columns:1fr 1fr;gap:24px;
@@ -355,10 +417,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   border-bottom:1px solid rgba(0,0,0,.03);
   display:flex;align-items:center;gap:8px;
 }
-.price-features li::before{content:'';width:16px;height:16px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.price-card.free .price-features li::before{background:rgba(0,0,0,.04);content:''}
-.price-card.pro .price-features li::before{background:var(--green-dim);content:''}
-.check{color:var(--green);font-weight:700;font-size:.7rem}
+.price-features li .check{color:var(--green);font-weight:700;font-size:.7rem}
+.price-features li .lock{color:var(--text-4);font-size:.7rem}
 .price-btn{
   display:block;width:100%;text-align:center;padding:14px;border-radius:100px;
   font-size:.85rem;font-weight:600;text-decoration:none;transition:all .2s;
@@ -368,19 +428,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .price-btn.btn-outline{background:transparent;color:var(--text-2);border:1px solid rgba(0,0,0,.1)}
 .price-btn.btn-outline:hover{border-color:rgba(0,0,0,.2);color:var(--text)}
 
-/* ─── FINAL CTA ───────────────────────────────────────── */
-.final-cta{
-  padding:80px 0 100px;text-align:center;
+/* ─── SOCIAL PROOF ───────────────────────────────────── */
+.proof{padding:0 0 100px;text-align:center}
+.proof-stats{
+  display:flex;justify-content:center;gap:64px;flex-wrap:wrap;
 }
+.proof-stat .num{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.proof-stat .label{font-size:.72rem;color:var(--text-3);margin-top:4px}
+
+/* ─── FINAL CTA ──────────────────────────────────────── */
+.final-cta{padding:80px 0 100px;text-align:center}
 .final-cta h2{
   font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.035em;
   margin-bottom:16px;line-height:1.1;
 }
 .final-cta p{
-  font-size:1.05rem;color:var(--text-2);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6;
+  font-size:1.05rem;color:var(--text-2);margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.6;
 }
 
-/* ─── FOOTER ──────────────────────────────────────────── */
+/* ─── FOOTER ─────────────────────────────────────────── */
 .footer{
   padding:40px 0;text-align:center;
   border-top:1px solid rgba(0,0,0,.04);
@@ -394,27 +460,31 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .footer-links a{font-size:.72rem;color:var(--text-4);text-decoration:none;transition:color .2s}
 .footer-links a:hover{color:var(--text-2)}
 
-/* ─── ANIMATIONS ──────────────────────────────────────── */
+/* ─── ANIMATIONS ─────────────────────────────────────── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .anim{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .anim.visible{opacity:1;transform:translateY(0)}
 
-/* ─── RESPONSIVE ──────────────────────────────────────── */
+/* ─── RESPONSIVE ─────────────────────────────────────── */
 @media(max-width:900px){
-  .why-grid{grid-template-columns:1fr}
+  .problem-grid{grid-template-columns:1fr}
+  .solution-grid{grid-template-columns:1fr}
   .features-grid{grid-template-columns:repeat(2,1fr)}
+  .how-steps{grid-template-columns:repeat(2,1fr)}
   .pricing-cards{grid-template-columns:1fr;max-width:400px}
+  .proof-stats{gap:40px}
 }
 @media(max-width:640px){
   .nav-inner{padding:0 20px}
   .nav-links{gap:16px}
   .nav-links a.hide-mobile{display:none}
   .section{padding-left:20px;padding-right:20px}
-  .hero{padding-top:110px;padding-bottom:60px}
+  .hero{padding-top:110px;padding-bottom:30px}
+  .hero-elx-score{font-size:2.4rem}
   .signal-card{padding:36px 28px}
   .signal-value{font-size:4rem}
   .features-grid{grid-template-columns:1fr 1fr}
+  .how-steps{grid-template-columns:1fr 1fr}
   .footer-inner{flex-direction:column;gap:16px}
 }
 </style>
@@ -429,8 +499,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
     <a href="/" class="nav-logo">Earth<span>One</span></a>
     <div class="nav-links">
       <a href="#signal">Signal</a>
-      <a href="#why" class="hide-mobile">Why ELX</a>
+      <a href="#problem" class="hide-mobile">Why ELX</a>
       <a href="#preview" class="hide-mobile">Dashboard</a>
+      <a href="#pricing" class="hide-mobile">Pricing</a>
       <a href="/pricing" class="nav-cta">Get Pro</a>
     </div>
   </div>
@@ -441,8 +512,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      ═══════════════════════════════════════════════════════ -->
 <section class="hero section" id="hero">
   <div class="hero-badge"><span class="dot"></span> Live</div>
-  <h1><span class="gradient">One index reads<br>global liquidity.<br>One dashboard tells you<br>what to do.</span></h1>
-  <p class="hero-sub">ELX tracks the five forces that move every market — central banks, rates, credit, dollar, risk — and turns them into one decision: add risk, reduce risk, or hedge.</p>
+  <h1><span class="gradient">Global liquidity moves<br>every market. Now you<br>can read it.</span></h1>
+  <p class="hero-sub">ELX is the only index that tracks the five forces behind every market move — and turns them into one clear decision: add risk, reduce, or hedge.</p>
+
+  <div class="hero-ticker" id="hero-ticker">
+    <div class="hero-elx-score" id="hero-score"><span class="sign">&mdash;</span></div>
+    <div class="hero-meta">
+      <span class="hero-regime" id="hero-regime">Loading</span>
+      <span class="hero-bias-badge bias-neutral" id="hero-bias">&mdash;</span>
+    </div>
+  </div>
+
   <div class="hero-actions">
     <a href="/dashboard" class="btn-primary">Open Dashboard</a>
     <a href="#signal" class="btn-secondary">See the Signal</a>
@@ -455,10 +535,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 <section class="signal section" id="signal">
   <div class="signal-card anim">
     <div class="signal-eyebrow">ELX — Earth Liquidity Index</div>
-    <div class="signal-value" id="elx-value"><span class="sign">—</span></div>
+    <div class="signal-value" id="elx-value"><span class="sign">&mdash;</span></div>
     <div class="signal-regime">
       <span class="signal-regime-label" id="regime-label">Loading</span>
-      <span class="signal-bias bias-neutral" id="bias-badge">—</span>
+      <span class="signal-bias bias-neutral" id="bias-badge">&mdash;</span>
     </div>
     <div class="signal-bar-wrap">
       <div class="signal-bar">
@@ -476,26 +556,64 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     WHY LIQUIDITY MATTERS
+     PROBLEM — Why investors lose money
      ═══════════════════════════════════════════════════════ -->
-<section class="why section" id="why">
-  <div class="section-label">Why It Matters</div>
-  <h2 class="section-title anim">Liquidity drives everything.<br>Most investors ignore it.</h2>
-  <div class="why-grid">
-    <div class="why-card anim">
-      <div class="icon">&#9878;</div>
-      <h3>Central banks set the floor</h3>
-      <p>When the Fed, ECB, and BOJ expand their balance sheets, risk assets rise. When they contract, everything tightens. ELX tracks this in real-time.</p>
+<section class="problem section" id="problem">
+  <div class="section-label">The Problem</div>
+  <h2 class="section-title anim">Most investors trade blind.<br>Liquidity is the reason they lose.</h2>
+  <p class="section-subtitle anim">90% of portfolio drawdowns happen when liquidity contracts. Yet most investors never see it coming — because they track prices, not the forces behind them.</p>
+  <div class="problem-grid">
+    <div class="problem-card anim">
+      <div class="num">80%</div>
+      <h3>Of retail traders lose money</h3>
+      <p>They react to price moves instead of understanding what drives them. Liquidity shifts weeks before markets do.</p>
     </div>
-    <div class="why-card anim">
-      <div class="icon">&#9888;</div>
-      <h3>Regimes change before prices</h3>
-      <p>Liquidity regimes shift weeks before equities, crypto, and commodities react. ELX detects regime transitions and gives you time to reposition.</p>
+    <div class="problem-card anim">
+      <div class="num">5</div>
+      <h3>Hidden forces move every asset</h3>
+      <p>Central bank balance sheets, real yields, credit spreads, dollar strength, market beta — all invisible to standard charts.</p>
     </div>
-    <div class="why-card anim">
-      <div class="icon">&#9881;</div>
-      <h3>One number, five drivers</h3>
-      <p>Global liquidity, credit conditions, real yields, dollar strength, market beta — compressed into a single score from -100 to +100. No noise. Just signal.</p>
+    <div class="problem-card anim">
+      <div class="num">0</div>
+      <h3>Tools give you a clear decision</h3>
+      <p>Bloomberg shows data. TradingView shows charts. Nothing tells you: add risk, reduce risk, or hedge. Until now.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SOLUTION — ELX + Copilot
+     ═══════════════════════════════════════════════════════ -->
+<section class="solution section" id="solution">
+  <div class="section-label">The Solution</div>
+  <h2 class="section-title anim">One signal. One decision.<br>Every day.</h2>
+  <p class="section-subtitle anim">ELX reads the macro. Copilot tells you what to do. Together, they replace hours of research with one glance.</p>
+  <div class="solution-grid">
+    <div class="solution-card signal-sol anim">
+      <div class="sol-icon">&#9878;</div>
+      <div class="sol-label">The Signal</div>
+      <h3>ELX Index</h3>
+      <p>A single score from -100 to +100 that captures global liquidity conditions in real-time. Five macro drivers, one number.</p>
+      <ul>
+        <li>Real-time composite score</li>
+        <li>Regime detection (Risk-On / Neutral / Risk-Off)</li>
+        <li>20-year historical data</li>
+        <li>Asset-level bias (Equities, Gold, BTC, USD, Bonds)</li>
+        <li>Free and open access</li>
+      </ul>
+    </div>
+    <div class="solution-card copilot-sol anim">
+      <div class="sol-icon">&#9889;</div>
+      <div class="sol-label">The Decision Layer</div>
+      <h3>EarthOne Copilot</h3>
+      <p>AI-powered macro strategist that reads ELX data and delivers a daily verdict: what to do, what to avoid, and how to hedge.</p>
+      <ul>
+        <li>Daily verdict: ADD RISK / REDUCE / HEDGE / WAIT</li>
+        <li>Exact hedge allocations per asset class</li>
+        <li>3-horizon scenario engine (1W, 1M, 3M)</li>
+        <li>Portfolio-aware personalization</li>
+        <li>Invalidation triggers built in</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -505,7 +623,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      ═══════════════════════════════════════════════════════ -->
 <section class="preview section" id="preview">
   <div class="section-label">ELX Index Pro</div>
-  <h2 class="section-title anim">From signal to action.<br>The decision layer.</h2>
+  <h2 class="section-title anim">Your macro command center.</h2>
+  <p class="section-subtitle anim">Copilot verdict, decision engine, hedge strategy, scenario engine, portfolio alerts — everything in one dashboard.</p>
   <div class="preview-frame anim">
     <div class="preview-topbar">
       <div class="preview-dot"></div>
@@ -513,7 +632,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
       <div class="preview-dot"></div>
       <div class="preview-url">elxindex.com/dashboard</div>
     </div>
-    <img src="/static/dashboard-preview.webp" alt="ELX Index Pro Dashboard — Decision Engine, Hedge Strategy, Scenario Engine" class="preview-img" loading="lazy"/>
+    <img src="/static/dashboard-preview.webp" alt="ELX Index Pro Dashboard — Copilot, Decision Engine, Hedge Strategy, Scenario Engine" class="preview-img" loading="lazy"/>
     <div class="preview-overlay">
       <a href="/dashboard" class="btn-primary">Open Dashboard</a>
     </div>
@@ -521,8 +640,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   <div class="features-grid">
     <div class="feature-item anim">
       <div class="feat-icon">&#9889;</div>
-      <h4>Decision Engine</h4>
-      <p>ADD RISK, REDUCE RISK, HEDGE NOW, or NO TRADE — one clear signal.</p>
+      <h4>Copilot Verdict</h4>
+      <p>AI daily verdict: ADD RISK, REDUCE, HEDGE, or WAIT — with confidence score.</p>
     </div>
     <div class="feature-item anim">
       <div class="feat-icon">&#9878;</div>
@@ -543,38 +662,102 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
-     PRICING TEASER
+     HOW IT WORKS
+     ═══════════════════════════════════════════════════════ -->
+<section class="how section" id="how">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title anim">From data to decision<br>in four steps.</h2>
+  <div class="how-steps">
+    <div class="how-step anim">
+      <div class="step-num">01</div>
+      <div class="step-icon">&#128225;</div>
+      <h4>Ingest</h4>
+      <p>ELX pulls real-time data from central banks, bond markets, FX, credit, and equities.</p>
+    </div>
+    <div class="how-step anim">
+      <div class="step-num">02</div>
+      <div class="step-icon">&#9878;</div>
+      <h4>Compute</h4>
+      <p>Five macro drivers are weighted and compressed into a single score from -100 to +100.</p>
+    </div>
+    <div class="how-step anim">
+      <div class="step-num">03</div>
+      <div class="step-icon">&#9889;</div>
+      <h4>Decide</h4>
+      <p>Copilot reads the score, detects the regime, and generates a daily verdict with exact actions.</p>
+    </div>
+    <div class="how-step anim">
+      <div class="step-num">04</div>
+      <div class="step-icon">&#9881;</div>
+      <h4>Execute</h4>
+      <p>You get clear hedge allocations, scenario probabilities, and portfolio alerts. No guesswork.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     PRICING
      ═══════════════════════════════════════════════════════ -->
 <section class="pricing section" id="pricing">
   <div class="section-label">Pricing</div>
   <h2 class="section-title anim">The signal is free.<br>The edge is Pro.</h2>
+  <p class="section-subtitle anim">Start with the free ELX signal. Upgrade when you want the full decision layer.</p>
   <div class="pricing-cards">
     <div class="price-card free anim">
       <div class="price-name">ELX Index</div>
       <div class="price-amount">Free</div>
-      <div class="price-desc">The global liquidity signal — open access.</div>
+      <div class="price-desc">The global liquidity signal — open access forever.</div>
       <ul class="price-features">
         <li><span class="check">&#10003;</span> ELX Score &amp; Regime</li>
         <li><span class="check">&#10003;</span> 20-Year Historical Chart</li>
         <li><span class="check">&#10003;</span> Macro Drivers (5 components)</li>
         <li><span class="check">&#10003;</span> ELX vs Markets Correlations</li>
         <li><span class="check">&#10003;</span> Public API Access</li>
+        <li><span class="lock">&#128274;</span> Decision Engine</li>
+        <li><span class="lock">&#128274;</span> EarthOne Copilot</li>
+        <li><span class="lock">&#128274;</span> Hedge Strategy</li>
       </ul>
       <a href="#signal" class="price-btn btn-outline">View Signal</a>
     </div>
     <div class="price-card pro anim">
       <div class="price-name">ELX Index Pro</div>
       <div class="price-amount">29.99&#8364;<span>/mo</span></div>
-      <div class="price-desc">Macro Decision Engine — from signal to action.</div>
+      <div class="price-desc">The complete macro decision system.</div>
       <ul class="price-features">
         <li><span class="check">&#10003;</span> Everything in Free</li>
+        <li><span class="check">&#10003;</span> EarthOne Copilot (AI Verdict)</li>
         <li><span class="check">&#10003;</span> Decision Engine</li>
         <li><span class="check">&#10003;</span> Hedge Strategy (exact allocations)</li>
         <li><span class="check">&#10003;</span> Scenario Engine (3 horizons)</li>
         <li><span class="check">&#10003;</span> Portfolio Warnings</li>
-        <li><span class="check">&#10003;</span> Core Scores &amp; AI Brief</li>
+        <li><span class="check">&#10003;</span> Core Scores &amp; Macro Drivers</li>
+        <li><span class="check">&#10003;</span> Priority Support</li>
       </ul>
-      <a href="/pricing" class="price-btn btn-dark">Start Now</a>
+      <a href="/pricing" class="price-btn btn-dark">Start Now &mdash; 29.99&#8364;/mo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SOCIAL PROOF
+     ═══════════════════════════════════════════════════════ -->
+<section class="proof section">
+  <div class="proof-stats anim">
+    <div class="proof-stat">
+      <div class="num">20+</div>
+      <div class="label">Years of historical data</div>
+    </div>
+    <div class="proof-stat">
+      <div class="num">5</div>
+      <div class="label">Macro drivers tracked</div>
+    </div>
+    <div class="proof-stat">
+      <div class="num">0.87</div>
+      <div class="label">SPX correlation (90d)</div>
+    </div>
+    <div class="proof-stat">
+      <div class="num">24/7</div>
+      <div class="label">Real-time updates</div>
     </div>
   </div>
 </section>
@@ -584,7 +767,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
      ═══════════════════════════════════════════════════════ -->
 <section class="final-cta section">
   <h2 class="anim">Stop guessing the macro.<br>Start reading it.</h2>
-  <p class="anim">ELX Index Pro gives you the decision layer that institutional desks use — at a fraction of the cost.</p>
+  <p class="anim">ELX Index Pro gives you the decision layer that institutional desks use — at a fraction of the cost. One index. One dashboard. One decision.</p>
   <div class="hero-actions anim">
     <a href="/dashboard" class="btn-primary">Open Dashboard</a>
     <a href="/pricing" class="btn-secondary">See Pricing</a>
@@ -607,12 +790,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 </footer>
 
 <!-- ═══════════════════════════════════════════════════════
-     JAVASCRIPT — Live Signal
+     JAVASCRIPT — Live Signal + Hero Ticker
      ═══════════════════════════════════════════════════════ -->
 <script>
 (function(){
   "use strict";
 
+  /* ── DOM refs ─────────────────────────────────────── */
   const elxValueEl = document.getElementById("elx-value");
   const regimeLabel = document.getElementById("regime-label");
   const biasBadge = document.getElementById("bias-badge");
@@ -620,7 +804,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   const chipsEl = document.getElementById("asset-chips");
   const pointer = document.getElementById("signal-pointer");
 
-  function animateValue(el, target){
+  const heroScore = document.getElementById("hero-score");
+  const heroRegime = document.getElementById("hero-regime");
+  const heroBias = document.getElementById("hero-bias");
+
+  /* ── Helpers ──────────────────────────────────────── */
+  function animateValue(el, target, size){
     const dur=1400, start=performance.now();
     const isNeg=target<0, abs=Math.abs(target);
     function tick(now){
@@ -641,24 +830,33 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
     pointer.style.left=`calc(${pct}% - 2px)`;
   }
 
+  function setBias(el, bias){
+    el.textContent=bias;
+    el.className=el.className.replace(/bias-\S+/g,"").trim();
+    if(bias.includes("Risk-On")) el.classList.add("bias-risk-on");
+    else if(bias.includes("Risk-Off")) el.classList.add("bias-risk-off");
+    else el.classList.add("bias-neutral");
+  }
+
+  /* ── Fetch ELX ────────────────────────────────────── */
   async function fetchELX(){
     try{
       const res=await fetch("/api/elx");
       const d=await res.json();
 
+      /* Signal card */
       animateValue(elxValueEl, d.value);
       updatePointer(d.value);
-
       regimeLabel.textContent=d.regime;
-
-      biasBadge.textContent=d.bias;
-      biasBadge.className="signal-bias";
-      if(d.bias.includes("Risk-On")) biasBadge.classList.add("bias-risk-on");
-      else if(d.bias.includes("Risk-Off")) biasBadge.classList.add("bias-risk-off");
-      else biasBadge.classList.add("bias-neutral");
-
+      setBias(biasBadge, d.bias);
       interpEl.textContent=d.interpretation;
 
+      /* Hero ticker */
+      animateValue(heroScore, d.value);
+      heroRegime.textContent=d.regime;
+      setBias(heroBias, d.bias);
+
+      /* Asset chips */
       if(d.asset_bias && chipsEl){
         chipsEl.innerHTML=d.asset_bias.map(a=>{
           const arrow=a.direction==="up"?"\u2191":"\u2193";
@@ -671,7 +869,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
     }
   }
 
-  // Intersection Observer for scroll animations
+  /* ── Intersection Observer ────────────────────────── */
   const observer=new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting){
@@ -683,7 +881,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 
   document.querySelectorAll(".anim").forEach(el=>observer.observe(el));
 
-  // Init
+  /* ── Init ─────────────────────────────────────────── */
   fetchELX();
   setInterval(fetchELX, 120000);
 })();
