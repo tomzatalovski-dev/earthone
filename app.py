@@ -25,6 +25,7 @@ from engine.stripe_billing import (
     create_checkout_session, handle_webhook, verify_pro_token,
     verify_session, get_pro_subscribers
 )
+from engine.copilot import generate_verdict
 
 app = FastAPI(title="EarthOne", version="4.0")
 
@@ -225,6 +226,31 @@ def api_dashboard_alerts(request: Request):
             "action": "Reassess all positions.",
         })
     return JSONResponse(content=alerts)
+
+
+# ---------------------------------------------------------------------------
+# Copilot API — AI-powered verdict
+# ---------------------------------------------------------------------------
+@app.get("/api/copilot/latest")
+def api_copilot_latest(request: Request):
+    """Return the latest Copilot verdict (cached, rule-based fallback)."""
+    track_event("api_call", path="/api/copilot/latest", ip=request.client.host if request.client else "")
+    verdict = generate_verdict()
+    return JSONResponse(content=verdict)
+
+
+@app.post("/api/copilot/generate")
+async def api_copilot_generate(request: Request):
+    """Generate a fresh Copilot verdict. Accepts optional portfolio in body."""
+    track_event("api_call", path="/api/copilot/generate", ip=request.client.host if request.client else "")
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    portfolio = body.get("portfolio") if body else None
+    verdict = generate_verdict(portfolio=portfolio)
+    return JSONResponse(content=verdict)
 
 
 # ---------------------------------------------------------------------------
