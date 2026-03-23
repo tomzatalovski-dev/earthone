@@ -54,13 +54,14 @@
     .content{max-width:900px;margin:0 auto;padding:32px 32px 80px}
 
     /* ─── Profile Bar ─────────────────────────────── */
-    .profile-bar{display:flex;gap:8px;margin-bottom:24px}
-    .profile-btn{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font)}
-    .profile-btn:hover{border-color:rgba(0,0,0,.12)}
+    .profile-bar{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .profile-bar::-webkit-scrollbar{display:none}
+    .profile-btn{background:var(--card);border:1px solid var(--border);border-radius:100px;padding:8px 18px;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font);white-space:nowrap;flex-shrink:0}
+    .profile-btn:hover{border-color:rgba(0,0,0,.15)}
     .profile-btn.active{border-color:#1d1d1f;background:#1d1d1f;color:#fff}
-    .profile-btn-label{display:block;font-size:13px;font-weight:600}
-    .profile-btn-desc{display:block;font-size:10px;color:var(--text-4);margin-top:2px}
-    .profile-btn.active .profile-btn-desc{color:rgba(255,255,255,.6)}
+    .profile-btn-label{font-size:13px;font-weight:600}
+    .profile-btn-desc{display:none}
+    .profile-btn.active .profile-btn-desc{display:none}
 
     /* ═══════════════════════════════════════════════
        1. HERO — THE DECISION
@@ -79,31 +80,35 @@
       background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 70%);
       pointer-events:none;
     }
-    .hero-brand{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:20px}
-    .hero-action{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:8px}
+    .hero-brand{display:none}
+    .hero-action{font-size:64px;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:6px}
     .hero-action .action-add{color:#30d158}
     .hero-action .action-reduce{color:#ff453a}
     .hero-action .action-hedge{color:#ff9f0a}
     .hero-action .action-wait{color:rgba(255,255,255,.5)}
-    .hero-summary{font-size:17px;font-weight:400;color:rgba(255,255,255,.65);line-height:1.5;max-width:600px;margin-bottom:32px}
+    .hero-warning{font-size:14px;font-weight:600;color:#ff9f0a;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+    .hero-summary{font-size:15px;font-weight:400;color:rgba(255,255,255,.45);line-height:1.5;max-width:500px;margin-bottom:28px}
     .hero-confidence{position:absolute;top:48px;right:40px;text-align:right}
     .hero-confidence-value{font-size:40px;font-weight:800;letter-spacing:-.02em}
     .hero-confidence-label{font-size:11px;font-weight:500;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase}
 
-    /* Allocation strip */
-    .hero-alloc{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
-    .hero-alloc-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 16px;min-width:100px;text-align:center}
-    .hero-alloc-name{font-size:11px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.05em}
-    .hero-alloc-val{font-size:18px;font-weight:700;margin-top:2px}
+    /* Allocation pills */
+    .hero-alloc{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+    .hero-alloc-item{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:100px;padding:6px 14px;font-size:13px;font-weight:600}
+    .hero-alloc-name{color:rgba(255,255,255,.5)}
+    .hero-alloc-val{}
     .hero-alloc-val.pos{color:#30d158}
     .hero-alloc-val.neg{color:#ff453a}
-    .hero-alloc-val.flat{color:rgba(255,255,255,.25)}
+    .hero-alloc-val.flat{color:rgba(255,255,255,.2)}
 
-    /* Action grid */
-    .hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-    .hero-cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px}
-    .hero-cell-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
-    .hero-cell-text{font-size:13px;line-height:1.6;color:rgba(255,255,255,.7)}
+    /* Action lines */
+    .hero-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+    .hero-cell{display:none}
+    .hero-cell-label{display:none}
+    .hero-cell-text{display:none}
+    .hero-actions-list{display:flex;flex-direction:column;gap:6px}
+    .hero-action-line{font-size:14px;color:rgba(255,255,255,.6);line-height:1.5}
+    .hero-action-line::before{content:'→ ';color:rgba(255,255,255,.3)}
 
     .hero-invalidation{font-size:12px;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.06);padding-top:16px}
     .hero-portfolio-note{font-size:13px;color:#ff9f0a;margin-bottom:12px}
@@ -256,13 +261,12 @@
       .main{margin-left:0}
       .content{padding:16px 16px 60px}
       .hero-decision{padding:32px 24px 28px;border-radius:20px}
-      .hero-action{font-size:36px}
+      .hero-action{font-size:48px}
       .hero-summary{font-size:15px}
       .hero-confidence{position:static;text-align:left;margin-bottom:20px;display:flex;align-items:center;gap:12px}
       .hero-confidence-value{font-size:28px}
       .hero-alloc{flex-wrap:wrap}
-      .hero-alloc-item{min-width:70px;padding:8px 12px}
-      .hero-alloc-val{font-size:15px}
+      .hero-alloc-item{padding:5px 12px;font-size:12px}
       .hero-grid{grid-template-columns:1fr}
       .tvy-card{flex-wrap:wrap;gap:16px;padding:16px}
       .tvy-value{font-size:24px}
@@ -270,7 +274,7 @@
       .macro-row{flex-wrap:wrap;gap:4px}
       .portfolio-form{grid-template-columns:repeat(2,1fr)}
       .portfolio-metrics{grid-template-columns:1fr}
-      .profile-bar{flex-direction:column}
+      .profile-bar{flex-direction:row}
       .topbar{padding:10px 16px}
     }
   </style>
@@ -331,7 +335,8 @@
         <div class="hero-decision" id="hero-decision">
           <div class="hero-brand">EarthOne Copilot</div>
           <div class="hero-action" id="hero-action">Loading&hellip;</div>
-          <div class="hero-summary" id="hero-summary">Analyzing macro conditions&hellip;</div>
+          <div class="hero-warning" id="hero-warning"></div>
+          <div class="hero-summary" id="hero-summary"></div>
           <div class="hero-confidence" id="hero-confidence">
             <div class="hero-confidence-value" id="hero-conf-val">&mdash;</div>
             <div class="hero-confidence-label">Confidence</div>
@@ -911,13 +916,21 @@
   function renderHeroDecision(d){
     const actionLabel=d.action?d.action.replace('_',' '):'WAIT';
     const actionClass=d.action==='ADD_RISK'?'action-add':d.action==='REDUCE'?'action-reduce':d.action==='HEDGE'?'action-hedge':'action-wait';
-    const toText=(arr)=>arr&&arr.length?arr.map(i=>'\u2022 '+i).join('<br>'):'\u2014';
 
     document.getElementById('hero-action').innerHTML=`<span class="${actionClass}">${actionLabel}</span>`;
-    document.getElementById('hero-summary').textContent=d.summary||'';
     document.getElementById('hero-conf-val').textContent=(d.confidence||0)+'%';
 
-    // Allocation
+    // Warning line (urgency)
+    const warningEl=document.getElementById('hero-warning');
+    const warningMap={'REDUCE':'\u26A0 Liquidity deteriorating','HEDGE':'\u26A0 Risk increasing','ADD_RISK':'\u2705 Conditions improving','WAIT':'\u23F3 No clear signal'};
+    warningEl.textContent=warningMap[d.action]||'';
+
+    // Short summary (brutal, not verbose)
+    const summaryEl=document.getElementById('hero-summary');
+    const s=d.summary||'';
+    summaryEl.textContent=s.length>60?s.substring(0,60).trim()+'...':s;
+
+    // Allocation pills (inline)
     const allocMap={Equities:'0%',Gold:'0%',Cash:'0%',BTC:'0%',Bonds:'0%'};
     if(d.hedge&&d.hedge.length){
       d.hedge.forEach(h=>{
@@ -931,29 +944,20 @@
     }else if(d.action==='ADD_RISK'){
       allocMap.Equities='+10%';allocMap.BTC='+5%';allocMap.Cash='-10%';
     }
-
     function allocClass(v){if(v.startsWith('+'))return'pos';if(v.startsWith('-'))return'neg';return'flat';}
-
-    document.getElementById('hero-alloc').innerHTML=Object.entries(allocMap).map(([k,v])=>`
+    // Only show non-zero allocations
+    document.getElementById('hero-alloc').innerHTML=Object.entries(allocMap).filter(([k,v])=>v!=='0%').map(([k,v])=>`
       <div class="hero-alloc-item">
-        <div class="hero-alloc-name">${k}</div>
-        <div class="hero-alloc-val ${allocClass(v)}">${v}</div>
+        <span class="hero-alloc-val ${allocClass(v)}">${v}</span>
+        <span class="hero-alloc-name">${k}</span>
       </div>`).join('');
 
-    // Grid: Do now / Avoid / Hedge
-    document.getElementById('hero-grid').innerHTML=`
-      <div class="hero-cell">
-        <div class="hero-cell-label">Do now</div>
-        <div class="hero-cell-text">${toText(d.actions)}</div>
-      </div>
-      <div class="hero-cell">
-        <div class="hero-cell-label">Avoid</div>
-        <div class="hero-cell-text">${toText(d.avoid)}</div>
-      </div>
-      <div class="hero-cell">
-        <div class="hero-cell-label">Hedge</div>
-        <div class="hero-cell-text">${toText(d.hedge)}</div>
-      </div>`;
+    // Action lines (simple → arrows)
+    let lines=[];
+    if(d.avoid&&d.avoid.length) d.avoid.forEach(a=>lines.push('Avoid: '+a));
+    if(d.hedge&&d.hedge.length) d.hedge.forEach(h=>lines.push('Hedge: '+h));
+    if(d.actions&&d.actions.length) d.actions.slice(0,2).forEach(a=>lines.push(a));
+    document.getElementById('hero-grid').innerHTML=`<div class="hero-actions-list">${lines.slice(0,4).map(l=>`<div class="hero-action-line">${l}</div>`).join('')}</div>`;
 
     // Portfolio note
     const pnEl=document.getElementById('hero-portfolio-note');
