@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ELX Index Pro — Dashboard | EarthOne</title>
+  <meta name="description" content="ELX Index Pro decision dashboard — regime classification, hedge allocation, scenario analysis, and portfolio decisions."/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1QKR9BJMKF"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-1QKR9BJMKF');</script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f8f9fa;color:#1d1d1f;-webkit-font-smoothing:antialiased}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#d1d1d6;border-radius:3px}
+
+    /* Layout */
+    .layout{display:flex;min-height:100vh}
+    .sidebar{width:200px;border-right:1px solid #e5e5e7;background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:4px;position:fixed;top:0;left:0;bottom:0;z-index:10}
+    .sidebar-brand{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+    .sidebar-brand .pro{font-size:9px;background:#1d1d1f;color:#fff;padding:2px 5px;border-radius:6px;font-weight:600;letter-spacing:0.05em}
+    .sidebar-sub{font-size:11px;color:#aeaeb2;margin-bottom:16px}
+    .sidebar-sub a{color:#aeaeb2;text-decoration:none}
+    .sidebar-sub a:hover{color:#6e6e73}
+    .nav-link{display:block;padding:8px 12px;border-radius:10px;font-size:13px;color:#6e6e73;text-decoration:none;transition:all 0.15s}
+    .nav-link:hover{background:#f5f5f7;color:#1d1d1f}
+    .nav-link.active{background:#f5f5f7;color:#1d1d1f;font-weight:600}
+    .sidebar-free{margin-top:auto;padding:10px 12px;border-radius:12px;background:#f5f5f7;font-size:11px;color:#aeaeb2}
+    .sidebar-free a{color:#6e6e73;text-decoration:none;font-weight:500}
+
+    .main{margin-left:200px;flex:1;min-width:0}
+    .topbar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e5e5e7;background:#fff;padding:10px 20px;position:sticky;top:0;z-index:5}
+    .topbar-left{display:flex;align-items:center;gap:16px}
+    .topbar-elx-label{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2}
+    .topbar-elx-value{font-size:20px;font-weight:700}
+    .topbar-sep{width:1px;height:16px;background:#e5e5e7}
+    .topbar-regime{font-size:13px;font-weight:600}
+    .topbar-bias{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#aeaeb2}
+    .topbar-right{display:flex;align-items:center;gap:12px;font-size:11px;color:#c7c7cc}
+
+    .content{padding:20px;display:flex;flex-direction:column;gap:20px;max-width:1400px}
+
+    /* Cards */
+    .card{background:#fff;border:1px solid #e5e5e7;border-radius:20px;padding:20px}
+    .card-header{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:12px}
+    .section-title{font-size:18px;font-weight:600;margin-bottom:4px}
+    .section-desc{font-size:13px;color:#6e6e73;margin-bottom:16px}
+
+    /* Decision Block */
+    .decision{border-radius:20px;padding:20px;position:relative;overflow:hidden}
+    .decision.red{background:#fef2f2;border:1px solid #fecaca}
+    .decision.orange{background:#fff7ed;border:1px solid #fed7aa}
+    .decision.amber{background:#fffbeb;border:1px solid #fde68a}
+    .decision.green{background:#f0fdf4;border:1px solid #bbf7d0}
+    .decision-top{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    .decision-action{font-size:14px;font-weight:700;padding:8px 16px;border-radius:12px;display:inline-flex;align-items:center;gap:6px}
+    .decision-action.red{background:#ef4444;color:#fff}
+    .decision-action.orange{background:#f97316;color:#fff}
+    .decision-action.amber{background:#d4a017;color:#fff}
+    .decision-action.green{background:#22c55e;color:#fff}
+    .decision-label{font-size:15px;font-weight:600;color:#1d1d1f}
+    .decision-sublabel{font-size:13px;color:#6e6e73;margin-bottom:12px}
+    .decision-conviction{position:absolute;top:16px;right:20px;text-align:center}
+    .decision-conviction-value{font-size:28px;font-weight:700}
+    .decision-conviction-label{font-size:10px;color:#aeaeb2;text-transform:uppercase;letter-spacing:0.1em}
+    .decision-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border-radius:14px;overflow:hidden;margin-top:8px}
+    .decision-strip-item{background:#f5f5f7;padding:10px 12px}
+    .decision-strip-label{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2;margin-bottom:4px}
+    .decision-strip-value{font-size:14px;font-weight:600}
+
+    /* Regime Hero */
+    .regime-hero{display:flex;gap:20px;flex-wrap:wrap}
+    .regime-left{flex:1;min-width:300px}
+    .regime-score{font-size:48px;font-weight:700;letter-spacing:-1px;line-height:1}
+    .regime-trend{font-size:13px;margin-left:8px}
+    .regime-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:10px;font-size:13px;font-weight:600;margin-top:8px;margin-right:8px}
+    .regime-tag.green{background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.2);color:#34c759}
+    .regime-tag.amber{background:rgba(184,134,11,0.08);border:1px solid rgba(184,134,11,0.2);color:#b8860b}
+    .regime-tag.red{background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2);color:#ff3b30}
+    .regime-bias{font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2}
+    .regime-brief{font-size:13px;color:#6e6e73;line-height:1.6;margin-top:12px;max-width:600px}
+    .regime-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:280px;flex-shrink:0}
+    .metric-box{background:#f8f9fa;border:1px solid #e5e5e7;border-radius:14px;padding:10px 12px}
+    .metric-box-label{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:4px}
+    .metric-box-value{font-size:18px;font-weight:600}
+    .metric-box-value.small{font-size:13px}
+
+    /* Scores */
+    .scores-grid{display:flex;flex-direction:column;gap:10px}
+    .score-row{display:flex;align-items:center;gap:12px}
+    .score-label{width:120px;font-size:12px;color:#6e6e73;flex-shrink:0}
+    .score-bar-bg{flex:1;height:6px;background:#f0f0f2;border-radius:3px;overflow:hidden}
+    .score-bar-fill{height:100%;border-radius:3px;transition:width 0.5s}
+    .score-value{width:30px;text-align:right;font-size:12px;font-weight:600}
+
+    /* Grid layouts */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+    .grid-wide{display:grid;grid-template-columns:1.35fr 0.65fr;gap:16px}
+
+    /* Driver cards */
+    .driver-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
+    .driver-name{font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:#aeaeb2;margin-bottom:8px}
+    .driver-score{font-size:24px;font-weight:700}
+    .driver-weight{font-size:11px;color:#aeaeb2;margin-top:4px}
+    .driver-bar{height:4px;background:#f0f0f2;border-radius:2px;margin-top:8px;overflow:hidden}
+    .driver-bar-fill{height:100%;border-radius:2px}
+
+    /* Asset cards */
+    .asset-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
+    .asset-header{display:flex;justify-content:space-between;margin-bottom:8px}
+    .asset-name{font-weight:500}
+    .asset-ticker{font-size:11px;color:#aeaeb2}
+    .asset-price{font-size:18px;font-weight:600;margin-bottom:8px}
+    .asset-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0}
+    .asset-row-label{color:#aeaeb2}
+    .asset-row-value{color:#6e6e73}
+
+    /* Hedge */
+    .hedge-alloc{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+    .hedge-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:#f8f9fa}
+    .hedge-asset{width:80px;font-size:12px;font-weight:500}
+    .hedge-delta{font-size:14px;font-weight:700;width:60px;text-align:right}
+    .hedge-delta.up{color:#34c759}
+    .hedge-delta.down{color:#ff3b30}
+    .hedge-delta.neutral{color:#aeaeb2}
+
+    /* Scenarios */
+    .scenario-card{border:1px solid #e5e5e7;border-radius:16px;padding:16px;background:#fff}
+    .scenario-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .scenario-horizon{font-size:11px;font-weight:600;color:#6e6e73}
+    .scenario-action-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
+    .scenario-action-tag.red{background:#fef2f2;color:#ef4444}
+    .scenario-action-tag.orange{background:#fff7ed;color:#f97316}
+    .scenario-action-tag.amber{background:#fffbeb;color:#b8860b}
+    .scenario-action-tag.green{background:#f0fdf4;color:#22c55e}
+    .scenario-action-tag.gray{background:#f5f5f7;color:#6e6e73}
+    .scenario-title{font-size:14px;font-weight:600;margin-bottom:4px}
+    .scenario-prob{font-size:12px;color:#aeaeb2;margin-bottom:8px}
+    .scenario-desc{font-size:12px;color:#6e6e73;line-height:1.5;margin-bottom:10px}
+    .scenario-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+    .scenario-tag{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid #e5e5e7}
+    .scenario-tag.fav{color:#34c759;border-color:rgba(52,199,89,0.2);background:rgba(52,199,89,0.05)}
+    .scenario-tag.press{color:#ff3b30;border-color:rgba(255,59,48,0.2);background:rgba(255,59,48,0.05)}
+    .scenario-actions{border-top:1px solid #e5e5e7;padding-top:8px;margin-top:8px}
+    .scenario-actions-title{font-size:10px;text-transform:uppercase;letter-spacing:0.15em;color:#aeaeb2;margin-bottom:6px}
+    .scenario-action-item{font-size:12px;color:#1d1d1f;padding:2px 0}
+
+    /* Alerts */
+    .alert-item{border:1px solid #e5e5e7;border-radius:14px;padding:12px;margin-bottom:8px}
+    .alert-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:6px}
+    .alert-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
+    .alert-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .alert-dot.high{background:#ff3b30}
+    .alert-dot.medium{background:#b8860b}
+    .alert-dot.low{background:#aeaeb2}
+    .alert-severity{font-size:9px;padding:2px 6px;border-radius:4px}
+    .alert-severity.high{background:rgba(255,59,48,0.08);color:#ff3b30;border:1px solid rgba(255,59,48,0.15)}
+    .alert-severity.medium{background:rgba(184,134,11,0.08);color:#b8860b;border:1px solid rgba(184,134,11,0.15)}
+    .alert-severity.low{background:#f5f5f7;color:#6e6e73;border:1px solid #e5e5e7}
+    .alert-desc{font-size:11px;color:#6e6e73;margin-bottom:6px}
+    .alert-action{font-size:11px;font-weight:500;border-left:2px solid #e5e5e7;padding-left:8px}
+
+    /* Warnings */
+    .warning{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:500;margin-bottom:8px}
+    .warning.high{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+    .warning.medium{background:#fffbeb;border:1px solid #fde68a;color:#b8860b}
+
+    /* Brief */
+    .brief-card{background:#f8f9fa;border:1px solid #e5e5e7;border-radius:20px;padding:20px}
+    .brief-text{font-size:13px;line-height:1.7;color:#1d1d1f}
+
+    /* Responsive */
+    @media(max-width:1024px){
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+      .grid-5{grid-template-columns:repeat(2,1fr)}
+      .grid-wide{grid-template-columns:1fr}
+      .regime-hero{flex-direction:column}
+      .regime-metrics{width:100%}
+    }
+    @media(max-width:768px){
+      .sidebar{display:none}
+      .main{margin-left:0}
+      .grid-2,.grid-3{grid-template-columns:1fr}
+      .decision-strip{grid-template-columns:repeat(2,1fr)}
+    }
+
+    .color-green{color:#34c759}
+    .color-red{color:#ff3b30}
+    .color-amber{color:#b8860b}
+    .color-gray{color:#6e6e73}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">ELX Index <span class="pro">PRO</span></div>
+      <div class="sidebar-sub"><a href="https://elxindex.com" target="_blank">by EarthOne</a></div>
+      <a href="/dashboard" class="nav-link active">Dashboard</a>
+      <a href="/" class="nav-link">Free Signal</a>
+      <a href="/analytics" class="nav-link">Analytics</a>
+      <div class="sidebar-free">
+        <a href="https://elxindex.com" target="_blank">Free Signal → elxindex.com</a>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-elx-label">ELX</span>
+          <span class="topbar-elx-value" id="topbar-elx">—</span>
+          <div class="topbar-sep"></div>
+          <span class="topbar-regime" id="topbar-regime">—</span>
+          <div class="topbar-sep"></div>
+          <span class="topbar-bias" id="topbar-bias">—</span>
+        </div>
+        <div class="topbar-right">
+          <span id="topbar-conviction">—</span>
+          <span id="topbar-time">—</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content" id="dashboard-content">
+        <div style="text-align:center;padding:60px;color:#aeaeb2;font-size:13px">Loading ELX Index Pro…</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch all data and render dashboard
+    async function loadDashboard() {
+      try {
+        const [elxRes, decisionRes, hedgeRes, scenariosRes, marketsRes, alertsRes] = await Promise.all([
+          fetch('/api/elx').then(r => r.json()),
+          fetch('/api/dashboard/decision').then(r => r.json()),
+          fetch('/api/dashboard/hedge').then(r => r.json()),
+          fetch('/api/dashboard/scenarios').then(r => r.json()),
+          fetch('/api/elx/markets').then(r => r.json()),
+          fetch('/api/dashboard/alerts').then(r => r.json()),
+        ]);
+
+        renderTopbar(elxRes, decisionRes);
+        renderDashboard(elxRes, decisionRes, hedgeRes, scenariosRes, marketsRes, alertsRes);
+      } catch (e) {
+        console.error('Dashboard load error:', e);
+        document.getElementById('dashboard-content').innerHTML =
+          '<div style="text-align:center;padding:60px;color:#ff3b30;font-size:13px">Error loading dashboard. Refresh to retry.</div>';
+      }
+    }
+
+    function renderTopbar(elx, decision) {
+      document.getElementById('topbar-elx').textContent = elx.value;
+      const regimeEl = document.getElementById('topbar-regime');
+      regimeEl.textContent = elx.regime;
+      regimeEl.style.color = regimeColor(elx.regime);
+      document.getElementById('topbar-bias').textContent = elx.bias;
+      document.getElementById('topbar-conviction').textContent = `Conviction ${decision.conviction}%`;
+      document.getElementById('topbar-time').textContent = new Date().toLocaleTimeString();
+    }
+
+    function regimeColor(regime) {
+      if (regime === 'Risk-On') return '#34c759';
+      if (regime === 'Risk-Off') return '#ff3b30';
+      return '#b8860b';
+    }
+
+    function regimeClass(regime) {
+      if (regime === 'Risk-On') return 'green';
+      if (regime === 'Risk-Off') return 'red';
+      return 'amber';
+    }
+
+    function actionTagClass(action) {
+      if (action === 'HEDGE NOW') return 'red';
+      if (action === 'REDUCE RISK') return 'orange';
+      if (action === 'ADD RISK') return 'green';
+      if (action === 'SELECTIVE') return 'amber';
+      return 'gray';
+    }
+
+    function renderDashboard(elx, decision, hedge, scenarios, markets, alerts) {
+      const drivers = elx.drivers || [];
+      const rc = regimeClass(elx.regime);
+      const ac = decision.actionColor;
+
+      // Compute scores from drivers
+      const liqScore = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Global Liquidity')?.score || 0) / 2));
+      const macroScore = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Credit Conditions')?.score || 0) / 2));
+      const stressScore = decision.stressScore;
+      const crossAsset = Math.max(0, Math.min(100, 50 + (drivers.find(d => d.name === 'Market Beta')?.score || 0) / 2));
+      const hedgeNeed = decision.hedgeNeed;
+
+      let html = '';
+
+      // ── DECISION BLOCK ──
+      html += `
+        <div class="decision ${ac}">
+          <div class="decision-top">
+            <span class="decision-action ${ac}">⚡ ${decision.action}</span>
+            <span class="decision-label">${decision.actionLabel}</span>
+          </div>
+          <div class="decision-sublabel">${elx.bias} regime + hedge need ${decision.hedgeNeed} — ${decision.action === 'HEDGE NOW' ? 'deploy defensive positions immediately' : decision.action === 'REDUCE RISK' ? 'reduce exposure and add hedges' : decision.action === 'ADD RISK' ? 'liquidity supports broader allocation' : 'wait for clearer signal'}.</div>
+          <div class="decision-conviction">
+            <div class="decision-conviction-value">${decision.conviction}</div>
+            <div class="decision-conviction-label">conf</div>
+          </div>
+          <div class="decision-strip">
+            <div class="decision-strip-item">
+              <div class="decision-strip-label">Regime</div>
+              <div class="decision-strip-value" style="color:${regimeColor(elx.regime)}">${elx.regime}</div>
+            </div>
+            <div class="decision-strip-item">
+              <div class="decision-strip-label">ELX</div>
+              <div class="decision-strip-value">${elx.value}</div>
+            </div>
+            <div class="decision-strip-item">
+              <div class="decision-strip-label">Liquidity</div>
+              <div class="decision-strip-value">${decision.liquidityDirection}</div>
+            </div>
+            <div class="decision-strip-item">
+              <div class="decision-strip-label">Risk Level</div>
+              <div class="decision-strip-value">${decision.stressScore > 70 ? 'Critical' : decision.stressScore > 40 ? 'Elevated' : 'Low'}</div>
+            </div>
+          </div>
+        </div>`;
+
+      // ── REGIME HERO ──
+      const trend7d = (elx.value * 0.2).toFixed(1);
+      const trend30d = (elx.value * 0.37).toFixed(1);
+      html += `
+        <div class="card">
+          <div class="regime-hero">
+            <div class="regime-left">
+              <div class="card-header">ELX — Earth Liquidity Index</div>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+                <span class="regime-score">${elx.value}</span>
+                <span class="regime-trend" style="color:${elx.value >= 0 ? '#34c759' : '#ff3b30'}">↓ ${trend7d}</span>
+              </div>
+              <span class="regime-tag ${rc}">${elx.regime}</span>
+              <span class="regime-bias">${elx.bias}</span>
+              <div class="regime-brief">${elx.interpretation}</div>
+            </div>
+            <div class="regime-metrics">
+              <div class="metric-box">
+                <div class="metric-box-label">30d Trend</div>
+                <div class="metric-box-value" style="color:${parseFloat(trend30d) >= 0 ? '#34c759' : '#ff3b30'}">${trend30d}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-box-label">Conviction</div>
+                <div class="metric-box-value">${decision.conviction}%</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-box-label">Dominant Risk</div>
+                <div class="metric-box-value small">${elx.bias}</div>
+              </div>
+              <div class="metric-box">
+                <div class="metric-box-label">Hedge Action</div>
+                <div class="metric-box-value small">${hedge.suggestion.split('.')[0]}</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+
+      // ── ELX DECISION LAYER + CORE SCORES ──
+      html += `
+        <div class="grid-wide">
+          <div class="brief-card">
+            <div class="card-header">ELX Decision Layer</div>
+            <div class="brief-text">Regime ${elx.regime}. ELX ${elx.value}. Dominant risk: ${elx.bias}. ${elx.interpretation} Liquidity score: ${drivers.find(d => d.name === 'Global Liquidity')?.score || 'N/A'}. Credit: ${drivers.find(d => d.name === 'Credit Conditions')?.score || 'N/A'}. Real Yields: ${drivers.find(d => d.name === 'Real Yields')?.score || 'N/A'}.</div>
+          </div>
+          <div class="card">
+            <div class="card-header">Core Scores</div>
+            <div class="scores-grid">
+              ${renderScoreBar('Liquidity Score', liqScore)}
+              ${renderScoreBar('Macro Score', macroScore)}
+              ${renderScoreBar('Stress Score', stressScore)}
+              ${renderScoreBar('Cross Asset', crossAsset)}
+              ${renderScoreBar('Hedge Need', hedgeNeed)}
+            </div>
+          </div>
+        </div>`;
+
+      // ── MACRO DRIVERS ──
+      html += `
+        <div>
+          <div class="section-title">Macro Drivers</div>
+          <div class="section-desc">Dominant macro inputs driving the ELX composite score.</div>
+          <div class="grid-5">
+            ${drivers.map(d => `
+              <div class="driver-card">
+                <div class="driver-name">${d.name}</div>
+                <div class="driver-score" style="color:${d.score >= 0 ? '#34c759' : '#ff3b30'}">${d.score >= 0 ? '+' : ''}${d.score}</div>
+                <div class="driver-weight">${d.weight}</div>
+                <div class="driver-bar">
+                  <div class="driver-bar-fill" style="width:${Math.abs(d.score) / 2 + 50}%;background:${d.score >= 0 ? '#34c759' : '#ff3b30'}"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+
+      // ── ELX VS MARKETS ──
+      html += `
+        <div>
+          <div class="section-title">ELX vs Markets</div>
+          <div class="grid-4">
+            ${markets.map(m => `
+              <div class="asset-card">
+                <div class="asset-header">
+                  <span class="asset-name">${m.name}</span>
+                  <span class="asset-ticker">${m.ticker.replace('.us','').toUpperCase()}</span>
+                </div>
+                <div class="asset-price">${typeof m.price === 'number' ? (m.price > 1000 ? '$' + m.price.toLocaleString() : m.price.toFixed(1)) : m.price}</div>
+                <div class="asset-row"><span class="asset-row-label">30d Change</span><span class="asset-row-value" style="color:${m.change_30d >= 0 ? '#34c759' : '#ff3b30'}">${m.change_30d >= 0 ? '+' : ''}${m.change_30d.toFixed(1)}%</span></div>
+                <div class="asset-row"><span class="asset-row-label">ELX Corr</span><span class="asset-row-value" style="color:${m.correlation > 0.3 ? '#34c759' : m.correlation < -0.3 ? '#ff3b30' : '#6e6e73'}">${m.correlation > 0 ? '+' : ''}${m.correlation.toFixed(2)}</span></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+
+      // ── SCENARIO ENGINE ──
+      html += `
+        <div>
+          <div class="section-title">Scenario Engine</div>
+          <div class="section-desc">AI-generated. Probabilistic view across 3 horizons.</div>
+          <div class="grid-3">
+            ${scenarios.map(s => `
+              <div class="scenario-card">
+                <div class="scenario-header">
+                  <span class="scenario-horizon">${s.horizon}</span>
+                  <span class="scenario-action-tag ${actionTagClass(s.action)}">${s.action}</span>
+                </div>
+                <div class="scenario-title">${s.title}</div>
+                <div class="scenario-prob">${s.probability}%</div>
+                <div class="scenario-desc">${s.description}</div>
+                <div class="scenario-tags">
+                  ${s.favored.map(f => `<span class="scenario-tag fav">${f}</span>`).join('')}
+                  ${s.pressured.map(p => `<span class="scenario-tag press">${p}</span>`).join('')}
+                </div>
+                <div class="scenario-actions">
+                  <div class="scenario-actions-title">Action</div>
+                  ${s.actions.map(a => `<div class="scenario-action-item">→ ${a}</div>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+
+      // ── HEDGE ENGINE ──
+      html += `
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-title">Hedge Engine</div>
+            <div class="section-desc">Rule-based · ELX + regime + scores · ${hedge.horizon} horizon</div>
+            <div style="display:flex;gap:16px;margin-bottom:12px">
+              <div><span style="font-size:11px;color:#aeaeb2">Confidence</span><br/><strong>${hedge.confidence}%</strong></div>
+              <div><span style="font-size:11px;color:#aeaeb2">Dominant Risk</span><br/><strong>${hedge.dominantRisk}</strong></div>
+            </div>
+            <div style="font-size:13px;color:#6e6e73;margin-bottom:12px"><strong>Suggested:</strong> ${hedge.suggestion}</div>
+            <div class="hedge-alloc">
+              ${hedge.allocation.map(a => `
+                <div class="hedge-row">
+                  <span class="hedge-asset">${a.direction === 'up' ? '↑' : a.direction === 'down' ? '↓' : '→'} ${a.asset}</span>
+                  <span class="hedge-delta ${a.direction}">${a.delta > 0 ? '+' : ''}${a.delta}%</span>
+                </div>
+              `).join('')}
+            </div>
+            <div style="margin-top:12px;font-size:11px;color:#aeaeb2">${hedge.invalidation}</div>
+          </div>
+
+          <!-- ALERTS -->
+          <div class="card">
+            <div class="section-title">ELX Alerts</div>
+            <div class="section-desc">Rule-based. Updated with each ELX computation.</div>
+            ${alerts.length === 0 ? '<div style="text-align:center;padding:20px;color:#aeaeb2;font-size:12px">No active alerts — conditions within normal parameters.</div>' :
+              alerts.map(a => `
+                <div class="alert-item">
+                  <div class="alert-header">
+                    <div class="alert-title"><span class="alert-dot ${a.severity}"></span>${a.title}</div>
+                    <span class="alert-severity ${a.severity}">${a.severity}</span>
+                  </div>
+                  <div class="alert-desc">${a.description}</div>
+                  <div class="alert-action">${a.action}</div>
+                </div>
+              `).join('')}
+          </div>
+        </div>`;
+
+      // ── PORTFOLIO WARNINGS ──
+      const warnings = alerts.filter(a => a.type === 'warning');
+
+      document.getElementById('dashboard-content').innerHTML = html;
+    }
+
+    function renderScoreBar(label, value) {
+      const color = value > 70 ? '#ff3b30' : value > 40 ? '#b8860b' : '#34c759';
+      return `
+        <div class="score-row">
+          <span class="score-label">${label}</span>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:${value}%;background:${color}"></div></div>
+          <span class="score-value">${Math.round(value)}</span>
+        </div>`;
+    }
+
+    // Load on page ready
+    loadDashboard();
+  </script>
+</body>
+</html>

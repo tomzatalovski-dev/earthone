@@ -20,6 +20,7 @@ from engine.database import init_db, track_event, add_subscriber, get_analytics_
 from engine.daily_image import generate_daily_image, save_daily_image
 from engine.social_post import generate_post, generate_daily_report
 from engine.regime_alerts import detect_regime_changes, get_current_alert, get_regime_map
+from engine.decision_engine import compute_decision, compute_hedge, compute_scenarios, compute_portfolio_warnings
 
 app = FastAPI(title="EarthOne", version="4.0")
 
@@ -92,6 +93,77 @@ def analytics_page(request: Request):
         content=(BASE / "templates" / "analytics.html").read_text(),
         status_code=200,
     )
+
+
+# ---------------------------------------------------------------------------
+# Dashboard — ELX Index Pro (premium layer)
+# ---------------------------------------------------------------------------
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard_page(request: Request):
+    track_event("page_view", path="/dashboard", ip=request.client.host if request.client else "")
+    return HTMLResponse(
+        content=(BASE / "templates" / "dashboard.html").read_text(),
+        status_code=200,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Dashboard API — Decision Engine, Hedge, Scenarios, Alerts
+# ---------------------------------------------------------------------------
+@app.get("/api/dashboard/decision")
+def api_dashboard_decision(request: Request):
+    """Compute the decision block from current ELX data."""
+    track_event("api_call", path="/api/dashboard/decision", ip=request.client.host if request.client else "")
+    elx = compute_elx()
+    return JSONResponse(content=compute_decision(elx))
+
+
+@app.get("/api/dashboard/hedge")
+def api_dashboard_hedge(request: Request):
+    """Compute hedge allocation from current ELX data."""
+    track_event("api_call", path="/api/dashboard/hedge", ip=request.client.host if request.client else "")
+    elx = compute_elx()
+    return JSONResponse(content=compute_hedge(elx))
+
+
+@app.get("/api/dashboard/scenarios")
+def api_dashboard_scenarios(request: Request):
+    """Compute scenario engine from current ELX data."""
+    track_event("api_call", path="/api/dashboard/scenarios", ip=request.client.host if request.client else "")
+    elx = compute_elx()
+    return JSONResponse(content=compute_scenarios(elx))
+
+
+@app.get("/api/dashboard/alerts")
+def api_dashboard_alerts(request: Request):
+    """Compute portfolio alerts from current ELX data."""
+    track_event("api_call", path="/api/dashboard/alerts", ip=request.client.host if request.client else "")
+    elx = compute_elx()
+    warnings = compute_portfolio_warnings(elx)
+    # Combine with regime alerts
+    try:
+        history = compute_elx_history(30)
+        regime_alert = get_current_alert(elx, history)
+    except Exception:
+        regime_alert = None
+    alerts = []
+    for w in warnings:
+        alerts.append({
+            "type": "warning",
+            "severity": w["severity"],
+            "title": w["type"],
+            "description": w["message"],
+            "action": "Review allocation immediately" if w["severity"] == "high" else "Monitor and prepare",
+        })
+    if regime_alert:
+        alerts.append({
+            "type": "regime",
+            "severity": "high",
+            "title": f"Regime Change: {regime_alert.get('from', '?')} → {regime_alert.get('to', '?')}",
+            "description": regime_alert.get("message", "Regime shift detected."),
+            "action": "Reassess all positions.",
+        })
+    return JSONResponse(content=alerts)
 
 
 # ---------------------------------------------------------------------------
