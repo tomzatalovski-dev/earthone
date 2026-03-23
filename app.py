@@ -12,7 +12,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response, RedirectResponse
 from pydantic import BaseModel
 
 from engine.elx_engine import compute_elx, compute_elx_history, compute_correlations
@@ -158,11 +158,11 @@ def success_page(request: Request, session_id: str = ""):
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard_page(request: Request):
     track_event("page_view", path="/dashboard", ip=request.client.host if request.client else "")
-    # Check for pro access via cookie
+    # Paywall: check for pro access via cookie
     pro_token = request.cookies.get("elx_pro_token", "")
     is_pro = verify_pro_token(pro_token)
-    # For now, serve dashboard to all (paywall can be enforced later)
-    # To enforce: if not is_pro: return RedirectResponse("/pricing")
+    if not is_pro:
+        return RedirectResponse("/pricing?from=dashboard", status_code=302)
     return HTMLResponse(
         content=(BASE / "templates" / "dashboard.html").read_text(),
         status_code=200,
