@@ -211,6 +211,40 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .bias-risk-on{color:var(--green);background:var(--green-dim)}
 .bias-neutral{color:var(--text-3);background:rgba(0,0,0,.04)}
 
+/* ─── COPILOT PREVIEW ────────────────────────────────── */
+.copilot-preview{padding:0 0 80px;text-align:left}
+.copilot-preview-card{
+  max-width:800px;margin:0 auto;
+  background:var(--surface);border:1px solid rgba(0,0,0,.06);
+  border-radius:28px;padding:32px 36px;
+  box-shadow:0 1px 2px rgba(0,0,0,.02),0 8px 32px rgba(0,0,0,.05);
+  position:relative;overflow:hidden;
+}
+.copilot-preview-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#1d1d1f 0%,#6e6e73 50%,#1d1d1f 100%);
+}
+.cp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cp-label{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4)}
+.cp-action-badge{
+  display:inline-block;padding:8px 18px;border-radius:100px;
+  font-size:.82rem;font-weight:600;
+}
+.cp-action-ADD_RISK{color:#1a7a3a;background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.2)}
+.cp-action-REDUCE{color:#ff453a;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.15)}
+.cp-action-HEDGE{color:#ff9f0a;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.15)}
+.cp-action-WAIT{color:var(--text-3);background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06)}
+.cp-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;color:var(--text);margin-bottom:12px;line-height:1.15}
+.cp-summary{font-size:1rem;line-height:1.7;color:var(--text-2);max-width:600px;margin-bottom:28px}
+.cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cp-cell{
+  background:var(--bg);border:1px solid rgba(0,0,0,.05);
+  border-radius:16px;padding:16px 18px;
+}
+.cp-cell-label{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4);margin-bottom:10px}
+.cp-cell-text{font-size:.85rem;line-height:1.65;color:var(--text-2)}
+.cp-cell-text br{margin-bottom:2px}
+
 /* ─── LIVE SIGNAL CARD ───────────────────────────────── */
 .signal{padding:20px 0 100px;text-align:center}
 .signal-card{
@@ -473,6 +507,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   .how-steps{grid-template-columns:repeat(2,1fr)}
   .pricing-cards{grid-template-columns:1fr;max-width:400px}
   .proof-stats{gap:40px}
+  .cp-grid{grid-template-columns:1fr}
 }
 @media(max-width:640px){
   .nav-inner{padding:0 20px}
@@ -486,6 +521,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   .features-grid{grid-template-columns:1fr 1fr}
   .how-steps{grid-template-columns:1fr 1fr}
   .footer-inner{flex-direction:column;gap:16px}
+  .copilot-preview-card{padding:24px 20px;border-radius:20px}
+  .cp-title{font-size:1.4rem}
 }
 </style>
 </head>
@@ -529,7 +566,35 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════════
+     COPILOT PREVIEW
+     ═══════════════════════════════════════════════════════════ -->
+<section class="copilot-preview section" id="copilot">
+  <div class="copilot-preview-card anim" id="cp-card">
+    <div class="cp-header">
+      <div class="cp-label">EarthOne Copilot</div>
+      <div class="cp-action-badge" id="cp-badge">Loading</div>
+    </div>
+    <h3 class="cp-title" id="cp-title">Today&rsquo;s verdict</h3>
+    <p class="cp-summary" id="cp-summary">Loading Copilot verdict&hellip;</p>
+    <div class="cp-grid" id="cp-grid">
+      <div class="cp-cell">
+        <div class="cp-cell-label">Do now</div>
+        <div class="cp-cell-text" id="cp-do">&mdash;</div>
+      </div>
+      <div class="cp-cell">
+        <div class="cp-cell-label">Avoid</div>
+        <div class="cp-cell-text" id="cp-avoid">&mdash;</div>
+      </div>
+      <div class="cp-cell">
+        <div class="cp-cell-label">Hedge</div>
+        <div class="cp-cell-text" id="cp-hedge">&mdash;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
      LIVE SIGNAL
      ═══════════════════════════════════════════════════════ -->
 <section class="signal section" id="signal">
@@ -881,9 +946,39 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 
   document.querySelectorAll(".anim").forEach(el=>observer.observe(el));
 
-  /* ── Init ─────────────────────────────────────────── */
+   /* ── Copilot ────────────────────────────────────── */
+  async function fetchCopilot(){
+    try{
+      const res=await fetch("/api/copilot/latest");
+      const d=await res.json();
+      const badge=document.getElementById("cp-badge");
+      const title=document.getElementById("cp-title");
+      const summary=document.getElementById("cp-summary");
+      const doEl=document.getElementById("cp-do");
+      const avoidEl=document.getElementById("cp-avoid");
+      const hedgeEl=document.getElementById("cp-hedge");
+      if(!badge) return;
+      const actionLabel=d.action?d.action.replace("_"," "):"";
+      badge.textContent=actionLabel;
+      badge.className="cp-action-badge cp-action-"+(d.action||"WAIT");
+      title.textContent="Today\u2019s verdict: "+actionLabel;
+      summary.textContent=d.summary||"";
+      const toHTML=(arr)=>arr&&arr.length?arr.map(i=>"\u2022 "+i).join("<br>"):"\u2014";
+      doEl.innerHTML=toHTML(d.actions);
+      avoidEl.innerHTML=toHTML(d.avoid);
+      hedgeEl.innerHTML=toHTML(d.hedge);
+    }catch(e){
+      console.error("Copilot fetch error:",e);
+      const badge=document.getElementById("cp-badge");
+      if(badge){badge.textContent="Unavailable";badge.className="cp-action-badge cp-action-WAIT";}
+    }
+  }
+
+  /* ── Init ───────────────────────────────────────── */
   fetchELX();
+  fetchCopilot();
   setInterval(fetchELX, 120000);
+  setInterval(fetchCopilot, 3600000);
 })();
 </script>
 
