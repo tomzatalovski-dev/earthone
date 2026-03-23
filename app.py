@@ -27,6 +27,11 @@ from engine.stripe_billing import (
 )
 from engine.copilot import generate_verdict
 from engine.portfolio import assess_portfolio
+from engine.profiles import (
+    PROFILES, get_profile_targets, compute_portfolio_score,
+    get_daily_history, get_today_vs_yesterday, compute_alerts,
+    compute_performance, save_user_score, get_user_evolution,
+)
 from engine.stripe_billing import _ensure_pro_table
 import sqlite3, secrets
 
@@ -303,6 +308,69 @@ async def api_portfolio_assess(request: Request):
         return JSONResponse(content={"error": "Portfolio data required"}, status_code=400)
     result = assess_portfolio(body)
     return JSONResponse(content=result)
+
+
+# ---------------------------------------------------------------------------
+# V18 — Profiles, Daily Tracking, Alerts, Performance
+# ---------------------------------------------------------------------------
+@app.get("/api/profiles")
+def api_profiles():
+    """List available investment profiles."""
+    return JSONResponse(content={
+        k: {"label": v["label"], "description": v["description"], "target": v["target"]}
+        for k, v in PROFILES.items()
+    })
+
+
+@app.post("/api/profiles/score")
+async def api_profile_score(request: Request):
+    """Compute portfolio alignment score for a given profile."""
+    body = await request.json()
+    portfolio = body.get("portfolio", {})
+    profile = body.get("profile", "balanced")
+    elx = compute_elx()
+    regime = elx.get("regime", "Neutral")
+    result = compute_portfolio_score(portfolio, profile, regime)
+    return JSONResponse(content=result)
+
+
+@app.get("/api/profiles/targets")
+def api_profile_targets(profile: str = "balanced"):
+    """Get recommended allocation for a profile adjusted by current regime."""
+    elx = compute_elx()
+    regime = elx.get("regime", "Neutral")
+    targets = get_profile_targets(profile, regime)
+    return JSONResponse(content={"profile": profile, "regime": regime, "targets": targets})
+
+
+@app.get("/api/daily/history")
+def api_daily_history(days: int = 7):
+    """Get last N days of ELX daily snapshots."""
+    return JSONResponse(content=get_daily_history(days))
+
+
+@app.get("/api/daily/today-vs-yesterday")
+def api_today_vs_yesterday():
+    """Get today vs yesterday ELX comparison."""
+    return JSONResponse(content=get_today_vs_yesterday())
+
+
+@app.post("/api/alerts")
+async def api_alerts(request: Request):
+    """Compute alerts for a portfolio + profile."""
+    body = await request.json()
+    portfolio = body.get("portfolio", {})
+    profile = body.get("profile", "balanced")
+    elx = compute_elx()
+    regime = elx.get("regime", "Neutral")
+    alerts = compute_alerts(portfolio, profile, regime)
+    return JSONResponse(content=alerts)
+
+
+@app.get("/api/performance")
+def api_performance():
+    """Get ELX-following vs market performance comparison."""
+    return JSONResponse(content=compute_performance())
 
 
 # ---------------------------------------------------------------------------

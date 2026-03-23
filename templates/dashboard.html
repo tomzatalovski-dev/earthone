@@ -297,6 +297,52 @@
 
     .color-green{color:#34c759}.color-red{color:#ff3b30}.color-amber{color:#b8860b}.color-gray{color:var(--text-2)}
 
+    /* ─── V18: PROFILE SELECTOR ─────────────────────────────────── */
+    .profile-bar{display:flex;gap:8px;margin-bottom:0}
+    .profile-btn{flex:1;padding:14px 16px;border-radius:16px;border:1px solid var(--border);background:var(--surface-s);cursor:pointer;text-align:center;transition:all .2s var(--ease);font-family:var(--font)}
+    .profile-btn:hover{border-color:var(--text-3)}
+    .profile-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+    .profile-btn-label{font-size:.82rem;font-weight:600;display:block}
+    .profile-btn-desc{font-size:.62rem;color:var(--text-4);margin-top:2px;display:block}
+    .profile-btn.active .profile-btn-desc{color:rgba(255,255,255,.6)}
+
+    /* ─── V18: TODAY VS YESTERDAY ──────────────────────────────── */
+    .tvy-card{display:flex;align-items:center;justify-content:space-between;background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 32px}
+    .tvy-block{text-align:center}
+    .tvy-label{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:6px}
+    .tvy-value{font-size:2.2rem;font-weight:700;letter-spacing:-.03em}
+    .tvy-regime{font-size:.72rem;color:var(--text-3);margin-top:2px}
+    .tvy-arrow{font-size:1.8rem;color:var(--text-4)}
+    .tvy-delta{text-align:center}
+    .tvy-delta-value{font-size:1.6rem;font-weight:700}
+    .tvy-delta-label{font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em}
+    .tvy-up{color:var(--green)}
+    .tvy-down{color:var(--red)}
+    .tvy-flat{color:var(--orange)}
+
+    /* ─── V18: ALERTS ─────────────────────────────────────────── */
+    .alerts-container{display:flex;flex-direction:column;gap:8px}
+    .alert-card{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:16px;border:1px solid var(--border);background:var(--surface-s)}
+    .alert-card.danger{border-color:rgba(255,69,58,.2);background:rgba(255,69,58,.03)}
+    .alert-card.warning{border-color:rgba(255,159,10,.2);background:rgba(255,159,10,.03)}
+    .alert-card.info{border-color:rgba(48,209,88,.2);background:rgba(48,209,88,.03)}
+    .alert-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+    .alert-body{flex:1}
+    .alert-title{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:3px}
+    .alert-msg{font-size:.75rem;color:var(--text-2);line-height:1.5;margin-bottom:4px}
+    .alert-action-text{font-size:.72rem;font-weight:600;color:var(--text)}
+
+    /* ─── V18: PERFORMANCE ────────────────────────────────────── */
+    .perf-card{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 32px}
+    .perf-header{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:16px}
+    .perf-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+    .perf-row:last-child{border-bottom:none}
+    .perf-label{font-size:.85rem;color:var(--text-2)}
+    .perf-value{font-size:1.1rem;font-weight:700}
+    .perf-delta-row{margin-top:12px;padding:12px 16px;background:var(--bg);border-radius:12px;display:flex;align-items:center;justify-content:space-between}
+    .perf-delta-label{font-size:.72rem;color:var(--text-3)}
+    .perf-delta-value{font-size:1rem;font-weight:700}
+
     /* ─── PORTFOLIO ───────────────────────────────────────────────── */
     .portfolio-section{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 36px;position:relative;overflow:hidden}
     .portfolio-section::before{content:'';position:absolute;top:0;left:36px;right:36px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04) 30%,rgba(0,0,0,.04) 70%,transparent)}
@@ -349,6 +395,10 @@
       .portfolio-form{grid-template-columns:repeat(2,1fr)}
       .portfolio-metrics{grid-template-columns:1fr}
       .portfolio-section{padding:24px 20px}
+      .profile-bar{flex-direction:column}
+      .tvy-card{flex-direction:column;gap:16px;padding:20px}
+      .tvy-arrow{transform:rotate(90deg)}
+      .perf-card{padding:20px}
     }
   </style>
 </head>
@@ -387,14 +437,37 @@
 
       <!-- Content -->
       <div class="content" id="dashboard-content">
-        <!-- ═══ COPILOT VERDICT ═══ -->
+
+        <!-- ═══ 1. PROFILE SELECTOR ═══ -->
+        <div class="profile-bar" id="profile-bar">
+          <button class="profile-btn" data-profile="conservative" onclick="selectProfile('conservative')">
+            <span class="profile-btn-label">Conservative</span>
+            <span class="profile-btn-desc">Capital preservation</span>
+          </button>
+          <button class="profile-btn active" data-profile="balanced" onclick="selectProfile('balanced')">
+            <span class="profile-btn-label">Balanced</span>
+            <span class="profile-btn-desc">Moderate risk</span>
+          </button>
+          <button class="profile-btn" data-profile="aggressive" onclick="selectProfile('aggressive')">
+            <span class="profile-btn-label">Aggressive</span>
+            <span class="profile-btn-desc">Growth-focused</span>
+          </button>
+        </div>
+
+        <!-- ═══ 2. ALERTS ═══ -->
+        <div class="alerts-container" id="alerts-container"></div>
+
+        <!-- ═══ 3. YOUR PORTFOLIO STATUS ═══ -->
         <div id="copilot-container">
           <div class="copilot-card">
             <div class="copilot-loading">Loading EarthOne Copilot…</div>
           </div>
         </div>
 
-        <!-- ═══ CHART HERO ═══ -->
+        <!-- ═══ 4. TODAY VS YESTERDAY ═══ -->
+        <div id="tvy-container"></div>
+
+        <!-- ═══ 5. ELX CHART ═══ -->
         <div class="chart-hero" id="chart-hero">
           <div class="chart-eyebrow">ELX &mdash; Earth Liquidity Index</div>
           <div class="chart-hero-row">
@@ -428,6 +501,9 @@
           <div class="chart-container" id="chart"></div>
           <div class="chart-corr" id="corr-strip"></div>
         </div>
+
+        <!-- ═══ 6. PERFORMANCE ═══ -->
+        <div id="perf-container"></div>
 
         <!-- ═══ PSYCHO TRIGGER ═══ -->
         <div id="psycho-trigger" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 20px;font-size:13px">
@@ -1191,17 +1267,133 @@
     }
   }
 
-  // ─── Init ────────────────────────────────────────────────
+  // ─── V18: Profile Selector ──────────────────────────────────────
+  let currentProfile = localStorage.getItem('elx_profile') || 'balanced';
+
+  function selectProfile(p) {
+    currentProfile = p;
+    localStorage.setItem('elx_profile', p);
+    document.querySelectorAll('.profile-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.profile === p);
+    });
+    // Re-fetch alerts and copilot with new profile
+    fetchAlerts();
+    fetchCopilot();
+  }
+
+  // Restore saved profile on load
+  (function initProfile() {
+    document.querySelectorAll('.profile-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.profile === currentProfile);
+    });
+  })();
+
+  // ─── V18: Today vs Yesterday ───────────────────────────────────
+  async function fetchTVY() {
+    const c = document.getElementById('tvy-container');
+    if (!c) return;
+    try {
+      const res = await fetch('/api/daily/today-vs-yesterday');
+      const d = await res.json();
+      const cls = d.direction === 'improvement' ? 'tvy-up' : d.direction === 'deterioration' ? 'tvy-down' : 'tvy-flat';
+      const arrow = d.direction === 'improvement' ? '\u2191' : d.direction === 'deterioration' ? '\u2193' : '\u2192';
+      const yScore = d.yesterday.score !== null ? d.yesterday.score : '\u2014';
+      const yRegime = d.yesterday.regime || '';
+      c.innerHTML = `
+        <div class="tvy-card">
+          <div class="tvy-block">
+            <div class="tvy-label">Yesterday</div>
+            <div class="tvy-value">${yScore}</div>
+            <div class="tvy-regime">${yRegime}</div>
+          </div>
+          <div class="tvy-arrow">\u2192</div>
+          <div class="tvy-block">
+            <div class="tvy-label">Today</div>
+            <div class="tvy-value">${d.today.score}</div>
+            <div class="tvy-regime">${d.today.regime}</div>
+          </div>
+          <div class="tvy-delta">
+            <div class="tvy-delta-value ${cls}">${arrow} ${d.label}</div>
+            <div class="tvy-delta-label">${d.direction}</div>
+          </div>
+        </div>`;
+    } catch (e) {
+      console.error('TVY error:', e);
+    }
+  }
+
+  // ─── V18: Alerts ─────────────────────────────────────────────
+  async function fetchAlerts() {
+    const c = document.getElementById('alerts-container');
+    if (!c) return;
+    try {
+      const saved = localStorage.getItem('elx_portfolio');
+      const portfolio = saved ? JSON.parse(saved) : {equities:40,btc:20,gold:10,cash:20,bonds:10,other:0};
+      const res = await fetch('/api/alerts', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({portfolio, profile: currentProfile})
+      });
+      const alerts = await res.json();
+      if (!alerts.length) { c.innerHTML = ''; return; }
+      c.innerHTML = alerts.map(a => `
+        <div class="alert-card ${a.type}">
+          <div class="alert-icon">${a.icon}</div>
+          <div class="alert-body">
+            <div class="alert-title">${a.title}</div>
+            <div class="alert-msg">${a.message}</div>
+            <div class="alert-action-text">\u2192 ${a.action}</div>
+          </div>
+        </div>`).join('');
+    } catch (e) {
+      console.error('Alerts error:', e);
+    }
+  }
+
+  // ─── V18: Performance ───────────────────────────────────────
+  async function fetchPerformance() {
+    const c = document.getElementById('perf-container');
+    if (!c) return;
+    try {
+      const res = await fetch('/api/performance');
+      const d = await res.json();
+      const elxCls = d.elx_perf >= 0 ? 'tvy-up' : 'tvy-down';
+      const mktCls = d.market_perf >= 0 ? 'tvy-up' : 'tvy-down';
+      const deltaCls = d.delta >= 0 ? 'tvy-up' : 'tvy-down';
+      c.innerHTML = `
+        <div class="perf-card">
+          <div class="perf-header">Performance comparison (${d.period})</div>
+          <div class="perf-row">
+            <div class="perf-label">If you followed ELX</div>
+            <div class="perf-value ${elxCls}">${d.elx_perf >= 0 ? '+' : ''}${d.elx_perf}%</div>
+          </div>
+          <div class="perf-row">
+            <div class="perf-label">Market (S&P 500)</div>
+            <div class="perf-value ${mktCls}">${d.market_perf >= 0 ? '+' : ''}${d.market_perf}%</div>
+          </div>
+          <div class="perf-delta-row">
+            <div class="perf-delta-label">ELX advantage</div>
+            <div class="perf-delta-value ${deltaCls}">${d.delta >= 0 ? '+' : ''}${d.delta}%</div>
+          </div>
+        </div>`;
+    } catch (e) {
+      console.error('Performance error:', e);
+    }
+  }
+
+  // ─── Init ──────────────────────────────────────────────────────
   fetchCopilot();
   fetchELX();
   fetchHistory();
   fetchMarkets();
   initRangeBar();
   loadDashboard();
+  fetchTVY();
+  fetchAlerts();
+  fetchPerformance();
 
   // Refresh every 2 minutes
-  setInterval(()=>{fetchELX();loadDashboard();},120000);
-})();
+  setInterval(()=>{fetchELX();loadDashboard();fetchTVY();fetchAlerts();fetchPerformance();},120000);
 </script>
 </body>
 </html>
