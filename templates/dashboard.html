@@ -1394,6 +1394,11 @@
 
   // Refresh every 2 minutes
   setInterval(()=>{fetchELX();loadDashboard();fetchTVY();fetchAlerts();fetchPerformance();},120000);
+
+  // Expose functions needed by onclick handlers to global scope
+  window.selectProfile = selectProfile;
+  window.assessPortfolio = assessPortfolio;
+})();
 </script>
 </body>
 </html>
