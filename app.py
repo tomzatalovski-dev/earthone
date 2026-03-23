@@ -26,6 +26,8 @@ from engine.stripe_billing import (
     verify_session, get_pro_subscribers
 )
 from engine.copilot import generate_verdict
+from engine.stripe_billing import _ensure_pro_table
+import sqlite3, secrets
 
 app = FastAPI(title="EarthOne", version="4.0")
 
@@ -167,6 +169,37 @@ def dashboard_page(request: Request):
         content=(BASE / "templates" / "dashboard.html").read_text(),
         status_code=200,
     )
+
+
+# ---------------------------------------------------------------------------
+# Admin — generate pro token (hidden, remove after use)
+# ---------------------------------------------------------------------------
+@app.get("/api/admin/grant-pro")
+def admin_grant_pro(request: Request, secret: str = ""):
+    if secret != "earthone2026":
+        return JSONResponse(content={"error": "unauthorized"}, status_code=403)
+    _ensure_pro_table()
+    from pathlib import Path as P
+    db = P(__file__).resolve().parent / "data" / "elx.db"
+    token = secrets.token_urlsafe(32)
+    import sqlite3 as sq
+    conn = sq.connect(str(db))
+    conn.execute(
+        "INSERT INTO pro_subscribers (email, stripe_customer_id, stripe_subscription_id, status, pro_token) VALUES (?, ?, ?, 'active', ?)",
+        ("admin@elxindex.com", "admin", "admin", token)
+    )
+    conn.commit()
+    conn.close()
+    response = RedirectResponse("/dashboard", status_code=302)
+    response.set_cookie(
+        key="elx_pro_token",
+        value=token,
+        max_age=365 * 24 * 3600,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+    )
+    return response
 
 
 # ---------------------------------------------------------------------------
