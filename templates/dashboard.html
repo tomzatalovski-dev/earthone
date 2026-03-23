@@ -297,7 +297,36 @@
 
     .color-green{color:#34c759}.color-red{color:#ff3b30}.color-amber{color:#b8860b}.color-gray{color:var(--text-2)}
 
-    /* ─── RESPONSIVE ──────────────────────────────────── */
+    /* ─── PORTFOLIO ───────────────────────────────────────────────── */
+    .portfolio-section{background:var(--surface-s);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 36px;position:relative;overflow:hidden}
+    .portfolio-section::before{content:'';position:absolute;top:0;left:36px;right:36px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,.04) 30%,rgba(0,0,0,.04) 70%,transparent)}
+    .portfolio-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .portfolio-title{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-4)}
+    .portfolio-status-badge{display:inline-block;padding:6px 16px;border-radius:100px;font-size:.78rem;font-weight:600}
+    .pf-BALANCED{color:#1a7a3a;background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.2)}
+    .pf-OVEREXPOSED{color:#ff453a;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.15)}
+    .pf-UNDEREXPOSED{color:#ff9f0a;background:rgba(255,159,10,.08);border:1px solid rgba(255,159,10,.15)}
+    .pf-UNDERHEDGED{color:#b8860b;background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.15)}
+    .portfolio-summary{font-size:.95rem;line-height:1.65;color:var(--text-2);margin-bottom:24px}
+    .portfolio-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+    .pf-metric{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 16px;text-align:center}
+    .pf-metric-label{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:6px}
+    .pf-metric-value{font-size:1.5rem;font-weight:700;color:var(--text)}
+    .portfolio-recs{margin-bottom:20px}
+    .portfolio-recs h4{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-4);margin-bottom:8px}
+    .portfolio-recs ul{list-style:none;padding:0;margin:0}
+    .portfolio-recs li{font-size:.85rem;line-height:1.7;color:var(--text-2);padding:2px 0}
+    .portfolio-recs li::before{content:'• ';color:var(--text-4)}
+    .portfolio-form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .pf-input-group label{display:block;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4);margin-bottom:4px}
+    .pf-input-group input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.9rem;font-family:var(--font);color:var(--text);text-align:center;outline:none;transition:border .2s}
+    .pf-input-group input:focus{border-color:var(--text-3)}
+    .pf-save-btn{background:var(--text);color:#fff;border:none;border-radius:12px;padding:12px 24px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+    .pf-save-btn:hover{opacity:.85}
+    .pf-total{font-size:.75rem;color:var(--text-3);text-align:right;margin-bottom:8px}
+    .pf-total.over{color:#ff3b30}
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────────── */
     @media(max-width:1024px){
       .grid-4{grid-template-columns:repeat(2,1fr)}
       .grid-5{grid-template-columns:repeat(2,1fr)}
@@ -317,6 +346,9 @@
       .chart-hero-row{gap:12px}
       .chart-regime-label{font-size:1.1rem}
       .chart-controls{flex-direction:column;gap:8px;align-items:flex-start}
+      .portfolio-form{grid-template-columns:repeat(2,1fr)}
+      .portfolio-metrics{grid-template-columns:1fr}
+      .portfolio-section{padding:24px 20px}
     }
   </style>
 </head>
@@ -403,6 +435,36 @@
           <span id="psycho-elx" style="color:var(--green);font-weight:600">+8.2%</span>
           <span style="color:var(--text-3);margin-left:24px">Market</span>
           <span style="color:var(--text-3);font-weight:500">+2.1%</span>
+        </div>
+
+        <!-- ═══ PORTFOLIO ASSESSMENT ═══ -->
+        <div id="portfolio-section" class="portfolio-section">
+          <div class="portfolio-header">
+            <div class="portfolio-title">Your Portfolio vs Current Regime</div>
+            <div class="portfolio-status-badge" id="pf-status">Enter your portfolio</div>
+          </div>
+          <div id="pf-result" style="display:none">
+            <p class="portfolio-summary" id="pf-summary"></p>
+            <div class="portfolio-metrics">
+              <div class="pf-metric"><div class="pf-metric-label">Risk Exposure</div><div class="pf-metric-value" id="pf-risk">—</div></div>
+              <div class="pf-metric"><div class="pf-metric-label">Defensive</div><div class="pf-metric-value" id="pf-defensive">—</div></div>
+              <div class="pf-metric"><div class="pf-metric-label">Hedge Coverage</div><div class="pf-metric-value" id="pf-hedge">—</div></div>
+            </div>
+            <div class="portfolio-recs" id="pf-recs-wrap" style="display:none">
+              <h4>Recommended Changes</h4>
+              <ul id="pf-recs"></ul>
+            </div>
+          </div>
+          <div class="portfolio-form" id="pf-form">
+            <div class="pf-input-group"><label>Equities %</label><input type="number" id="pf-equities" value="40" min="0" max="100"></div>
+            <div class="pf-input-group"><label>BTC %</label><input type="number" id="pf-btc" value="20" min="0" max="100"></div>
+            <div class="pf-input-group"><label>Gold %</label><input type="number" id="pf-gold" value="10" min="0" max="100"></div>
+            <div class="pf-input-group"><label>Cash %</label><input type="number" id="pf-cash" value="20" min="0" max="100"></div>
+            <div class="pf-input-group"><label>Bonds %</label><input type="number" id="pf-bonds" value="10" min="0" max="100"></div>
+            <div class="pf-input-group"><label>Other %</label><input type="number" id="pf-other" value="0" min="0" max="100"></div>
+          </div>
+          <div class="pf-total" id="pf-total">Total: 100%</div>
+          <button class="pf-save-btn" id="pf-save" onclick="assessPortfolio()">Analyze my portfolio</button>
         </div>
 
         <!-- ═══ MACRO TOGGLE ═══ -->
@@ -1065,7 +1127,71 @@
     container.innerHTML=html;
   }
 
-  // ─── Init ────────────────────────────────────────────
+  // ─── Portfolio ─────────────────────────────────────────────
+  const PF_FIELDS=['equities','btc','gold','cash','bonds','other'];
+  function updateTotal(){
+    let t=0;
+    PF_FIELDS.forEach(f=>{t+=parseInt(document.getElementById('pf-'+f).value)||0});
+    const el=document.getElementById('pf-total');
+    el.textContent='Total: '+t+'%';
+    el.className='pf-total'+(t!==100?' over':'');
+  }
+  PF_FIELDS.forEach(f=>{
+    const inp=document.getElementById('pf-'+f);
+    if(inp) inp.addEventListener('input',updateTotal);
+  });
+  // Restore from localStorage
+  const saved=localStorage.getItem('elx_portfolio');
+  if(saved){
+    try{
+      const p=JSON.parse(saved);
+      PF_FIELDS.forEach(f=>{if(p[f]!==undefined) document.getElementById('pf-'+f).value=p[f]});
+      updateTotal();
+      setTimeout(()=>assessPortfolio(),500);
+    }catch(e){}
+  }
+
+  async function assessPortfolio(){
+    const btn=document.getElementById('pf-save');
+    btn.textContent='Analyzing...';
+    btn.disabled=true;
+    const portfolio={};
+    PF_FIELDS.forEach(f=>{portfolio[f]=parseInt(document.getElementById('pf-'+f).value)||0});
+    localStorage.setItem('elx_portfolio',JSON.stringify(portfolio));
+    try{
+      const res=await fetch('/api/portfolio/assess',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(portfolio)});
+      const d=await res.json();
+      renderAssessment(d);
+      // Also send to Copilot for personalized verdict
+      fetch('/api/copilot/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({portfolio})})
+        .then(r=>r.json()).then(v=>{if(v&&v.action) renderCopilot(v)}).catch(()=>{});
+    }catch(e){
+      console.error('Portfolio assessment failed:',e);
+    }
+    btn.textContent='Analyze my portfolio';
+    btn.disabled=false;
+  }
+
+  function renderAssessment(d){
+    document.getElementById('pf-result').style.display='block';
+    const badge=document.getElementById('pf-status');
+    badge.textContent=d.status;
+    badge.className='portfolio-status-badge pf-'+d.status;
+    document.getElementById('pf-summary').textContent=d.summary;
+    document.getElementById('pf-risk').textContent=d.total_risk+'%';
+    document.getElementById('pf-defensive').textContent=d.defensive_exposure+'%';
+    document.getElementById('pf-hedge').textContent=d.hedge_coverage+'%';
+    const recsWrap=document.getElementById('pf-recs-wrap');
+    const recsList=document.getElementById('pf-recs');
+    if(d.recommendations&&d.recommendations.length){
+      recsWrap.style.display='block';
+      recsList.innerHTML=d.recommendations.map(r=>'<li>'+r+'</li>').join('');
+    }else{
+      recsWrap.style.display='none';
+    }
+  }
+
+  // ─── Init ────────────────────────────────────────────────
   fetchCopilot();
   fetchELX();
   fetchHistory();

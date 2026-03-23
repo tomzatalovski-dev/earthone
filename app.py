@@ -26,6 +26,7 @@ from engine.stripe_billing import (
     verify_session, get_pro_subscribers
 )
 from engine.copilot import generate_verdict
+from engine.portfolio import assess_portfolio
 from engine.stripe_billing import _ensure_pro_table
 import sqlite3, secrets
 
@@ -284,6 +285,24 @@ async def api_copilot_generate(request: Request):
     portfolio = body.get("portfolio") if body else None
     verdict = generate_verdict(portfolio=portfolio)
     return JSONResponse(content=verdict)
+
+
+# ---------------------------------------------------------------------------
+# PORTFOLIO ASSESSMENT
+# ---------------------------------------------------------------------------
+@app.post("/api/portfolio/assess")
+async def api_portfolio_assess(request: Request):
+    """Assess user portfolio against current ELX regime."""
+    track_event("api_call", path="/api/portfolio/assess", ip=request.client.host if request.client else "")
+    body = {}
+    try:
+        body = await request.json()
+    except Exception:
+        pass
+    if not body:
+        return JSONResponse(content={"error": "Portfolio data required"}, status_code=400)
+    result = assess_portfolio(body)
+    return JSONResponse(content=result)
 
 
 # ---------------------------------------------------------------------------
