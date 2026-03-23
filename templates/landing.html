@@ -663,7 +663,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
         chipsEl.innerHTML=d.asset_bias.map(a=>{
           const arrow=a.direction==="up"?"\u2191":"\u2193";
           const cls=a.direction==="up"?"up":"down";
-          return `<span class="signal-chip">${a.asset} <span class="${cls}">${arrow}</span> ${a.label}</span>`;
+          return `<span class="signal-chip">${a.asset} <span class="${cls}">${arrow}</span> ${a.call}</span>`;
         }).join("");
       }
     }catch(e){
