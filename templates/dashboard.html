@@ -11,6 +11,7 @@
       --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
       --bg:#fafafa;
       --card:#fff;
+      --card-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
       --border:rgba(0,0,0,.06);
       --text-1:#1d1d1f;
       --text-2:#3a3a3c;
@@ -36,6 +37,8 @@
     .nav-link{display:block;font-size:13px;font-weight:500;color:var(--text-3);padding:8px 12px;border-radius:8px;text-decoration:none;margin-bottom:2px;transition:all .15s}
     .nav-link:hover{background:rgba(0,0,0,.03);color:var(--text-1)}
     .nav-link.active{background:rgba(0,0,0,.04);color:var(--text-1);font-weight:600}
+    .cta-pro{display:block;margin:24px 0 0;padding:12px 18px;background:linear-gradient(135deg,#111,#1a1a1a);color:#fff;font-weight:600;font-size:14px;letter-spacing:.2px;border-radius:999px;text-decoration:none;text-align:center;transition:all .2s;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+    .cta-pro:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
     .sidebar-free{position:absolute;bottom:20px;left:20px;right:20px;font-size:10px;color:var(--text-4)}
     .sidebar-free a{color:var(--text-4);text-decoration:none}
     .main{margin-left:220px;flex:1;min-width:0}
@@ -136,7 +139,7 @@
     /* ═══════════════════════════════════════════════
        4. TODAY VS YESTERDAY
        ═══════════════════════════════════════════════ */
-    .tvy-card{display:flex;align-items:center;gap:24px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:24px}
+    .tvy-card{display:flex;align-items:center;gap:24px;padding:20px 24px;background:var(--card);border:1px solid rgba(0,0,0,.04);border-radius:var(--radius);margin-bottom:24px;box-shadow:var(--card-shadow)}
     .tvy-block{text-align:center;min-width:80px}
     .tvy-label{font-size:11px;font-weight:500;color:var(--text-4);letter-spacing:.05em;text-transform:uppercase}
     .tvy-value{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
@@ -152,7 +155,7 @@
     /* ═══════════════════════════════════════════════
        5. ELX CHART (simplified)
        ═══════════════════════════════════════════════ */
-    .chart-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px}
+    .chart-section{background:var(--card);border:1px solid rgba(0,0,0,.04);border-radius:var(--radius);padding:28px;margin-bottom:24px;box-shadow:var(--card-shadow)}
     .chart-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
     .chart-elx-value{font-size:48px;font-weight:900;letter-spacing:-.04em;line-height:1}
     .chart-elx-sign{font-weight:300;opacity:.4;font-size:36px}
@@ -239,7 +242,7 @@
     /* ═══════════════════════════════════════════════
        8. PERFORMANCE
        ═══════════════════════════════════════════════ */
-    .perf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px}
+    .perf-card{background:var(--card);border:1px solid rgba(0,0,0,.04);border-radius:var(--radius);padding:24px 28px;margin-bottom:24px;box-shadow:var(--card-shadow)}
     .perf-header{font-size:13px;font-weight:600;color:var(--text-3);margin-bottom:16px}
     .perf-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
     .perf-label{font-size:14px;font-weight:500;color:var(--text-2)}
@@ -289,6 +292,7 @@
       <a href="/" class="nav-link">Home</a>
       <a href="/signal" class="nav-link">Free Signal</a>
       <a href="/analytics" class="nav-link">Analytics</a>
+      <a href="/pricing" class="cta-pro">Unlock Signal</a>
       <div class="sidebar-free">
         <a href="/">ELX Index &mdash; elxindex.com</a>
       </div>
@@ -927,8 +931,8 @@
 
     // Short summary (brutal, not verbose)
     const summaryEl=document.getElementById('hero-summary');
-    const s=d.summary||'';
-    summaryEl.textContent=s.length>60?s.substring(0,60).trim()+'...':s;
+    const shortMap={'REDUCE':'Risk increasing. Stay defensive.','HEDGE':'Protect capital. Hedge now.','ADD_RISK':'Conditions improving. Add exposure.','WAIT':'No clear trend. Stay nimble.'};
+    summaryEl.textContent=shortMap[d.action]||'Monitoring conditions.';
 
     // Allocation pills (inline)
     const allocMap={Equities:'0%',Gold:'0%',Cash:'0%',BTC:'0%',Bonds:'0%'};
